@@ -1,0 +1,43 @@
+
+import Image from 'next/image';
+import { CodeSandboxOutlined, FontColorsOutlined } from '@ant-design/icons';
+import Link from 'next/link';
+
+export default function FrameworkHeader() {
+    return (
+        <div className="w-full h-full flex text-gray-600" style={{ borderBottom: 'var(--spacing-inline-end-primary)' }}>
+            {/* Logo and Title */}
+            <Link href={"/"} className='flex flex-row items-center w-64 justify-center'>
+                <span className='text-3xl font-bold text-color-primary'><CodeSandboxOutlined /></span>
+                <span className='ml-2 text-[1rem] font-bold'>Ruoyi Design Pro</span>
+            </Link>
+            {/*draw Menu */}
+            <div className='flex flex-row items-center w-100'>
+                <ul className='w-full flex flex-row items-center gap-6 text-gray-600 text-[1rem] justify-center'>
+                    <li className='cursor-pointer hover:text-color-primary duration-300'>系统管理</li>
+                    <li className='cursor-pointer hover:text-color-primary duration-300'>系统监控</li>
+                    <li className='cursor-pointer hover:text-color-primary duration-300'>系统工具</li>
+                    <li className='cursor-pointer hover:text-color-primary duration-300'>Github</li>
+                    <li className='cursor-pointer hover:text-color-primary duration-300'>Demo</li>
+                </ul>
+            </div>
+            {/*user center logo */}
+            <div className='flex-1 flex flex-row items-center justify-end'>
+                <div className='w-fit flex flex-row items-center mr-30 cursor-pointer hover:text-color-primary duration-300'>
+                    <Image
+                        src="/image/userIcon.png"
+                        alt="User Avatar"
+                        width={25}
+                        height={25}
+                        className="rounded-full cursor-pointer hover:opacity-80 duration-300"
+                    />
+                    <span className='text-sm ml-2'>若依</span>
+                </div>
+                <div className='flex flex-col items-center cursor-pointer hover:text-color-primary duration-300 text-[1.2rem] mr-5'>
+                    <FontColorsOutlined />
+                </div>
+                
+            </div>
+        </div>
+    );
+}   
