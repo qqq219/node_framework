@@ -1,12 +1,12 @@
 'use client'
-import { Card } from 'antd';
 import type { FormProps } from 'antd';
 import {Form, Input, Button, Select} from 'antd';
-import { RedoOutlined, VerticalAlignMiddleOutlined,SettingOutlined } from '@ant-design/icons';
-import { Space, Table } from 'antd';
-import type { TableColumnsType, TableProps } from 'antd';
+import { Space} from 'antd';
+import type {TableProps } from 'antd';
 import { useState } from 'react'
-import { ActionType, FooterToolbar, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
+import { ProColumns, ProTable } from '@ant-design/pro-components';
+import EditMenu from './edit';
+import { DataNode } from 'antd/es/tree';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
 
@@ -105,6 +105,12 @@ export default function MenuPage({ children }: React.PropsWithChildren) {
     
     const [checkStrictly, setCheckStrictly] = useState(false);
 
+    const [editDialogVisible, setEditDialogVisible] = useState(false);
+
+    const [menuTree, setMenuTree] = useState<DataNode[]>([]);
+
+    const [currentRow, setCurrentRow] = useState<API.System.Menu>();
+
     const rowSelection: TableRowSelection<API.System.Menu> = {
         onChange: (selectedRowKeys, selectedRows) => {
             console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -117,10 +123,15 @@ export default function MenuPage({ children }: React.PropsWithChildren) {
         },
     };
 
+    const addMenuBtnOnClick = ()=>{
+        setEditDialogVisible(!editDialogVisible);
+    }
+
     return (
         <div className='w-full h-full flex flex-col items-center'>
-            <div className="mt-5 w-full flex">
-                <Card className="w-full">
+            {/*条件筛选栏 */}
+            <div className="mt-5 w-full flex p-6 rounded-md" style={{border:"var(--border-primary)"}}>
+                <div className="w-full">
                     <Form
                         name="basic"
                         layout="inline"
@@ -128,7 +139,7 @@ export default function MenuPage({ children }: React.PropsWithChildren) {
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
-                        className='w-full flex !pl-10 !pr-10'>
+                        className='w-full flex !p-0'>
                         <Form.Item<API.System.Menu>
                             label="菜单名称"
                             name="menuName"
@@ -151,10 +162,11 @@ export default function MenuPage({ children }: React.PropsWithChildren) {
                             <Button type="primary" className='ml-5 w-button-primary'>查询</Button>
                         </div> 
                     </Form>
-                </Card>
+                </div>
             </div>
-            <div className="mt-6 flex-1 w-full">
-                <Card className="h-full">
+            {/*表格栏 */}
+            <div className="mt-6 flex-1 w-full rounded-md" style={{border:"var(--border-primary)"}}>
+                <div className="h-full">
                     <div className='w-full'>
                         <ProTable<API.System.Menu>
                             rowSelection={{ ...rowSelection, checkStrictly }}
@@ -164,13 +176,26 @@ export default function MenuPage({ children }: React.PropsWithChildren) {
                             columns={columns}
                             toolBarRender={() => [
                                 <div className='flex gap-3'>
-                                    <Button type="primary" className='w-button-primary'>+ 新建</Button>
+                                    <Button type="primary" className='w-button-primary' onClick={addMenuBtnOnClick}>+ 新建</Button>
                                     <Button type="primary" className='w-button-primary'>+ 导出</Button>
                                 </div>
                             ]}/>
                     </div>
-                </Card>
+                </div>
             </div>
+            {/*编辑弹窗 */}
+            <EditMenu 
+                onSubmit={async (values) => {
+                    setEditDialogVisible(false);
+                }}
+                onCancel={() => {
+                    setEditDialogVisible(false);
+                }}
+                values={currentRow || {}}
+                open={editDialogVisible}
+                menuTree={menuTree}
+            >
+            </EditMenu>
      </div>
     );
 }

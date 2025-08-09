@@ -9,11 +9,11 @@ export default function FrameworkHeader() {
             {/* Logo and Title */}
             <Link href={"/"} className='flex flex-row items-center w-64 justify-center'>
                 <span className='text-3xl font-bold text-color-primary'><CodeSandboxOutlined /></span>
-                <span className='ml-2 text-[1rem] font-bold'>Ruoyi Design Pro</span>
+                <span className='ml-2 text-[0.9rem] font-bold'>Ruoyi Design Pro</span>
             </Link>
             {/*draw Menu */}
             <div className='flex flex-row items-center w-100'>
-                <ul className='w-full flex flex-row items-center gap-6 text-gray-600 text-[1rem] justify-center'>
+                <ul className='w-full flex flex-row items-center gap-6 text-gray-600 text-[0.9rem] justify-center'>
                     <li className='cursor-pointer hover:text-color-primary duration-300'>系统管理</li>
                     <li className='cursor-pointer hover:text-color-primary duration-300'>系统监控</li>
                     <li className='cursor-pointer hover:text-color-primary duration-300'>系统工具</li>

@@ -95,7 +95,7 @@ export default function FrameworkLayout({ children }: React.PropsWithChildren) {
     };
     return (
         <div className="flex flex-col w-full h-screen">
-            <div className="w-full h-18">
+            <div className="w-full h-16">
               <FrameworkHeader></FrameworkHeader>
             </div>
             <div className="flex-1 flex w-full relative">
