@@ -3,102 +3,73 @@
 import clsx from 'clsx';
 import { RightOutlined, LeftOutlined } from '@ant-design/icons';
 import FrameworkHeader from '@/components/FrameworkHeader';
-import Link from 'next/link';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import "@/asserts/home.css";  
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Menu } from 'antd';
+import { Menu, message } from 'antd';
+import {getRouterList} from '../app/services/menu'
+import { buildTreeData } from '@/app/common/utils/tree';
+import { MenuType } from '@/app/common/enum/menu';
+import { createIcon } from '@/app/common/utils/IconUtil';
+import Link from 'next/link';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const items: MenuItem[] = [
-  {
-    key: 'sub1',
-    label: 'Navigation One',
-    icon: <MailOutlined />,
-    children: [
-      {
-        key: 'g1',
-        label: 'Item 1',
-        type: 'group',
-        children: [
-          { key: '1', label:  (
-            <Link href={"/system/menu"}>菜单管理</Link>
-          ),  },
-          { key: '2', label: (
-            <Link href={"/"}>菜单管理</Link>
-          ) },
-        ],
-      },
-      {
-        key: 'g2',
-        label: 'Item 2',
-        type: 'group',
-        children: [
-          { key: '3', label: 'Option 3' },
-          { key: '4', label: 'Option 4' },
-        ],
-      },
-    ],
-  },
-  {
-    key: 'sub2',
-    label: 'Navigation Two',
-    icon: <AppstoreOutlined />,
-    children: [
-      { key: '5', label: 'Option 5' },
-      { key: '6', label: 'Option 6' },
-      {
-        key: 'sub3',
-        label: 'Submenu',
-        children: [
-          { key: '7', label: 'Option 7' },
-          { key: '8', label: 'Option 8' },
-        ],
-      },
-    ],
-  },
-  {
-    type: 'divider',
-  },
-  {
-    key: 'sub4',
-    label: 'Navigation Three',
-    icon: <SettingOutlined />,
-    children: [
-      { key: '9', label: 'Option 9', icon: <MailOutlined /> },
-      { key: '10', label: 'Option 10', icon: <MailOutlined />  },
-      { key: '11', label: 'Option 11', icon: <MailOutlined />  },
-      { key: '12', label: 'Option 12', icon: <MailOutlined />  },
-    ],
-  },
-  {
-    key: 'grp',
-    label: 'Group',
-    type: 'group',
-    children: [
-      { key: '13', label: 'Option 13' },
-      { key: '14', label: 'Option 14' },
-    ],
-  },
-];
-
-
 export default function FrameworkLayout({ children }: React.PropsWithChildren) {
     const [navToggleStatus, setNavToggleStatus] = useState(false);
+    const [routerItems, setRouterItems] = useState<MenuItem[]>([]);
+
+    const formatRouterTreeData = (arrayList: any): MenuItem[]=> {
+      const routerTreeData: MenuItem[] = arrayList.map((item: any) => {
+        if(item.menuType === MenuType.F){
+          return;
+        }
+        const node: MenuItem = {
+          key: item.menuId,
+          label: item.menuType == MenuType.C ? <Link href={item.component}>{item.menuName}</Link> : item.menuName,
+          icon: createIcon(item.icon),
+        } as MenuItem;
+        if (node && 'children' in item && item.children && item.menuType === MenuType.M) {
+          //@ts-ignore
+          node.children = formatRouterTreeData(item.children);
+        }
+        return node;
+      });
+      return routerTreeData;
+    }
+
     const toggerNavStatus = () => {
        setNavToggleStatus(!navToggleStatus);
     }
     const onMenuClick: MenuProps['onClick'] = (e) => {
         console.log('click ', e);
     };
+
+    const fetchRouterData = async ()=>{
+      let routerList:MenuItem[] = [];
+      try{
+        const routerListResp = await getRouterList();
+        routerList = routerListResp.data.data as MenuItem[];
+
+      }
+      catch(error){
+        const errorMsg = (error instanceof Error) ? error.message : String(error);
+        console.log("errorMsg:" + errorMsg)
+        message.error("获取路由列表失败");
+      }
+      const routerTree = formatRouterTreeData(buildTreeData(routerList, 'menuId', 'menuName', '', '', ''));
+      setRouterItems(routerTree);
+    }
+
+    useEffect(() => {
+      fetchRouterData();
+    }, []);
     return (
-        <div className="flex flex-col w-full h-screen">
+        <div className="flex flex-col w-full h-screen overflow-hidden">
             <div className="w-full h-16">
               <FrameworkHeader></FrameworkHeader>
             </div>
-            <div className="flex-1 flex w-full relative">
+            <div className="flex-1 flex w-full relative h-0">
               <div className={clsx("spliteLine","h-full z-50 relative duration-600 flex", {"w-64": !navToggleStatus, "w-20": navToggleStatus})}>
                   {/*菜单栏伸缩按钮*/}
                   <div onClick={()=>toggerNavStatus()} className={clsx("nav-toggle-btn", "w-6 h-6 text-[12px] absolute rounded-full float-end -right-3 mt-10 items-center justify-center flex cursor-pointer z-50 text-gray-400 hover:text-color-primary duration-300")}>
@@ -117,9 +88,9 @@ export default function FrameworkLayout({ children }: React.PropsWithChildren) {
                     defaultOpenKeys={['sub1']}
                     mode="inline"
                     inlineCollapsed={navToggleStatus}
-                    items={items}/>
+                    items={routerItems}/>
               </div>
-              <div className="flex-1 h-full">
+              <div className="flex-1 w-full">
                 {children}
               </div>
             </div>

@@ -9,6 +9,7 @@ export class TypeOrmOperateEventListener implements EntitySubscriberInterface<an
 
 
   beforeInsert(event: InsertEvent<any>) {
+    console.log("beforeInsert==========")
     const store = AsyncStore.getStore();
     const user = store ? store.get('user') : null;
     const entityProps = event.metadata.columns.map(item=>item.propertyName)

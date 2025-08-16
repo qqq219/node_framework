@@ -14,7 +14,6 @@ export function createIcon(icon: string | any): React.ReactNode | string {
   }
   const ele = allIcons[icon];
   if (ele) {
-    console.log(React.createElement(allIcons[icon]));
     return React.createElement(allIcons[icon]);
   }
   return '';

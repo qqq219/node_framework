@@ -6,8 +6,10 @@ import {TreeSelect  } from 'antd';
 import type { TreeSelectProps } from 'antd';
 import { Radio, Input } from "antd";
 import {ProFormSelect} from '@ant-design/pro-components';
-import { createIcon } from './IconUtil';
 import IconSelector from "@/components/IconSelector"
+import _ from 'lodash';
+import { formatTreeData } from '@/app/common/utils/tree';
+import { createIcon } from '@/app/common/utils/IconUtil';
 
 export type MenuFormData = Record<string, unknown> & Partial<API.System.Menu>;
 
@@ -16,60 +18,11 @@ export type MenuFormProps = {
   onSubmit: (values: MenuFormData) => Promise<void>;
   open: boolean;
   values: Partial<API.System.Menu>;
-  menuTree: DataNode[];
+  menuTree: API.System.Menu[];
 }
 
-const treeData = [
-  {
-    value: 'parent 1',
-    title: 'parent 1',
-    children: [
-      {
-        value: 'parent 1-0',
-        title: 'parent 1-0',
-        children: [
-          {
-            value: 'leaf1',
-            title: 'leaf1',
-          },
-          {
-            value: 'leaf2',
-            title: 'leaf2',
-          },
-          {
-            value: 'leaf3',
-            title: 'leaf3',
-          },
-          {
-            value: 'leaf4',
-            title: 'leaf4',
-          },
-          {
-            value: 'leaf5',
-            title: 'leaf5',
-          },
-          {
-            value: 'leaf6',
-            title: 'leaf6',
-          },
-        ],
-      },
-      {
-        value: 'parent 1-1',
-        title: 'parent 1-1',
-        children: [
-          {
-            value: 'leaf11',
-            title: <b style={{ color: '#08c' }}>leaf11</b>,
-          },
-        ],
-      },
-    ],
-  },
-];
-
 const MenuForm: React.FC<MenuFormProps> = (props) => {
-    const [form] = Form.useForm();
+    const [editMenuForm] = Form.useForm();
 
     const [menuTypeId, setMenuTypeId] = useState<any>('M');
 
@@ -77,45 +30,61 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
 
     const [menuIconName, setMenuIconName] = useState<any>();
 
+    const { menuTree } = props;
+
+    const rootMenu = { id: 0, key:0, label: "主类目", children: [] as DataNode[], value: 0 };
+    const formmatTreeData = formatTreeData(menuTree);
+    rootMenu.children = formmatTreeData;
+    const treeData: any = [];
+    treeData.push(rootMenu);
+
     const handleOk = () => {
-        form.submit();
+        editMenuForm.submit();
     };
     const handleCancel = () => {
         props.onCancel();
     };
-    const handleFinish = async (values: Record<string, any>) => {
-        props.onSubmit(values as MenuFormData);
-    };
+ 
     const onFinish: FormProps<API.System.Menu>['onFinish'] = (values) => {
         console.log('Success:', values);
+         props.onSubmit(values as MenuFormData);
     };
 
     const onFinishFailed: FormProps<API.System.Menu>['onFinishFailed'] = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
-    const [value, setValue] = useState<string>();
-
-    const onChange = (newValue: string) => {
-        setValue(newValue);
-    };
-
-    const onPopupScroll: TreeSelectProps['onPopupScroll'] = (e) => {
-        console.log('onPopupScroll', e);
-    };
-
     useEffect(() => {
-        form.resetFields();
+        editMenuForm.resetFields();
         setMenuIconName(props.values.icon);
-        form.setFieldsValue({
-            menuId: props.values.menuId,
-            menuName: props.values.menuName,
-            orderNum: props.values.orderNum,
-            path: props.values.path,
-            status: props.values.status,
-            icon: props.values.icon
-        });
-    }, [form, props]);
+        if(props.values.menuId != undefined){
+            setMenuTypeId(props.values.menuType);
+            editMenuForm.setFieldsValue({
+                menuId: props.values.menuId,
+                menuName: props.values.menuName,
+                parentId: props.values.parentId,
+                orderNum: props.values.orderNum,
+                path: props.values.path,
+                component: props.values.component,
+                query: props.values.query,
+                isFrame: props.values.isFrame,
+                isCache: props.values.isCache,
+                menuType: props.values.menuType,
+                visible: props.values.visible,
+                status: props.values.status,
+                perms: props.values.perms,
+                icon: props.values.icon,
+                createBy: props.values.createBy,
+                createTime: props.values.createTime,
+                updateBy: props.values.updateBy,
+                updateTime: props.values.updateTime,
+                remark: props.values.remark,
+            });
+        }
+        else{
+            setMenuTypeId("M");
+        }
+    }, [editMenuForm, props, props.open]);
 
     return (
         <div>
@@ -128,7 +97,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                 className='!w-200'
                 >
                 <Form
-                    form={form}
+                    form={editMenuForm}
                     name="editMenuForm"
                     initialValues={{ remember: true }}
                     onFinish={onFinish}
@@ -137,47 +106,54 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                     className='!p-5'
                 >
                     <Form.Item<API.System.Menu>
-                        label="上级菜单"
                         name="menuId"
-                        rules={[{ required: true, message: 'Please input your password!' }]}
+                        label="菜单id"
+                        hidden={true}
+                        >
+                    <input></input>
+                    </Form.Item>
+                    <Form.Item<API.System.Menu>
+                        label="上级菜单"
+                        name="parentId"
+                        rules={[{ required: true, message: '请选择上级菜单' }]}
+                        initialValue={0}
                     >
                         <TreeSelect
                             showSearch
-                            style={{ width: '100%' }}
-                            value={value}
-                            styles={{
-                                popup: { root: { maxHeight: 400, overflow: 'auto' } },
-                            }}
+                            defaultValue={"0"}
                             placeholder="请选择上级菜单"
                             allowClear
-                            treeDefaultExpandAll
-                            onChange={onChange}
                             treeData={treeData}
-                            onPopupScroll={onPopupScroll}
+                            styles={{
+                                popup: { root: { maxHeight: 200, overflow: 'auto' } },
+                            }}
                         />
                     </Form.Item>
                     <Form.Item<API.System.Menu>
                         label="菜单类型"
-                        name="menuName"
-                        rules={[{ required: true, message: '!' }]}
+                        name="menuType"
+                        rules={[{ required: true, message: '请选择菜单类型' }]}
+                        initialValue={"M"}
                         >
                         <Radio.Group
-                            value={value}
+                            defaultValue={"M"}
+                            onChange={(e)=>{setMenuTypeId(e.target.value)}}
                             options={[
-                            { value: 1, label: 'A' },
-                            { value: 2, label: 'B' },
-                            { value: 3, label: 'C' },
+                                { value: "M", label: '目录' },
+                                { value: "C", label: '菜单' },
+                                { value: "F", label: '按钮' },
                             ]}
                         />
                     </Form.Item>
                     <Form.Item<API.System.Menu>
                         label="菜单图标"
-                        name="menuName"
-                        rules={[{ required: true, message: '请输入菜单图标' }]}
+                        name="icon"
+                        rules={[{ required: false, message: '请输入菜单图标' }]}
+                        hidden={menuTypeId === 'F'}
+                        className='h-9'
                         >
                         <ProFormSelect
                             name="icon"
-                            hidden={menuTypeId === 'F'}
                             addonBefore={createIcon(menuIconName)}
                             fieldProps={{
                                 onClick: () => {
@@ -207,10 +183,11 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                         <Col span={12}>
                             <Form.Item<API.System.Menu>
                                 label="显示顺序"
-                                name="menuName"
-                                rules={[{ required: true, message: '请输入显示顺序' }]}
+                                name="orderNum"
+                                rules={[{ required: false, message: '请输入显示顺序' }]}
+                                initialValue={1}
                                 >
-                                <Input placeholder="请输入显示顺序" />
+                                <Input placeholder="请输入显示顺序" type='number' defaultValue={1} />
                             </Form.Item>
                         </Col> 
                     </Row>
@@ -219,14 +196,15 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                         <Col span={12}>
                             <Form.Item<API.System.Menu>
                                 label="是否外链"
-                                name="menuName"
-                                rules={[{ required: true, message: '请选择是否外链' }]}
+                                name="isFrame"
+                                rules={[{ required: false, message: '请选择是否外链' }]}
+                                hidden={menuTypeId === 'F'}
                                 >
                                 <Radio.Group
-                                    value={value}
+                                    defaultValue={1}
                                     options={[
-                                    { value: 1, label: '是' },
-                                    { value: 2, label: '否' },
+                                    { value: 0, label: '是' },
+                                    { value: 1, label: '否' },
                                     ]}
                                 />
                             </Form.Item>
@@ -234,8 +212,9 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                         <Col span={12}>
                             <Form.Item<API.System.Menu>
                                 label="路由地址"
-                                name="menuName"
-                                rules={[{ required: true, message: '请输入路由地址' }]}
+                                name="path"
+                                rules={[{ required: menuTypeId !== 'F', message: '请输入路由地址' }]}
+                                hidden={menuTypeId === 'F'}
                                 >
                                 <Input placeholder="请输入路由地址" />
                             </Form.Item>
@@ -245,15 +224,68 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                         gutter={24}>
                         <Col span={12}>
                             <Form.Item<API.System.Menu>
-                                label="显示状态"
-                                name="menuName"
-                                rules={[{ required: true, message: '请选择显示状态' }]}
+                                label="组件路径"
+                                name="component"
+                                rules={[{ required: false, message: '请输入组件路径' }]}
+                                hidden={menuTypeId !== 'C'}
+                                >
+                                <Input placeholder="请输入组件路径" />
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item<API.System.Menu>
+                                label="路由参数"
+                                name="query"
+                                rules={[{ required: false, message: '请输入路由参数' }]}
+                                hidden={menuTypeId !== 'C'}
+                                >
+                                <Input placeholder="请输入路由参数" type='number' />
+                            </Form.Item>
+                        </Col> 
+                        <Col span={12}>
+                            <Form.Item<API.System.Menu>
+                                label="权限标识"
+                                name="perms"
+                                rules={[{ required: false, message: '请输入权限标识' }]}
+                                hidden={menuTypeId === 'M'}
+                                >
+                                <Input placeholder="请输入权限标识" type='number' />
+                            </Form.Item>
+                        </Col> 
+                        <Col span={12}>
+                            <Form.Item<API.System.Menu>
+                                label="是否缓存"
+                                name="isCache"
+                                rules={[{ required: false, message: '请输入是否缓存' }]}
+                                hidden={menuTypeId !== 'C'}
+                                initialValue={1}
                                 >
                                 <Radio.Group
-                                    value={value}
+                                    value={editMenuForm.getFieldValue("isCache")}
                                     options={[
-                                    { value: 1, label: '显示' },
-                                    { value: 2, label: '隐藏' },
+                                    { value: 0, label: '缓存' },
+                                    { value: 1, label: '不缓存' },
+                                    ]}
+                                />
+                            </Form.Item>
+                        </Col> 
+                    </Row>
+                    <Row
+                        gutter={24}>
+                        <Col span={12}>
+                            <Form.Item<API.System.Menu>
+                                label="显示状态"
+                                name="visible"
+                                rules={[{ required: false, message: '请选择显示状态' }]}
+                                hidden={menuTypeId === 'F'}
+                                initialValue={"0"}
+                                >
+                                <Radio.Group
+                                    defaultValue={"0"}
+                                    value={editMenuForm.getFieldValue("visible")}
+                                    options={[
+                                        { value: "0", label: '显示' },
+                                        { value: "1", label: '隐藏' },
                                     ]}
                                 />
                             </Form.Item>
@@ -261,14 +293,17 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                         <Col span={12}>
                             <Form.Item<API.System.Menu>
                                 label="菜单状态"
-                                name="menuName"
+                                name="status"
                                 rules={[{ required: true, message: '请选择菜单状态' }]}
+                                hidden={menuTypeId === 'F'}
+                                initialValue={"0"}
                                 >
                                 <Radio.Group
-                                    value={value}
+                                    value={"0"}
+                                    defaultValue={"0"}
                                     options={[
-                                    { value: 1, label: '正常' },
-                                    { value: 2, label: '停用' },
+                                        { value: "0", label: '正常' },
+                                        { value: "1", label: '停用' },
                                     ]}
                                 />
                             </Form.Item>
@@ -285,7 +320,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                     footer={null}>
                     <IconSelector
                         onSelect={(name: string) => {
-                            form.setFieldsValue({ icon: name });
+                            editMenuForm.setFieldsValue({ icon: name });
                             setMenuIconName(name);
                             setIconSelectorOpen(false);
                         }}

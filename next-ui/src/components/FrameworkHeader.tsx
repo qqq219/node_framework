@@ -11,16 +11,6 @@ export default function FrameworkHeader() {
                 <span className='text-3xl font-bold text-color-primary'><CodeSandboxOutlined /></span>
                 <span className='ml-2 text-[0.9rem] font-bold'>Ruoyi Design Pro</span>
             </Link>
-            {/*draw Menu */}
-            <div className='flex flex-row items-center w-100'>
-                <ul className='w-full flex flex-row items-center gap-6 text-gray-600 text-[0.9rem] justify-center'>
-                    <li className='cursor-pointer hover:text-color-primary duration-300'>系统管理</li>
-                    <li className='cursor-pointer hover:text-color-primary duration-300'>系统监控</li>
-                    <li className='cursor-pointer hover:text-color-primary duration-300'>系统工具</li>
-                    <li className='cursor-pointer hover:text-color-primary duration-300'>Github</li>
-                    <li className='cursor-pointer hover:text-color-primary duration-300'>Demo</li>
-                </ul>
-            </div>
             {/*user center logo */}
             <div className='flex-1 flex flex-row items-center justify-end'>
                 <div className='w-fit flex flex-row items-center mr-30 cursor-pointer hover:text-color-primary duration-300'>

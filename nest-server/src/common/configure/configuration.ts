@@ -1,0 +1,22 @@
+import { readFileSync } from "fs";
+import { join } from "path";
+import * as yaml from "js-yaml"
+import * as _ from "lodash"
+
+const YAML_COMMON_CONFIG_FILENAME = "default.yml";
+
+const filePath = join(__dirname, "../../../config", YAML_COMMON_CONFIG_FILENAME);
+
+const envPath = join(
+    __dirname,
+    "../../../config",
+    `${process.env.NODE_ENV || "development"}.yml`
+);
+
+const commonConfig = yaml.load(readFileSync(filePath, "utf8"))
+
+const envConfig =  yaml.load(readFileSync(envPath, "utf8"))
+
+export default () =>{
+    return _.merge(commonConfig, envConfig)
+}

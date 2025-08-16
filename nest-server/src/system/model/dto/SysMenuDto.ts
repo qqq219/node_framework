@@ -35,7 +35,7 @@ export class SysMenuDto {
   @Type(()=>Number)
   parentId?: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @Length(0, 200)
   path?: string;

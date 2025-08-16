@@ -1,0 +1,25 @@
+redis:
+    host: "110.41.165.112"
+    port: 6379
+    password: "q4217715"
+    db: 2
+typeOrm:
+  type: 'mysql'
+  host: '110.41.165.112'
+  port: 3896
+  username: 'ruoyi_next_nestjs'
+  password: 'B87ReMK5HCDErBtp'
+  database: 'ruoyi_next_nestjs'
+  synchronize: false
+  logging: true
+  connectorPackage: 'mysql'
+  extra: 
+    connectionLimit: 10
+    acquireTimeout: 10000
+    waitForConnections: true
+    queueLimit: 0
+    idleTimeout: 60000
+    connectTimeout: 30000
+  keepConnectionAlive: true
+  retryDelay: 3000
+  retryAttempts: 10

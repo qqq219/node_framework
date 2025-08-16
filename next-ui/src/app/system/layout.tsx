@@ -14,11 +14,13 @@ const breadcrumbItems = [
 export default function SystemLayout({ children }: React.PropsWithChildren) {
     return (
         <div className="w-full h-full flex flex-col relative">
-            <div className="pl-8 pr-8 pt-0 flex-1 flex flex-col h-full">
+            <div className="pl-8 pr-8 pt-0 flex-1 flex flex-col h-0">
                 <div className="mt-10">
                     <Breadcrumb items={breadcrumbItems}></Breadcrumb>
                 </div>
-                {children}
+                <div className="w-full flex-1 overflow-auto">
+                    {children}
+                </div>
             </div>
             <div className="h-18 w-full flex flex-col justify-center items-center text-[14px] text-gray-600 p-5">
                 <div><span className="mr-2 cursor-pointer hover:text-color-primary duration-600">Ruoyi Design Pro</span><HighlightOutlined className="!text-gray-950 mr-1"/><span className="hover:text-color-primary duration-600 cursor-pointer">Zhanj</span></div>

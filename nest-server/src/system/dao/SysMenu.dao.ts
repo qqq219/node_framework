@@ -10,12 +10,12 @@ export class SysMenuDao {
 
   constructor(
     @InjectRepository(SysMenuEntity)
-    private readonly sysMenuEntityRepository: Repository<SysMenuEntity>,
+    private readonly repository: Repository<SysMenuEntity>,
   ) {
   }
 
   async selectMenuList(query: SysMenuReq) {
-    const entity = this.sysMenuEntityRepository.createQueryBuilder('entity');
+    const entity = this.repository.createQueryBuilder('entity');
     entity.where('1=1');
 
     if (query.menuName) {

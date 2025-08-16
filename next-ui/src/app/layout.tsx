@@ -1,5 +1,3 @@
-
-
 import type { Metadata } from "next";
 import "./globals.css";
 import { AntdRegistry } from '@ant-design/nextjs-registry';
@@ -7,6 +5,7 @@ import FrameworkLayout from '@/components/FrameworkLayout';
 import {ConfigProvider} from 'antd';
 import { getLocale, getMessages } from 'next-intl/server';
 import { NextIntlClientProvider } from 'next-intl';
+import '@ant-design/v5-patch-for-react-19';
 
 export const metadata: Metadata = {
   title: "Nest Framework",

@@ -2,14 +2,26 @@
 declare namespace API.System {
 
   interface Menu {
-    key: React.ReactNode;
-    menuId: string;
+    menuId: number;
     menuName: string;
+    parentId: number;
     orderNum: number;
     path: string;
+    component: string;
+    query: string;
+    isFrame: number;
+    isCache: number;
+    menuType: string;
+    visible: string;
     status: string;
+    perms: string;
     icon: string;
-    children?: DataType[];
+    createBy: string;
+    createTime: Date;
+    updateBy: string;
+    updateTime: Date;
+    remark: string;
+    children?: Menu[];
   }
 
   export interface MenuListParams {
