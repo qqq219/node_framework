@@ -8,6 +8,7 @@ import { Tag } from 'antd';
 import EditDictData from './edit';
 import { addDictData, exportDictData, getDictDataList, removeDictData, updateDictData } from '@/app/services/dictdata';
 import { getDictType } from '@/app/services/dict';
+import Link from 'next/link';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
 
@@ -85,15 +86,13 @@ const handleExport = async () => {
   }
 };
 
-export default async function DictDataPage({ children, params }: {children:React.PropsWithChildren, params: Promise<{ dicttype: string }>}) {
+export default function DictDataPage({ children, params }: {children:React.PropsWithChildren, params: Promise<{ dicttype: string }>}) {
 
     const param = use(params)
 
     const dicttype = param.dicttype;
 
-    const dictTypeResp = await getDictType(param.dicttype);
-
-    const dictTypeData = dictTypeResp.data as API.System.DictType
+    const [dictTypeData, setDictTypeData] = useState<API.System.DictType>()
 
     const [editDialogVisible, setEditDialogVisible] = useState(false);
 
@@ -149,12 +148,23 @@ export default async function DictDataPage({ children, params }: {children:React
         }
     };
 
+    const getDictTypeData = async (dictType:string) => {
+        
+        const dictTypeResp = await getDictType(param.dicttype);
+
+        const result = dictTypeResp.data as API.System.DictType
+        
+        setDictTypeData(result)
+
+    }
+
     const resetFormParams = () => {
         paramsForm.resetFields();
         updateDictDataList(1);
     }
 
     useEffect(() => {
+        getDictTypeData(dicttype);
         updateDictDataList(1);
     }, []);
 
@@ -194,7 +204,7 @@ export default async function DictDataPage({ children, params }: {children:React
     {
         title: '字典标签',
         dataIndex: 'dictLabel',
-        key: 'dictLabel',
+        key: 'dictLabel'
     },
     {
         title: '字典键值',
@@ -286,7 +296,7 @@ export default async function DictDataPage({ children, params }: {children:React
                             name="dictType"
                             rules={[{ required: false, message: '请输入字典类型' }]}
                             initialValue={dicttype}>
-                            <Input className='!w-64' allowClear/>
+                            <Input className='!w-64' allowClear disabled/>
                         </Form.Item>
                         <Form.Item<API.System.DictData>
                             label="字典键值"
@@ -385,7 +395,7 @@ export default async function DictDataPage({ children, params }: {children:React
                 } }
                 values={currentRow || {}}
                 open={editDialogVisible}
-                dicttype={dictTypeDetail}          
+                dicttype={dictTypeData}          
                 >
             </EditDictData>
      </div>

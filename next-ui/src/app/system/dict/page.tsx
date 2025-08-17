@@ -7,6 +7,7 @@ import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
 import EditDictType from './edit';
 import { addDictType, exportDictType, getDictTypeList, removeDictType, updateDictType } from '@/app/services/dict';
+import Link from 'next/link';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
 
@@ -191,6 +192,9 @@ export default function DictTypePage({ children }: React.PropsWithChildren) {
         title: '字典类型',
         dataIndex: 'dictType',
         key: 'dictType',
+        render: (_, record) => {
+            return ( <Link href={"/system/dictdata/" + record.dictType}>{record.dictType}</Link>);
+        },
     },
     {
         title: 'status',

@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Reque
 import { ListDictType } from "../model/req/ListDictType";
 import { SysDictTypeService } from "../service/SysDictType.service";
 import { SysDictTypeDto } from "../model/dto/SysDictTypeDto";
+import { ResultData } from "src/common/model/ResultData";
 
 @Controller('system/dict/type')
 export class SysDictTypeController {

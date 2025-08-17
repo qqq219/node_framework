@@ -19,6 +19,7 @@ import { SysDictTypeService } from './service/SysDictType.service';
 import { SysDictDataService } from './service/SysDictData.service';
 import { SysDictTypeDao } from './dao/SysDictType.dao';
 import { SysDictDataDao } from './dao/SysDictData.dao';
+import { SysDictDataController } from './controller/SysDictData.controller';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { SysDictDataDao } from './dao/SysDictData.dao';
       SysMenuEntity, SysDeptEntity, SysPostEntity, SysDictDataEntity, SysDictTypeEntity
     ])
   ],
-  controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController],
+  controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController],
   providers: [
     //service
     ...[
