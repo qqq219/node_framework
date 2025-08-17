@@ -338,6 +338,7 @@ export default function PostPage({ children }: React.PropsWithChildren) {
                             loading={loading}
                             sticky={true}
                             pagination={false}
+                            rowKey="postId"
                         >
                         </Table>
                         <div className='mt-4 w-full flex flex-col items-center'>

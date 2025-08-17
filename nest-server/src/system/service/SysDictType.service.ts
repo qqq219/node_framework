@@ -81,6 +81,15 @@ export class SysDictTypeService {
     return ResultData.ok(data);
   }
 
+  async findOneByDictType(dictType: string) {
+    const data = await this.sysDictTypeEntityRepository.findOne({
+      where: {
+        dictType: dictType
+      },
+    });
+    return ResultData.ok(data);
+  }
+
 
 
 }

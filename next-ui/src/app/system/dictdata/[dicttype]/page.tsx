@@ -7,7 +7,7 @@ import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
 import EditDictData from './edit';
 import { addDictData, exportDictData, getDictDataList, removeDictData, updateDictData } from '@/app/services/dictdata';
-import { getDictType } from '@/app/services/dict';
+import { getByDictType, getDictType } from '@/app/services/dict';
 import Link from 'next/link';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
@@ -150,9 +150,9 @@ export default function DictDataPage({ children, params }: {children:React.Props
 
     const getDictTypeData = async (dictType:string) => {
         
-        const dictTypeResp = await getDictType(param.dicttype);
+        const dictTypeResp = await getByDictType(param.dicttype);
 
-        const result = dictTypeResp.data as API.System.DictType
+        const result = dictTypeResp.data.data as API.System.DictType;
         
         setDictTypeData(result)
 
@@ -363,6 +363,7 @@ export default function DictDataPage({ children, params }: {children:React.Props
                             loading={loading}
                             sticky={true}
                             pagination={false}
+                            rowKey="dictCode"
                         >
                         </Table>
                         <div className='mt-4 w-full flex flex-col items-center'>

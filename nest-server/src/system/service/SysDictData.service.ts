@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ListDictData } from "../model/req/ListDictData";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { SysDictDataEntity } from "../model/entity/SysDictData.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { SysDictDataDto } from "../model/dto/SysDictDataDto";
@@ -39,8 +39,8 @@ export class SysDictDataService {
     return ResultData.ok();
   }
 
-  async deleteDictData(dictId: number) {
-    await this.sysDictDataEntityRepository.delete({ dictCode: dictId });
+  async deleteDictData(dictDataIds: number[]) {
+    await this.sysDictDataEntityRepository.delete({ dictCode: In(dictDataIds) });
     return ResultData.ok();
   }
 

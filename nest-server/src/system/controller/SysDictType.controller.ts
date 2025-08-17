@@ -15,6 +15,12 @@ export class SysDictTypeController {
     return this.dictTypeService.findAllType(query);
   }
 
+  @Get('/getByDictType')
+  getByDictType(@Query() dictTypeObj: ListDictType) {
+    const {dictType} = dictTypeObj
+    return this.dictTypeService.findOneByDictType(dictType?dictType:"");
+  }
+
   //字典类型
   @Post()
   createType(@Body() createDictTypeDto: SysDictTypeDto) {

@@ -9,7 +9,7 @@ export type DictDataFormProps = {
   onSubmit: (values: DictDataFormData) => Promise<void>;
   open: boolean;
   values: Partial<API.System.DictData>;
-  dicttype: API.System.DictType;
+  dicttype: API.System.DictType | undefined;
 }
 
 const { TextArea } = Input;
@@ -56,12 +56,19 @@ const EditDictData: React.FC<DictDataFormProps> = (props) => {
                 remark: props.values.remark,
             });
         }
+        else{
+            if(dicttype != undefined){
+                editDictDataForm.setFieldsValue({
+                    dictType: dicttype.dictType
+                });
+            }
+        }
     }, [editDictDataForm, props, props.open]);
 
     return (
         <div>
             <Modal
-                title="添加/编辑字典键值"
+                title={"编辑字典:" + dicttype?.dictName}
                 closable={{ 'aria-label': 'Custom Close Button' }}
                 open={props.open}
                 onOk={handleOk}
@@ -88,30 +95,30 @@ const EditDictData: React.FC<DictDataFormProps> = (props) => {
                         gutter={24}>
                         <Col span={12}>
                             <Form.Item<API.System.DictData>
-                                label=""
+                                label="字典类型"
+                                name="dictType"
                                 rules={[{ required: false, message: '请输入字典类型' }]}
                                 labelCol={{span: 6}}
-                                initialValue={dicttype?dicttype.dictName:"请选择"}
                                 >
-                                <Input placeholder="请选择" disabled />
+                                <Input placeholder="请选择" disabled/>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
                             <Form.Item<API.System.DictData>
                                 label="字典标签"
                                 name="dictLabel"
-                                rules={[{ required: true, message: '请输入字典标签' }]}
+                                rules={[{ required: false, message: '请输入字典标签' }]}
                                 labelCol={{span: 6}}
                                 initialValue={1}
                                 >
-                                <Input placeholder="请输入字典标签" type='number' />
+                                <Input placeholder="请输入字典标签"/>
                             </Form.Item>
                         </Col> 
                         <Col span={12}>
                             <Form.Item<API.System.DictData>
                                 label="字典键值"
                                 name="dictValue"
-                                rules={[{ required: true, message: '请输入字典键值' }]}
+                                rules={[{ required: false, message: '请输入字典键值' }]}
                                 labelCol={{span: 6}}
                                 >
                                 <Input placeholder="请输入字典键值"/>
@@ -121,7 +128,7 @@ const EditDictData: React.FC<DictDataFormProps> = (props) => {
                             <Form.Item<API.System.DictData>
                                 label="样式属性"
                                 name="cssClass"
-                                rules={[{ required: true, message: '请输入样式属性' }]}
+                                rules={[{ required: false, message: '请输入样式属性' }]}
                                 labelCol={{span: 6}}
                                 >
                                 <Input placeholder="请输入样式属性"/>
@@ -131,7 +138,7 @@ const EditDictData: React.FC<DictDataFormProps> = (props) => {
                             <Form.Item<API.System.DictData>
                                 label="回显样式"
                                 name="listClass"
-                                rules={[{ required: true, message: '请选择回显样式' }]}
+                                rules={[{ required: false, message: '请选择回显样式' }]}
                                 labelCol={{span: 6}}
                                 initialValue={"default"}
                                 >
@@ -153,7 +160,7 @@ const EditDictData: React.FC<DictDataFormProps> = (props) => {
                             <Form.Item<API.System.DictData>
                                 label="字典排序"
                                 name="dictSort"
-                                rules={[{ required: true, message: '请输入字典排序' }]}
+                                rules={[{ required: false, message: '请输入字典排序' }]}
                                 labelCol={{span: 6}}
                                 >
                                 <Input placeholder="请输入字典排序" type='number'/>
@@ -163,14 +170,14 @@ const EditDictData: React.FC<DictDataFormProps> = (props) => {
                             <Form.Item<API.System.DictData>
                                 label="返回值转数字"
                                 name="isNumber"
-                                rules={[{ required: false, message: '请输入部门状态' }]}
-                                initialValue={"1"}
+                                rules={[{ required: false, message: '请选择' }]}
+                                initialValue={"N"}
                                 labelCol={{span: 6}}
                                 >
                                 <Radio.Group
                                     options={[
-                                        { value: "0", label: '是' },
-                                        { value: "1", label: '否' },
+                                        { value: "Y", label: '是' },
+                                        { value: "N", label: '否' },
                                     ]}
                                 />
                             </Form.Item>
@@ -178,15 +185,15 @@ const EditDictData: React.FC<DictDataFormProps> = (props) => {
                         <Col span={12}>
                             <Form.Item<API.System.DictData>
                                 label="是否默认"
-                                name="status"
+                                name="isDefault"
                                 rules={[{ required: false, message: '请选择' }]}
-                                initialValue={"1"}
+                                initialValue={"N"}
                                 labelCol={{span: 6}}
                                 >
                                 <Radio.Group
                                     options={[
-                                        { value: "0", label: '是' },
-                                        { value: "1", label: '否' },
+                                        { value: "Y", label: '是' },
+                                        { value: "N", label: '否' },
                                     ]}
                                 />
                             </Form.Item>
@@ -195,7 +202,7 @@ const EditDictData: React.FC<DictDataFormProps> = (props) => {
                             <Form.Item<API.System.DictData>
                                 label="状态"
                                 name="status"
-                                rules={[{ required: false, message: '请输入部门状态' }]}
+                                rules={[{ required: false, message: '请输入状态' }]}
                                 initialValue={"0"}
                                 labelCol={{span: 6}}
                                 >

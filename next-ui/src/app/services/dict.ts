@@ -1,5 +1,6 @@
 import { DictValueEnumObj } from "@/components/DictTag";
 import { request } from "../common/utils/axiosrequest";
+import { HttpResult } from "../common/enum/httpEnum";
 
 
 
@@ -19,6 +20,13 @@ export async function getDictTypeList(params?: API.System.DictTypeListParams) {
 // 查询字典类型详细
 export async function getDictType(dictId: string) {
   return request(`/api/system/dict/type/${dictId}`, {
+    method: 'GET',
+  });
+}
+
+// 查询字典类型详细
+export async function getByDictType(dictType: string) {
+  return request(`/api/system/dict/type/getByDictType?dictType=${dictType}`, {
     method: 'GET',
   });
 }

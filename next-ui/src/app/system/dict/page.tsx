@@ -336,6 +336,7 @@ export default function DictTypePage({ children }: React.PropsWithChildren) {
                             loading={loading}
                             sticky={true}
                             pagination={false}
+                            rowKey="dictId"
                         >
                         </Table>
                         <div className='mt-4 w-full flex flex-col items-center'>
