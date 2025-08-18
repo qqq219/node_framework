@@ -109,7 +109,6 @@ const EditDictData: React.FC<DictDataFormProps> = (props) => {
                                 name="dictLabel"
                                 rules={[{ required: false, message: '请输入字典标签' }]}
                                 labelCol={{span: 6}}
-                                initialValue={1}
                                 >
                                 <Input placeholder="请输入字典标签"/>
                             </Form.Item>

@@ -351,7 +351,7 @@ export default function PostPage({ children }: React.PropsWithChildren) {
             <EditPost
                 onSubmit={async (values) => {
                     let success = false;
-                    if (values.menuId) {
+                    if (values.postId) {
                         success = await handleUpdate({ ...values } as API.System.Post);
                     } else {
                         success = await handleAdd({ ...values } as API.System.Post);

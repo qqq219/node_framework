@@ -1,15 +1,16 @@
 import { MiddlewareConsumer, Module, RequestMethod, ValidationPipe } from "@nestjs/common";
 import TypeORMDefault from './config/typeOrm/typeORMConfig';
+import RedisConfigDefault from './config/redisConfig'
 import { TypeOrmOperateEventListener } from "./config/typeOrm/TypeOrmOperateEventListener";
 @Module({
   imports: [
-    TypeORMDefault
+    TypeORMDefault,RedisConfigDefault
   ],
   controllers: [],
   providers: [
     TypeOrmOperateEventListener,
   ],
-  exports:[TypeORMDefault]
+  exports:[TypeORMDefault, RedisConfigDefault]
 })
 export class FrameworkModule {
 

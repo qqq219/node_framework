@@ -20,22 +20,27 @@ import { SysDictDataService } from './service/SysDictData.service';
 import { SysDictTypeDao } from './dao/SysDictType.dao';
 import { SysDictDataDao } from './dao/SysDictData.dao';
 import { SysDictDataController } from './controller/SysDictData.controller';
+import { SysConfigController } from './controller/SysConfig.controller';
+import { SysConfigEntity } from './model/entity/SysConfig.entity';
+import { SysConfigService } from './service/SysConfig.service';
+import { SysConfigDao } from './dao/SysConfig.dao';
+import { RedisUtil } from 'src/common/utils/Redis.tool';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      SysMenuEntity, SysDeptEntity, SysPostEntity, SysDictDataEntity, SysDictTypeEntity
+      SysMenuEntity, SysDeptEntity, SysPostEntity, SysDictDataEntity, SysDictTypeEntity, SysConfigEntity
     ])
   ],
-  controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController],
+  controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController],
   providers: [
     //service
     ...[
-        SysMenuService, SysDeptService, SysPostService, SysDictTypeService, SysDictDataService
+        SysMenuService, SysDeptService, SysPostService, SysDictTypeService, SysDictDataService, SysConfigService, RedisUtil
     ],
     //dao
     ...[
-      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao
+      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao
     ]
   ],
   exports: []
