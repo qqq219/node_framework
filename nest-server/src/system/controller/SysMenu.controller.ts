@@ -39,4 +39,14 @@ export class SysMenuController {
     return this.sysMenuService.remove(idList);
   }
 
+  @Get('/treeselect')
+  treeSelect() {
+    return this.sysMenuService.treeSelect();
+  }
+  
+  @Get('/roleMenuTreeselect/:menuId')
+  roleMenuTreeselect(@Param('menuId') menuId: string) {
+    return this.sysMenuService.roleMenuTreeselect(+menuId);
+  }
+
 }

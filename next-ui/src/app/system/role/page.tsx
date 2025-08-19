@@ -5,8 +5,10 @@ import { useEffect, useState } from 'react'
 import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
-import EditConfig from './edit';
-import { addConfig, exportConfig, getConfigList, removeConfig, updateConfig } from '@/app/services/config';
+import EditRole from './edit';
+import { addRole, exportRole, getRoleList, getRoleMenuList, removeRole, updateRole } from '@/app/services/role';
+import { DataNode } from 'antd/es/tree';
+import { formatRoleMenuTreeData } from '@/app/common/utils/tree';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
 
@@ -15,10 +17,10 @@ type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
  *
  * @param fields
  */
-const handleUpdate = async (fields: API.System.Config) => {
+const handleUpdate = async (fields: API.System.Role) => {
   const hide = message.loading('loading...');
   try {
-    await updateConfig(fields);
+    await updateRole(fields);
     hide();
     message.success('success');
     return true;
@@ -34,11 +36,11 @@ const handleUpdate = async (fields: API.System.Config) => {
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: API.System.Config[]) => {
+const handleRemove = async (selectedRows: API.System.Role[]) => {
   const hide = message.loading('loading...');
   if (!selectedRows) return true;
   try {
-    await removeConfig(selectedRows.map((row) => row.configId).join(','));
+    await removeRole(selectedRows.map((row) => row.roleId).join(','));
     hide();
     message.success('success');
     return true;
@@ -49,12 +51,12 @@ const handleRemove = async (selectedRows: API.System.Config[]) => {
   }
 };
 
-const handleRemoveOne = async (selectedRow: API.System.Config) => {
+const handleRemoveOne = async (selectedRow: API.System.Role) => {
   const hide = message.loading('loading...');
   if (!selectedRow) return true;
   try {
-    const params = [selectedRow.configId];
-    await removeConfig(params.join(','));
+    const params = [selectedRow.roleId];
+    await removeRole(params.join(','));
     hide();
     message.success('success');
     return true;
@@ -73,7 +75,7 @@ const handleRemoveOne = async (selectedRow: API.System.Config) => {
 const handleExport = async () => {
   const hide = message.loading('loading...');
   try {
-    await exportConfig();
+    await exportRole();
     hide();
     message.success('success');
     return true;
@@ -84,27 +86,31 @@ const handleExport = async () => {
   }
 };
 
-export default function ConfigPage({ children }: React.PropsWithChildren) {
+export default function RolePage({ children }: React.PropsWithChildren) {
 
     const [editDialogVisible, setEditDialogVisible] = useState(false);
 
-    const [configList, setConfigList] = useState<API.System.Config[]>([]);
+    const [roleList, setRoleList] = useState<API.System.Role[]>([]);
 
     const [currentPage, setCurrentPage] = useState(1);
 
     const[totalCount,  setTotalCount] = useState(0);
 
-    const [currentRow, setCurrentRow] = useState<API.System.Config>();
+    const [currentRow, setCurrentRow] = useState<API.System.Role>();
 
     const [loading, setLoading] = useState(false);
 
+    const [menuTree, setMenuTree] = useState<DataNode[]>();
+    const [menuIds, setMenuIds] = useState<number[]>([]);
+    const [statusOptions, setStatusOptions] = useState<any>([]);
+
     const [paramsForm] = Form.useForm();
 
-    const [selectedRows, setSelectedRows] = useState<API.System.Config[]>([]);
+    const [selectedRows, setSelectedRows] = useState<API.System.Role[]>([]);
 
     const onPageChange = (page:number, pageSize:number) => {
         setCurrentPage(page);
-        updateConfigList(page);
+        updateRoleList(page);
     }
 
     /**
@@ -112,9 +118,9 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
      *
      * @param fields
      */
-    const handleAdd = async (fields: API.System.Config) => {
+    const handleAdd = async (fields: API.System.Role) => {
         try {
-            await addConfig(fields);
+            await addRole(fields);
             message.success('success');
             return true;
         } catch (error) {
@@ -123,15 +129,15 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
         }
     };
 
-    const updateConfigList = async (current:number) => {
+    const updateRoleList = async (current:number) => {
         setLoading(true);
         try{
-            const configListParams:API.System.ConfigListParams = paramsForm.getFieldsValue();
-            configListParams.current = current as unknown as string;
-            configListParams.pageSize = "10";
-            const res = await getConfigList(configListParams);
-            const listData:API.System.Config[] = res.data.rows as API.System.Config[]
-            setConfigList(listData);
+            const roleListParams:API.System.RoleListParams = paramsForm.getFieldsValue();
+            roleListParams.current = current as unknown as string;
+            roleListParams.pageSize = "10";
+            const res = await getRoleList(roleListParams);
+            const listData:API.System.Role[] = res.data.rows as API.System.Role[]
+            setRoleList(listData);
             setTotalCount(res.data.total);
             setLoading(false);
         }
@@ -142,14 +148,14 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
 
     const resetFormParams = () => {
         paramsForm.resetFields();
-        updateConfigList(1);
+        updateRoleList(1);
     }
 
     useEffect(() => {
-        updateConfigList(1);
+        updateRoleList(1);
     }, []);
 
-    const rowSelection: TableRowSelection<API.System.Config> = {
+    const rowSelection: TableRowSelection<API.System.Role> = {
         onChange: (selectedRowKeys, selectedRows) => {
             console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
         },
@@ -167,48 +173,43 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
         setEditDialogVisible(!editDialogVisible);
     }
 
-    const onFinish: FormProps<API.System.ConfigListParams>['onFinish'] = (values) => {
+    const onFinish: FormProps<API.System.RoleListParams>['onFinish'] = (values) => {
         console.log('Success:', values);
-        updateConfigList(currentPage)
+        updateRoleList(currentPage)
     };
 
-    const onFinishFailed: FormProps<API.System.ConfigListParams>['onFinishFailed'] = (errorInfo) => {
+    const onFinishFailed: FormProps<API.System.RoleListParams>['onFinishFailed'] = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
-    const columns: TableColumnsType<API.System.Config> = [
+    const columns: TableColumnsType<API.System.Role> = [
     {
-        title: '参数主键',
-        dataIndex: 'configId',
-        key: 'configId',
+        title: '角色编号',
+        dataIndex: 'roleId',
+        key: 'roleId',
     },
     {
-        title: '参数名称',
-        dataIndex: 'configName',
-        key: 'configName',
+        title: '角色名称',
+        dataIndex: 'roleName',
+        key: 'roleName',
     },
     {
-        title: '参数键名',
-        dataIndex: 'configKey',
-        key: 'configKey',
+        title: '权限字符',
+        dataIndex: 'roleKey',
+        key: 'roleKey',
     },
     {
-        title: '参数键值',
-        dataIndex: 'configValue',
-        key: 'configValue',
+        title: '显示顺序',
+        dataIndex: 'roleSort',
+        key: 'roleSort',
     },
     {
-        title: '系统内置',
-        dataIndex: 'configType',
-        key: 'configType',
+        title: '角色状态',
+        dataIndex: 'status',
+        key: 'status',
         render: (_, record) => {
-            return ( <Tag color={record.configType == "Y"?"blue":"red"}>{record.configType == "Y"?"是":"否"}</Tag>);
+            return ( <Tag color={record.status == "0"?"blue":"red"}>{record.status == "0"?"正常":"停用"}</Tag>);
         },
-    },
-    {
-        title: '备注',
-        dataIndex: 'remark',
-        key: 'remark',
     },
     {
         title: '操作',
@@ -218,11 +219,40 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
             <Button
                 type="link"
                 size="small"
+                key="dataPermission"
+                onClick={async () => {
+                    //展示数据权限modal
+                }}
+                >
+            数据权限
+            </Button>
+            <Button
+                type="link"
+                size="small"
+                key="batchRemove"
+                onClick={async () => {
+                    //展示分配用户model
+                }}
+                >
+            分配用户
+            </Button>
+            <Button
+                type="link"
+                size="small"
                 key="edit"
                 onClick={() => {
-                    setEditDialogVisible(true);
-                    setCurrentRow(record);  
-            }}
+                    getRoleMenuList(record.roleId).then((res) => {
+                        if (res.data.code === 200) {
+                            const treeData = formatRoleMenuTreeData(res.data.menus);
+                            setMenuTree(treeData);
+                            setMenuIds(res.data.checkedKeys);
+                            setEditDialogVisible(true);
+                            setCurrentRow(record);
+                        } else {
+                            message.warning(res.data.msg);
+                        }
+                        });
+                    }}
             >
             编辑
             </Button>
@@ -232,19 +262,19 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
                 danger
                 key="batchRemove"
                 onClick={async () => {
-                    Modal.confirm({
-                    title: '删除',
-                    content: '确定删除该项吗',
-                    okText: '确认',
-                    cancelText: '取消',
-                    onOk: async () => {
-                        const success = await handleRemoveOne(record);
-                        if (success) {
-                            updateConfigList(1);
-                        }
-                    },
-                    });
-                }}
+                     Modal.confirm({
+                     title: '删除',
+                     content: '确定删除该项吗',
+                     okText: '确认',
+                     cancelText: '取消',
+                     onOk: async () => {
+                         const success = await handleRemoveOne(record);
+                         if (success) {
+                             updateRoleList(1);
+                         }
+                     },
+                     });
+                 }}
                 >
             删除
             </Button>
@@ -266,32 +296,26 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
                         className='w-full flex !p-0 flex-row gap-3'>
-                        <Form.Item<API.System.Config>
-                            label="参数名称"
-                            name="configName"
-                            rules={[{ required: false, message: '请输入参数名称' }]}>
+                        <Form.Item<API.System.Role>
+                            label="角色编号"
+                            name="roleId"
+                            rules={[{ required: false, message: '请输入角色编号' }]}>
                             <Input className='!w-64' allowClear/>
                         </Form.Item>
-                        <Form.Item<API.System.Config>
-                            label="参数键名"
-                            name="configKey"
-                            rules={[{ required: false, message: '请输入参数键名' }]}>
+                        <Form.Item<API.System.Role>
+                            label="角色名称"
+                            name="roleName"
+                            rules={[{ required: false, message: '请输入角色名称' }]}>
                             <Input className='!w-64' allowClear/>
                         </Form.Item>
-                        <Form.Item<API.System.Config>
-                            label="参数键值"
-                            name="configValue"
-                            rules={[{ required: false, message: '请输入参数键值' }]}>
-                            <Input className='!w-64' allowClear/>
-                        </Form.Item>
-                        <Form.Item<API.System.Config>
-                            label="系统内置"
-                            name="configType"
-                            rules={[{ required: false, message: '请选择系统内置' }]}>
+                        <Form.Item<API.System.Role>
+                            label="角色状态"
+                            name="status"
+                            rules={[{ required: false, message: '请输入岗位状态' }]}>
                             <Select
                                 options={[
-                                    { value: 'Y', label: '正常' },
-                                    { value: 'N', label: '停用' }
+                                    { value: '0', label: '正常' },
+                                    { value: '1', label: '停用' }
                                 ]}
                                 className='!w-64'
                                 allowClear/>
@@ -307,7 +331,7 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
             <div className="mt-6 flex-1 w-full rounded-md p-5 h-0" style={{border:"var(--border-primary)"}}>
                 <div className="h-full w-full flex flex-col">
                     <div className='w-full h-10 flex flex-row items-center pr-5'>
-                        <span className='text-1xl font-bold'>岗位列表</span>
+                        <span className='text-1xl font-bold'>角色列表</span>
                         <div className='flex flex-1 flex-row gap-5 items-end justify-end'>
                             <Button type="primary" className='w-button-primary' onClick={addMenuBtnOnClick}>+ 新建</Button>
                             <Button
@@ -323,7 +347,7 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
                                             const success = await handleRemove(selectedRows);
                                             if (success) {
                                                 setSelectedRows([]);
-                                                updateConfigList(currentPage);
+                                                updateRoleList(currentPage);
                                             }
                                         },
                                         onCancel() {},
@@ -332,18 +356,18 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
                                     批量删除
                             </Button>
                             <Button type="primary" className='w-button-primary'>+ 导出</Button>
-                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateConfigList(currentPage)}}><SyncOutlined /></div>
+                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateRoleList(currentPage)}}><SyncOutlined /></div>
                         </div>
                     </div>
                     <div className='flex flex-1 flex-col mt-5 w-full h-0 overflow-auto'>
-                        <Table<API.System.Config>
+                        <Table<API.System.Role>
                             rowSelection={rowSelection}
-                            dataSource={configList}
+                            dataSource={roleList}
                             columns={columns}
                             loading={loading}
                             sticky={true}
                             pagination={false}
-                            rowKey="configId"
+                            rowKey="roleId"
                         >
                         </Table>
                         <div className='mt-4 w-full flex flex-col items-center'>
@@ -353,20 +377,20 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
                 </div>
             </div>
             {/*编辑弹窗 */}
-            <EditConfig
+            <EditRole
                 onSubmit={async (values) => {
                     let success = false;
-                    if (values.configId) {
-                        success = await handleUpdate({ ...values } as API.System.Config);
+                    if (values.roleId) {
+                        success = await handleUpdate({ ...values } as unknown as API.System.Role);
                     } else {
-                        success = await handleAdd({ ...values } as unknown as API.System.Config);
+                        success = await handleAdd({ ...values } as unknown as API.System.Role);
                     }
                     if (success) {
                         setEditDialogVisible(false);
                         setCurrentRow(undefined);
                         //延迟获取数据，防止取不到最新的数据
                         setTimeout(() => {
-                            updateConfigList(currentPage);
+                            updateRoleList(currentPage);
                         }, 100);
                     }
                 } }
@@ -375,9 +399,12 @@ export default function ConfigPage({ children }: React.PropsWithChildren) {
                     setCurrentRow(undefined);
                 } }
                 values={currentRow || {}}
-                open={editDialogVisible} 
-                configList={[]}            >
-            </EditConfig>
+                open={editDialogVisible}   
+                menuTree={menuTree || []}
+                menuCheckedKeys={menuIds || []} 
+                statusOptions={statusOptions}     
+                >
+            </EditRole>
      </div>
     );
 }

@@ -25,22 +25,36 @@ import { SysConfigEntity } from './model/entity/SysConfig.entity';
 import { SysConfigService } from './service/SysConfig.service';
 import { SysConfigDao } from './dao/SysConfig.dao';
 import { RedisUtil } from 'src/common/utils/Redis.tool';
+import { SysRoleController } from './controller/SysRole.controller';
+import { SysRoleDao } from './dao/SysRole.dao';
+import { SysRoleEntity } from './model/entity/SysRole.entity';
+import { SysRoleService } from './service/SysRole.service';
+import { SysUserDao } from './dao/SysUser.dao';
+import { SysUserService } from './service/SysUser.service';
+import { SysRoleMenuEntity } from './model/entity/SysRoleMenu.entity';
+import { SysUserEntity } from './model/entity/SysUser.entity';
+import { SysRoleDeptEntity } from './model/entity/SysRoleDept.entity';
+import { SysUserPostEntity } from './model/entity/SysUserPost.entity';
+import { SysUserRoleEntity } from './model/entity/SysUserRole.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      SysMenuEntity, SysDeptEntity, SysPostEntity, SysDictDataEntity, SysDictTypeEntity, SysConfigEntity
+      SysMenuEntity, SysDeptEntity, SysPostEntity, SysDictDataEntity, SysDictTypeEntity, SysConfigEntity, SysRoleEntity, SysRoleMenuEntity,SysUserEntity,
+      SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity
     ])
   ],
-  controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController],
+  controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController, SysRoleController
+    
+  ],
   providers: [
     //service
     ...[
-        SysMenuService, SysDeptService, SysPostService, SysDictTypeService, SysDictDataService, SysConfigService, RedisUtil
+        SysMenuService, SysDeptService, SysPostService, SysDictTypeService, SysDictDataService, SysConfigService, RedisUtil, SysRoleService, SysUserService
     ],
     //dao
     ...[
-      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao
+      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao, SysRoleDao, SysUserDao
     ]
   ],
   exports: []

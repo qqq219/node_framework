@@ -38,7 +38,11 @@ export class ResultData {
     return res;
   }
 
-  static fail(code: number, msg?: string, data?: any): ResultData {
+  static fail(code?: number, msg?: string, data?: any): ResultData {
     return new ResultData(code || 500, msg || 'fail', data);
+  }
+
+  static failDefault(msg: string, data?: any): ResultData {
+    return new ResultData(500, msg || 'fail', data);
   }
 }

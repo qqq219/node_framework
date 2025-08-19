@@ -4,9 +4,10 @@ import { SysMenuDto } from '../model/dto/SysMenuDto';
 import { ResultData } from 'src/common/model/ResultData';
 import { InjectRepository } from "@nestjs/typeorm";
 import { SysMenuEntity } from '../model/entity/SysMenu.entity';
-import { Repository, In } from 'typeorm';
+import { Repository, In, FindManyOptions } from 'typeorm';
 import { SysMenuDao } from '../dao/SysMenu.dao';
-import { Uniq } from 'src/common/utils/normal.tool';
+import { ListToTree, Uniq } from 'src/common/utils/normal.tool';
+import { SysRoleMenuEntity } from '../model/entity/SysRoleMenu.entity';
 
 @Injectable()
 export class SysMenuService {
@@ -17,6 +18,9 @@ export class SysMenuService {
 
     @InjectRepository(SysMenuEntity)
     private readonly repository: Repository<SysMenuEntity>,
+
+    @InjectRepository(SysRoleMenuEntity)
+    private readonly sysRoleMenuEntityRepository: Repository<SysRoleMenuEntity>,
   ){}
 
   async create(sysMenuDto: SysMenuDto){
@@ -97,5 +101,49 @@ export class SysMenuService {
     });
     // 构建前端需要的菜单树
     return menuList;
+  }
+
+    async treeSelect() {
+    const res = await this.repository.find({
+      order: {
+        orderNum: 'ASC',
+      },
+    });
+    const tree = ListToTree(
+      res,
+      (m) => m.menuId,
+      (m) => m.menuName,
+    );
+    return ResultData.ok(tree);
+  }
+
+  async roleMenuTreeselect(roleId: number): Promise<any> {
+    const res = await this.repository.find({
+      order: {
+        orderNum: 'ASC',
+      },
+    });
+    const tree = ListToTree(
+      res,
+      (m) => m.menuId,
+      (m) => m.menuName,
+    );
+    const menuIds = await this.sysRoleMenuEntityRepository.find({
+      where: { roleId: roleId },
+      select: ['menuId'],
+    });
+    const checkedKeys = menuIds.map((item) => {
+      return item.menuId;
+    });
+    return {
+      code:200,
+      msg:"success",
+      menus: tree,
+      checkedKeys: checkedKeys
+    }
+  }
+
+  async findMany(where: FindManyOptions<SysMenuEntity>) {
+    return await this.repository.find(where);
   }
 }

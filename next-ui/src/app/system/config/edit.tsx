@@ -97,7 +97,6 @@ const EditConfig: React.FC<ConfigFormProps> = (props) => {
                                 name="configKey"
                                 rules={[{ required: false, message: '请输入参数键名' }]}
                                 labelCol={{span: 6}}
-                                initialValue={1}
                                 >
                                 <Input placeholder="请输入参数键名"/>
                             </Form.Item>
@@ -105,7 +104,7 @@ const EditConfig: React.FC<ConfigFormProps> = (props) => {
                         <Col span={12}>
                             <Form.Item<API.System.Config>
                                 label="参数键值"
-                                name="configKey"
+                                name="configValue"
                                 rules={[{ required: false, message: '请输入参数键值' }]}
                                 labelCol={{span: 6}}
                                 >
@@ -122,8 +121,8 @@ const EditConfig: React.FC<ConfigFormProps> = (props) => {
                                 >
                                 <Radio.Group
                                     options={[
-                                        { value: "Y", label: '正常' },
-                                        { value: "N", label: '停用' },
+                                        { value: "Y", label: '是' },
+                                        { value: "N", label: '否' },
                                     ]}
                                 />
                             </Form.Item>

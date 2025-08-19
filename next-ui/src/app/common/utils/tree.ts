@@ -114,3 +114,21 @@ export function formatDeptTreeData(arrayList: API.System.Dept[]): DataNode[] {
   return treeSelectData;
 }
 
+
+export function formatRoleMenuTreeData(arrayList: API.System.RoleMenuNode[]): DataNode[] {
+  const treeSelectData: DataNode[] = arrayList.map((item: any) => {
+    const node: DataNode = {
+      id: item.id,
+      title: item.label,
+      key: item.id,
+      value: item.id,
+    } as DataNode;
+    if (item.children) {
+      node.children = formatRoleMenuTreeData(item.children);
+    }
+    return node;
+  });
+  return treeSelectData;
+}
+
+
