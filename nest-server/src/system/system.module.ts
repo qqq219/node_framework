@@ -36,6 +36,7 @@ import { SysUserEntity } from './model/entity/SysUser.entity';
 import { SysRoleDeptEntity } from './model/entity/SysRoleDept.entity';
 import { SysUserPostEntity } from './model/entity/SysUserPost.entity';
 import { SysUserRoleEntity } from './model/entity/SysUserRole.entity';
+import { SysUserController } from './controller/SysUser.controller';
 
 @Module({
   imports: [
@@ -44,7 +45,7 @@ import { SysUserRoleEntity } from './model/entity/SysUserRole.entity';
       SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity
     ])
   ],
-  controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController, SysRoleController
+  controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController, SysRoleController,SysUserController
     
   ],
   providers: [

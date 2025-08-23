@@ -21,9 +21,7 @@ const { TextArea } = Input;
 const EditRole: React.FC<RoleFormProps> = (props) => {
     const [editRoleForm] = Form.useForm();
     const { menuTree, menuCheckedKeys } = props;
-    console.log(JSON.stringify(menuCheckedKeys));
     const [ menuIds, setMenuIds] = useState<number[]>(menuCheckedKeys);
-    const { statusOptions } = props;
     
     const handleOk = () => {
         editRoleForm.submit();
@@ -63,9 +61,12 @@ const EditRole: React.FC<RoleFormProps> = (props) => {
                 updateBy: props.values.updateBy,
                 updateTime: props.values.updateTime,
                 remark: props.values.remark,
-                menuIds:menuCheckedKeys
             });
         }
+        editRoleForm.setFieldsValue({
+            menuIds:menuCheckedKeys
+        });
+
     }, [editRoleForm, props, props.open]);
 
     return (
@@ -125,22 +126,6 @@ const EditRole: React.FC<RoleFormProps> = (props) => {
                                 initialValue={1}
                                 >
                                 <Input placeholder="请输入显示顺序" type='number'/>
-                            </Form.Item>
-                        </Col> 
-                        <Col span={12}>
-                            <Form.Item<API.System.Role>
-                                label="角色状态"
-                                name="status"
-                                rules={[{ required: false, message: '请输入角色状态' }]}
-                                initialValue={"0"}
-                                labelCol={{span: 6}}
-                                >
-                                <Radio.Group
-                                    options={[
-                                        { value: "0", label: '正常' },
-                                        { value: "1", label: '停用' },
-                                    ]}
-                                />
                             </Form.Item>
                         </Col> 
                         <Col span={12}>

@@ -212,6 +212,14 @@ export class SysUserService {
     return ResultData.ok();
   }
 
+  async authUserCancelAll(roleId:number, ids:number[]) {
+    await this.sysUserRoleEntityRepository.delete({
+      userId: In(ids),
+      roleId: roleId,
+    });
+    return ResultData.ok();
+  }
+
   async authUserCancel(data: AuthUserCancelReq) {
     await this.sysUserRoleEntityRepository.delete({
       userId: data.userId,
@@ -272,6 +280,10 @@ export class SysUserService {
     if (query.deptId) {
       const deptIds = await this.sysDeptService.findDeptIdsByDataScope(+query.deptId, DataScopeEnum.DATA_SCOPE_DEPT_AND_CHILD);
       entity.andWhere('user.deptId IN (:...deptIds)', { deptIds: deptIds });
+    }
+
+    if (query.userId) {
+      entity.andWhere(`user.userId = "${query.userId}"`);
     }
 
     if (query.userName) {

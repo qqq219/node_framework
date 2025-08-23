@@ -6,9 +6,11 @@ import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
 import EditRole from './edit';
-import { addRole, exportRole, getRoleList, getRoleMenuList, removeRole, updateRole } from '@/app/services/role';
+import { addRole, exportRole, getDeptTreeSelect, getRole, getRoleList, getRoleMenuList, removeRole, updateRole, updateRoleDataScope } from '@/app/services/role';
 import { DataNode } from 'antd/es/tree';
-import { formatRoleMenuTreeData } from '@/app/common/utils/tree';
+import { formatDeptTreeData, formatRoleMenuTreeData } from '@/app/common/utils/tree';
+import DataScopeEdit from './datascopeedit';
+import Link from 'next/link';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
 
@@ -102,11 +104,15 @@ export default function RolePage({ children }: React.PropsWithChildren) {
 
     const [menuTree, setMenuTree] = useState<DataNode[]>();
     const [menuIds, setMenuIds] = useState<number[]>([]);
+    const [deptTree, setDeptTree] = useState<DataNode[]>();
+    const [deptIds, setDeptIds] = useState<number[]>([]);
     const [statusOptions, setStatusOptions] = useState<any>([]);
 
     const [paramsForm] = Form.useForm();
 
     const [selectedRows, setSelectedRows] = useState<API.System.Role[]>([]);
+
+    const [dataScopeModalOpen, setDataScopeModalOpen] = useState<boolean>(false);
 
     const onPageChange = (page:number, pageSize:number) => {
         setCurrentPage(page);
@@ -170,7 +176,16 @@ export default function RolePage({ children }: React.PropsWithChildren) {
     };
 
     const addMenuBtnOnClick = ()=>{
-        setEditDialogVisible(!editDialogVisible);
+        getRoleMenuList(-1).then((res) => {
+            if (res.data.code === 200) {
+                const treeData = formatRoleMenuTreeData(res.data.menus);
+                setMenuTree(treeData);
+                setMenuIds(res.data.checkedKeys);
+                setEditDialogVisible(true);
+            } else {
+                message.warning(res.data.msg);
+            }
+        });
     }
 
     const onFinish: FormProps<API.System.RoleListParams>['onFinish'] = (values) => {
@@ -222,20 +237,29 @@ export default function RolePage({ children }: React.PropsWithChildren) {
                 key="dataPermission"
                 onClick={async () => {
                     //展示数据权限modal
-                }}
+                    getRole(record.roleId).then(resp => {
+                        if(resp.data.code === 200) {
+                            setCurrentRow(resp.data.data);
+                        }
+                        })
+                        getDeptTreeSelect(record.roleId).then(resp => {
+                        if (resp.data.code === 200) {
+                            setDeptTree(formatRoleMenuTreeData(resp.data.depts));
+                            setDeptIds(resp.data.checkedKeys);
+                            setDataScopeModalOpen(true);
+                        }
+                        })
+                    }}
                 >
             数据权限
             </Button>
-            <Button
+            <Link
+                href={"/system/role/roleuser/" + record.roleId}
                 type="link"
-                size="small"
                 key="batchRemove"
-                onClick={async () => {
-                    //展示分配用户model
-                }}
                 >
             分配用户
-            </Button>
+            </Link>
             <Button
                 type="link"
                 size="small"
@@ -365,9 +389,8 @@ export default function RolePage({ children }: React.PropsWithChildren) {
                             dataSource={roleList}
                             columns={columns}
                             loading={loading}
-                            sticky={true}
                             pagination={false}
-                            rowKey="roleId"
+                            rowKey={(record)=>{return record.roleId;}}
                         >
                         </Table>
                         <div className='mt-4 w-full flex flex-col items-center'>
@@ -405,6 +428,26 @@ export default function RolePage({ children }: React.PropsWithChildren) {
                 statusOptions={statusOptions}     
                 >
             </EditRole>
+            <DataScopeEdit
+                onSubmit={async (values: any) => {
+                const success = await updateRoleDataScope(values);
+                if (success) {
+                    setDataScopeModalOpen(false);
+                    setSelectedRows([]);
+                    setCurrentRow(undefined);
+                    message.success('success');
+                }
+                }}
+                onCancel={() => {
+                    setDataScopeModalOpen(false);
+                    setSelectedRows([]);
+                    setCurrentRow(undefined);
+                }}
+                open={dataScopeModalOpen}
+                values={currentRow || {}}
+                deptTree={deptTree || []}
+                deptCheckedKeys={deptIds || []}
+            />
      </div>
     );
 }

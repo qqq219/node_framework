@@ -14,4 +14,37 @@ declare namespace API {
     msg: string;
     data?: Record<string, any>;
   }
+
+  type CurrentUser = UserInfo & {
+    signature?: string;
+    title?: string;
+    group?: string;
+    tags?: { key?: string; label?: string }[];
+    notifyCount?: number;
+    unreadCount?: number;
+    country?: string;
+    access?: string;
+    geographic?: {
+      province?: { label?: string; key?: string };
+      city?: { label?: string; key?: string };
+    };
+    address?: string;
+    phone?: string;
+  };
+  
+  export type DictTypeListParams = {
+    dictId?: string;
+    dictName?: string;
+    dictType?: string;
+    status?: string;
+    createBy?: string;
+    createTime?: string;
+    updateBy?: string;
+    updateTime?: string;
+    remark?: string;
+    pageSize?: string;
+    currentPage?: string;
+    filter?: string;
+    sorter?: string;
+  };
 }

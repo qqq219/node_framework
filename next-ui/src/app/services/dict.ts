@@ -43,9 +43,9 @@ export async function getDictValueEnum(dictType: string, isDigital?: boolean): P
   const resp = await request<API.System.DictTypeResult>(`/api/system/dict/data/type/${dictType}`, {
     method: 'GET',
   });
-  if(resp.code === HttpResult.SUCCESS) {
+  if(resp.data.code === HttpResult.SUCCESS) {
     const opts: DictValueEnumObj = {};
-    resp.data.forEach((item: any) => {
+    resp.data.data.forEach((item: any) => {
       if(item.isNumber == 'Y'){
         item.dictValue =  Number(item.dictValue)
       }
@@ -74,8 +74,8 @@ export async function getDictSelectOption(dictType: string, isDigital?: boolean)
   const resp = await request<API.System.DictTypeResult>(`/api/system/dict/data/type/${dictType}`, {
     method: 'GET',
   });
-  if (resp.code === 200) {
-    const options: DictValueEnumObj[] = resp.data.map((item) => {
+  if (resp.data.code === 200) {
+    const options: DictValueEnumObj[] = resp.data.data.map((item) => {
       if(item.isNumber == 'Y'){
         item.dictValue =  Number(item.dictValue)
       }

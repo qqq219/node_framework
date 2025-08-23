@@ -48,6 +48,12 @@ export class SysRoleController {
     return this.sysUserService.authUserCancel(body);
   }
 
+  @Put('authUser/cancelAll')
+  authUserCancelAll(@Query('roleId') roleId: number, @Query('userIds') ids: string) {
+    const userIds = ids.split(',').map((id) => +id);
+    return this.sysUserService.authUserCancelAll(roleId, userIds);
+  }
+
   @Get('deptTree/:id')
   deptTree(@Param('id') id: string) {
     return this.sysRoleService.deptTree(+id);

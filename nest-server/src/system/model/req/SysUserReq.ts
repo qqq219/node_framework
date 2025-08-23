@@ -9,6 +9,10 @@ export class SysUserReq extends PagingDto {
 
   @IsOptional()
   @IsNumberString()
+  userId?: string;
+
+  @IsOptional()
+  @IsNumberString()
   deptId?: string;
 
 

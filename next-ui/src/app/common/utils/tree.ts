@@ -99,6 +99,7 @@ export function formatTreeData(arrayList: any): DataNode[] {
 }
 
 export function formatDeptTreeData(arrayList: API.System.Dept[]): DataNode[] {
+  console.log("jinjian====>formatDeptTreeData:" + JSON.stringify(arrayList))
   const treeSelectData: DataNode[] = arrayList.map((item: any) => {
     const node: DataNode = {
       id: item.deptId,
