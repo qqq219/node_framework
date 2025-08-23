@@ -28,7 +28,6 @@ export class SysDictDataController {
 
   @Delete('/:id')
   deleteDictData(@Param('id') ids: string) {
-    console.log("jinjian===>" + ids);
     const dictDataIds = ids.split(',').map((id) => +id);
     return this.dictDataService.deleteDictData(dictDataIds);
   }

@@ -70,7 +70,7 @@ export default function FrameworkLayout({ children }: React.PropsWithChildren) {
               <FrameworkHeader></FrameworkHeader>
             </div>
             <div className="flex-1 flex w-full relative h-0">
-              <div className={clsx("spliteLine","h-full z-50 relative duration-600 flex", {"w-64": !navToggleStatus, "w-20": navToggleStatus})}>
+              <div className={clsx("spliteLine","h-full z-50 relative duration-600 flex", {"!w-64": !navToggleStatus, "!w-20": navToggleStatus})}>
                   {/*菜单栏伸缩按钮*/}
                   <div onClick={()=>toggerNavStatus()} className={clsx("nav-toggle-btn", "w-6 h-6 text-[12px] absolute rounded-full float-end -right-3 mt-10 items-center justify-center flex cursor-pointer z-50 text-gray-400 hover:text-color-primary duration-300")}>
                     <div className={clsx({"hidden" : navToggleStatus == false})}>

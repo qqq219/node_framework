@@ -1,5 +1,5 @@
 'use client'
-import {FormProps,Table, Modal, Form, Input, Button, Select, message, Pagination} from 'antd';
+import {FormProps,Table, Modal, Form, Input, Button, Select, message, Pagination, TreeSelect} from 'antd';
 import type {TableProps, TableColumnsType} from 'antd';
 import { useEffect, useState } from 'react'
 import _ from "lodash"
@@ -7,7 +7,7 @@ import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
 import EditUser from './edit';
 import { addUser, exportUser, getDeptTree, getUser, getUserList, removeUser, updateUser } from '@/app/services/user';
-import { DataNode } from 'antd/es/tree';
+import Tree, { DataNode } from 'antd/es/tree';
 import { formatRoleMenuTreeData } from '@/app/common/utils/tree';
 import { getDictSelectOption, getDictValueEnum } from '@/app/services/dict';
 import { getPostList } from '@/app/services/post';
@@ -98,6 +98,8 @@ export default function UserPage({ children }: React.PropsWithChildren) {
 
     const [deptId, setDeptId] = useState<number>(101);
 
+    const [defaultExpandKeys, setDefaultExpandKeys] = useState<number[]>([100]);
+
     const [currentPage, setCurrentPage] = useState(1);
 
     const[totalCount,  setTotalCount] = useState(0);
@@ -109,8 +111,6 @@ export default function UserPage({ children }: React.PropsWithChildren) {
     const [paramsForm] = Form.useForm();
 
     const [selectedRows, setSelectedRows] = useState<API.System.User[]>([]);
-
-    const [selectDept, setSelectDept] = useState<any>({ id: 0 });
     const [sexOptions, setSexOptions] = useState<any>([]);
 
     const [postIds, setPostIds] = useState<string[]>();
@@ -185,12 +185,27 @@ export default function UserPage({ children }: React.PropsWithChildren) {
         updateUserList(1);
     }
 
-    useEffect(() => {
+    const updateDeptTreeData = async () => {
+        const res = await getDeptTree({});
+        setDeptTree(formatRoleMenuTreeData(res.data.data));
+        // console.log("=====>" + JSON.stringify(res.data.data))
+        // setDefaultExpandKeys(res.data.data.map((item:any) => {
+        //     console.log("id:" + item.id)
+        //     return item.id
+        // }));
+    }
+
+    useEffect( () => {
         getDictSelectOption('sys_user_sex').then((data) => {
             setSexOptions(data);
         });
         updateUserList(1);
+        updateDeptTreeData();
     }, []);
+
+    useEffect( () => {
+        updateUserList(1);
+    }, [deptId]);
 
     const rowSelection: TableRowSelection<API.System.User> = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -326,8 +341,21 @@ export default function UserPage({ children }: React.PropsWithChildren) {
 
     return (
         <div className='w-full h-full flex flex-row'>
-            <div className='w-70 h-full pt-5 pr-5'>
-                <div className='w-full h-full rounded-md' style={{border:"var(--border-primary)"}}></div>
+            <div className='w-60 h-full pt-5 pr-5'>
+                <div className='w-full h-full rounded-md p-2' style={{border:"var(--border-primary)"}}>
+                    {
+                        deptTree && deptTree.length > 0 &&
+                        <Tree
+                            style={{ width: '100%' }}
+                            onSelect={(selectedKeys)=>{
+                                setDeptId(selectedKeys[0] as number)
+                            }}
+                            autoExpandParent
+                            defaultExpandAll
+                            treeData={deptTree}
+                        />
+                    }
+                </div>
             </div>
             <div className='flex-1 h-full flex flex-col items-center w-0'>
                 {/*条件筛选栏 */}
