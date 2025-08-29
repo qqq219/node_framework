@@ -6,7 +6,7 @@
 }
 
 @theme{
-  --color-color-primary: #c41414;
+  --color-color-primary: #5497FF;
   --spacing-button-primary: calc(var(--spacing) * 30);
   --spacing-inline-end-primary: 1px solid rgba(5,5,5,0.16);
   --border-primary: 1px solid rgba(5, 5, 5, 0.06);

@@ -47,4 +47,42 @@ declare namespace API {
     filter?: string;
     sorter?: string;
   };
+
+  type LoginParams = {
+    username?: string;
+    password?: string;
+    uuid?: string;
+    autoLogin?: boolean;
+    type?: string;
+  };
+
+  type LoginResult = {
+    code: number;
+    msg?: string;
+    type?: string;
+    data?: {
+      access_token?: string;
+      expires_in?: number;
+    }
+  };
+
+  type UserInfoResult = {
+    code?: number;
+    msg?: string;
+    user: UserInfo;
+    permissions: any;
+    roles: any;
+  };
+
+  type RoutersMenuItem = {
+    alwaysShow?: boolean;
+    children?: RoutersMenuItem[];
+    component?: string;
+    hidden?: boolean;
+    meta: MenuItemMeta;
+    name: string;
+    path: string;
+    redirect?: string;
+    [key: string]: any;
+  };
 }

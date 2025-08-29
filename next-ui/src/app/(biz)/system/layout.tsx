@@ -1,23 +1,11 @@
 
-import { Breadcrumb } from "antd";
+import FrameworkLayout from '@/components/FrameworkLayout';
 import { HighlightOutlined, TrademarkOutlined } from '@ant-design/icons';
-
-const breadcrumbItems = [
-    {
-        title: <a href="/system/menu">系统管理</a>,
-    },
-    {
-        title: '菜单管理',
-    },
-];
 
 export default function SystemLayout({ children }: React.PropsWithChildren) {
     return (
         <div className="w-full h-full flex flex-col relative">
             <div className="pl-8 pr-8 pt-0 flex-1 flex flex-col h-0">
-                <div className="mt-10">
-                    <Breadcrumb items={breadcrumbItems}></Breadcrumb>
-                </div>
                 <div className="w-full flex-1 overflow-auto">
                     {children}
                 </div>

@@ -6,18 +6,26 @@ import FrameworkHeader from '@/components/FrameworkHeader';
 import { useEffect, useState } from 'react'
 import "@/asserts/home.css";  
 import type { MenuProps } from 'antd';
-import { Menu, message } from 'antd';
+import { Breadcrumb, Menu, message } from 'antd';
 import {getRouterList} from '../app/services/menu'
 import { buildTreeData } from '@/app/common/utils/tree';
 import { MenuType } from '@/app/common/enum/menu';
 import { createIcon } from '@/app/common/utils/IconUtil';
 import Link from 'next/link';
+import { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
+import { Url } from 'next/dist/shared/lib/router/router';
+import { usePathname } from 'next/navigation'
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 export default function FrameworkLayout({ children }: React.PropsWithChildren) {
     const [navToggleStatus, setNavToggleStatus] = useState(false);
     const [routerItems, setRouterItems] = useState<MenuItem[]>([]);
+    const [routerList, setRouterList] = useState<API.System.Menu[]>([]);
+    const [breadcrumbItems, setBreadcrumbItems] = useState<BreadcrumbItemType[]>([]);
+    const [selectedMenuKey, setSelectedMenuKey] = useState<string>("");
+    const [keyPath, setKeyPath] = useState<string[]>()
+    const pathName = usePathname();
 
     const formatRouterTreeData = (arrayList: any): MenuItem[]=> {
       const routerTreeData: MenuItem[] = arrayList.map((item: any) => {
@@ -41,16 +49,50 @@ export default function FrameworkLayout({ children }: React.PropsWithChildren) {
     const toggerNavStatus = () => {
        setNavToggleStatus(!navToggleStatus);
     }
-    const onMenuClick: MenuProps['onClick'] = (e) => {
-        console.log('click ', e);
+
+    const updateBreadcrumbItems = (keyPath:string[] | undefined) => {
+        if(keyPath == undefined){
+          return;
+        }
+        const routerPaths = keyPath.reverse().map((key) => {
+          return getBreadcrumbItem(Number(key));
+        });
+        setBreadcrumbItems(routerPaths)
+    }
+
+    const onMenuClick: MenuProps['onClick'] = ({ item, key, keyPath, domEvent }) => {
+      updateBreadcrumbItems(keyPath)
     };
 
+    const getBreadcrumbItem = (key:number) => {
+        const routerItem = routerList.find(routerItem=>routerItem.menuId == key);
+        if(routerItem?.component){
+          return {
+            title: <Link href={routerItem?.component as Url} className='!text-black'>{routerItem?.menuName}</Link>,
+            key:`${routerItem.menuId}`
+          };
+        }
+        else{
+          return {
+            title: <span className='!text-black'>{routerItem?.menuName}</span>,
+            key:`${routerItem?.menuId}`
+          };
+        }
+    }
+
+    const findSelectedMenuKey = ():string => {
+      const routerItem = routerList.find(routerItem=>{
+        return routerItem.component == pathName;
+      });
+      return `${routerItem?.menuId}`
+    }
+
     const fetchRouterData = async ()=>{
-      let routerList:MenuItem[] = [];
+      let routerList:[] = [];
       try{
         const routerListResp = await getRouterList();
-        routerList = routerListResp.data.data as MenuItem[];
-
+        routerList = routerListResp.data.data;
+        setRouterList(routerList);
       }
       catch(error){
         const errorMsg = (error instanceof Error) ? error.message : String(error);
@@ -61,16 +103,47 @@ export default function FrameworkLayout({ children }: React.PropsWithChildren) {
       setRouterItems(routerTree);
     }
 
+    const getRouterItemByMenuId = (menuId:number) => {
+      return routerList.find(routerItem=>{
+          return routerItem.menuId == menuId;
+      });
+    }
+
+    const onOpenChange = (newOpenKeys:any) => {
+      setKeyPath(newOpenKeys);
+    }
+
+    const onMenuSelect = (newSelectKeys:any) => {
+      setSelectedMenuKey(newSelectKeys.key)
+    }
+
     useEffect(() => {
       fetchRouterData();
     }, []);
+
+    useEffect(()=>{
+      const menuKey = findSelectedMenuKey();
+      const keyPathBuf = [menuKey];
+      let routerItem = getRouterItemByMenuId(Number(menuKey));
+      while(routerItem?.parentId){
+        keyPathBuf.push(String(routerItem.parentId))
+        routerItem = getRouterItemByMenuId(Number(routerItem.parentId));
+      }
+      setKeyPath(keyPathBuf)
+      setSelectedMenuKey((menuKey))
+    },[routerList])
+
+    useEffect(()=>{
+      updateBreadcrumbItems(keyPath)
+    },[keyPath])
     return (
         <div className="flex flex-col w-full h-screen overflow-hidden">
             <div className="w-full h-16">
-              <FrameworkHeader></FrameworkHeader>
+              <FrameworkHeader>
+              </FrameworkHeader>
             </div>
             <div className="flex-1 flex w-full relative h-0">
-              <div className={clsx("spliteLine","h-full z-50 relative duration-600 flex", {"!w-64": !navToggleStatus, "!w-20": navToggleStatus})}>
+              <div className={clsx("spliteLine","h-full z-50 relative duration-600 flex", {"!w-48": !navToggleStatus, "!w-20": navToggleStatus})}>
                   {/*菜单栏伸缩按钮*/}
                   <div onClick={()=>toggerNavStatus()} className={clsx("nav-toggle-btn", "w-6 h-6 text-[12px] absolute rounded-full float-end -right-3 mt-10 items-center justify-center flex cursor-pointer z-50 text-gray-400 hover:text-color-primary duration-300")}>
                     <div className={clsx({"hidden" : navToggleStatus == false})}>
@@ -84,13 +157,19 @@ export default function FrameworkLayout({ children }: React.PropsWithChildren) {
                     onClick={onMenuClick}
                     style={{ borderRight: 0, width: '100%' }}
                     className='h-full w-full'
-                    defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1']}
+                    selectedKeys={[selectedMenuKey]}
+                    openKeys={keyPath}
+                    onOpenChange={onOpenChange}
+                    onSelect={onMenuSelect}
                     mode="inline"
                     inlineCollapsed={navToggleStatus}
                     items={routerItems}/>
+                  
               </div>
-              <div className="flex-1 w-full">
+              <div className="flex-1 w-0">
+                <div className="mt-10 pl-8">
+                    <Breadcrumb items={breadcrumbItems}></Breadcrumb>
+                </div>
                 {children}
               </div>
             </div>

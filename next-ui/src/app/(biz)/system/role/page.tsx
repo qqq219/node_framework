@@ -284,7 +284,6 @@ export default function RolePage({ children }: React.PropsWithChildren) {
                 type="link"
                 size="small"
                 danger
-                key="batchRemove"
                 onClick={async () => {
                      Modal.confirm({
                      title: '删除',
@@ -390,7 +389,7 @@ export default function RolePage({ children }: React.PropsWithChildren) {
                             columns={columns}
                             loading={loading}
                             pagination={false}
-                            rowKey={(record)=>{return record.roleId;}}
+                            rowKey="roleId"
                         >
                         </Table>
                         <div className='mt-4 w-full flex flex-col items-center'>

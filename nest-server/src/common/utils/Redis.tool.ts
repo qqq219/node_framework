@@ -1,6 +1,8 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import Redis from 'ioredis';
 import { InjectRedis } from "@nestjs-modules/ioredis";
+import { ConfigService } from "@nestjs/config";
+
 
 let redisUtilBean: RedisUtil | null = null;
 
@@ -11,7 +13,8 @@ export function getRedisUtilBean():RedisUtil | null{
 @Injectable()
 export class RedisUtil implements OnModuleInit{
   constructor(
-    @InjectRedis() private readonly client: Redis
+    @InjectRedis() private readonly client: Redis,
+    private readonly config:ConfigService
   ) {}
 
   onModuleInit(): any {

@@ -28,7 +28,6 @@ const DataScopeEdit: React.FC<DataScopeFormProps> = (props) => {
 
     useEffect(() => {
         datraScopeForm.resetFields();
-            console.log("jinjian===>deptCheckedKeys:" + deptCheckedKeys)
         datraScopeForm.setFieldsValue({
             roleId: props.values.roleId,
             roleName: props.values.roleName,

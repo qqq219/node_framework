@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { RedisUtil } from './utils/Redis.tool';
+import { TokenUtil } from './utils/TokenUtils';
 
 @Module({
   imports: [
-
   ],
   controllers: [],
   providers: [
-    RedisUtil
+    RedisUtil,TokenUtil
   ],
-  exports: [RedisUtil]
+  exports: [RedisUtil,TokenUtil]
 })
 export class CommonModule {}

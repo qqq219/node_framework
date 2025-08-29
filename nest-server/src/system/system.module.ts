@@ -37,12 +37,15 @@ import { SysRoleDeptEntity } from './model/entity/SysRoleDept.entity';
 import { SysUserPostEntity } from './model/entity/SysUserPost.entity';
 import { SysUserRoleEntity } from './model/entity/SysUserRole.entity';
 import { SysUserController } from './controller/SysUser.controller';
+import { SysLogininforService } from './service/SysLogininfor.service';
+import { SysLogininforEntity } from './model/entity/SysLogininfor.entity';
+import { SysLogininforDao } from './dao/SysLogininfor.dao';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       SysMenuEntity, SysDeptEntity, SysPostEntity, SysDictDataEntity, SysDictTypeEntity, SysConfigEntity, SysRoleEntity, SysRoleMenuEntity,SysUserEntity,
-      SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity
+      SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity,SysLogininforEntity
     ])
   ],
   controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController, SysRoleController,SysUserController
@@ -51,13 +54,14 @@ import { SysUserController } from './controller/SysUser.controller';
   providers: [
     //service
     ...[
-        SysMenuService, SysDeptService, SysPostService, SysDictTypeService, SysDictDataService, SysConfigService, RedisUtil, SysRoleService, SysUserService
+        SysMenuService, SysDeptService, SysPostService, SysDictTypeService, SysDictDataService, SysConfigService, RedisUtil, SysRoleService, SysUserService,
+        SysLogininforService
     ],
     //dao
     ...[
-      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao, SysRoleDao, SysUserDao
+      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao, SysRoleDao, SysUserDao, SysLogininforDao
     ]
   ],
-  exports: []
+  exports: [SysUserService, SysLogininforService]
 })
 export class SystemModule {}

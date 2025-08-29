@@ -22,12 +22,12 @@ const RootLayout = async function({ children }: React.PropsWithChildren) {
         <ConfigProvider
           theme={{
             token: {
-              colorPrimary: '#c41414',
+              colorPrimary: '#5497FF',
             },
           }}
         >
         <NextIntlClientProvider messages={messages}>
-          <FrameworkLayout>{children}</FrameworkLayout>
+          {children}
         </NextIntlClientProvider>
         </ConfigProvider>
       </AntdRegistry>
