@@ -5,12 +5,14 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class TokenUtil {
+  jwtService:JwtService
   constructor(
     private readonly config:ConfigService,
-    // private readonly jwtService = new JwtService({
-    //   secret: config.get('jwt.secretkey')
-    // })
-  ){}
+  ){
+    this.jwtService = new JwtService({
+      secret: config.get('jwt.secretkey')
+    })
+  }
 
   /**
    * 从数据声明生成令牌

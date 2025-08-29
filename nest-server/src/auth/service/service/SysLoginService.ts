@@ -35,14 +35,9 @@ export class SysLoginService {
       loginTime:new Date(),
     };
     try {
-      // todo
-      // const loginLocation = await this.axiosService.getIpAddress(clientInfo.ipaddr);
       loginLog.loginLocation = "loginLocation todo";
     } catch (error) {
     }
-    //   const loginRes = await this.sysUserService.login(user, loginLog);
-    //   loginLog.status = loginRes.code === 200 ? '0' : '1';
-    //   loginLog.msg = loginRes.msg;
     const userEntity = await this.sysUserService.getUserByUsername(user.username);
     if (userEntity === null) {
       throw new HttpException("用户不存在",520);
@@ -61,25 +56,8 @@ export class SysLoginService {
     }
     const loginDate = new Date();
     await this.sysUserService.updateLoginDate(userEntity.userId,loginDate)
-    /**
-     * return
-     * {
-     *     "code": 200,
-     *     "msg": null,
-     *     "data": {
-     *         "access_token": "eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VyX2tleSI6ImU5ZDNkNmYwLTAxYjktNDhhOC04ODFjLTM2ZTVlZjRhNTdmMSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.PVb0TfNKGM4ners7VavngwV_u87lSAmLJ6Fgqw20jumR1AjRmoRyFsawYL8wYioNDJMIHqdGK64hxW2xDAJ_fA",
-     *         "expires_in": 720
-     *     }
-     * }
-     * jwt
-     * {
-     *   "user_id": 1,
-     *   "user_key": "e9d3d6f0-01b9-48a8-881c-36e5ef4a57f1",
-     *   "username": "admin"
-     * }
-     */
     const uuid = GenerateUUID();
-    const token = this.tokenUtil.createToken({ user_key: uuid, user_id: userEntity.userId,username: user.username});
+    const token = this.tokenUtil.createToken({ user_key: uuid, user_id: userEntity.userId, username: user.username});
 
 
     const permissions = await this.sysUserService.getUserPermissions(userData.userId);
@@ -88,7 +66,6 @@ export class SysLoginService {
     if(process.env.NODE_ENV==="development"){
       userData["permissions"] = permissions
     }
-    // this.deleteFileds(userData);
 
     let metaData = {
       browser: clientInfo.browser,
@@ -113,7 +90,7 @@ export class SysLoginService {
     });
   }
 
-  logout(clientInfo: { os: string; browser: string; ipaddr: any; loginLocation: string ,userName:string}) {
+  logout(clientInfo: { os: string; browser: string; ipaddr: any; loginLocation: string, userName:string}) {
     const loginLog = {
       ...clientInfo,
       status: '0',

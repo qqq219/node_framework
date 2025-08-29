@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation';
 import { checkRole, matchPermission } from './permission';
 import { getUserInfo } from '@/app/services/session';
 /**
@@ -19,26 +18,20 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
   };
 }
 
-const fetchUserInfo = async () => {
-  const router = useRouter();
-  try {
-    const response = await getUserInfo({
-      skipErrorHandler: true,
-    });
-    if (response.data.user.avatar === '') {
-      response.data.user.avatar =
-        'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
-    }
-    return {
-      ...response.data.user,
-      permissions: response.data.permissions,
-      roles: response.data.roles,
-    } as API.CurrentUser;
-  } catch (error) {
-    console.log(error);
-    router.push("/login");
+export async function fetchUserInfo() {
+  const response = await getUserInfo({
+    skipErrorHandler: true,
+  });
+  console.log("jinjian=====>response" + JSON.stringify(response))
+  if (response.data.user.avatar === '') {
+    response.data.user.avatar =
+      'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
   }
-  return undefined;
+  return {
+    ...response.data.user,
+    permissions: response.data.permissions,
+    roles: response.data.roles,
+  } as API.CurrentUser;
 };
 
 export function setSessionToken(

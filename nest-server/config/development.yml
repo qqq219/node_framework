@@ -25,3 +25,5 @@ typeOrm:
   keepConnectionAlive: true
   retryDelay: 3000
   retryAttempts: 10
+jwt:
+  secretkey: dgijinbineknwekngnbnksndvwkenkjnkkjeiq

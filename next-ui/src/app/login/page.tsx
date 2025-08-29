@@ -6,9 +6,12 @@ import clsx from 'clsx';
 import { useEffect, useState } from "react";
 import { Image } from "antd";
 import { getCaptchaImg, login } from "../services/auth";
-import { flushSync } from "react-dom";
-import { clearSessionToken, setSessionToken } from "../common/utils/access";
+import { clearSessionToken, fetchUserInfo, setSessionToken } from "../common/utils/access";
 import { useRouter } from "next/navigation";
+import { useSelector, useDispatch, Provider } from 'react-redux';
+import { setInitialState } from "../common/store/userinfostore";
+import { userinfoStore } from "../common/store/userinfostore";
+
 
 export default function LoginPage({ children }: React.PropsWithChildren){
     const [loginForm] = useForm()
@@ -16,8 +19,9 @@ export default function LoginPage({ children }: React.PropsWithChildren){
     const [captchaCode, setCaptchaCode] = useState<string>('');
     const [uuid, setUuid] = useState<string>('');
     const router = useRouter()
+    // const initialState = useSelector((state:any) => state.userInfo.value);
+    
     const handleResize = () => {
-        console.log('Window size changed:', window.innerWidth, window.innerHeight);
         const containerWidth = window.innerWidth < 1280?1280:window.innerWidth
         const widthCalcuByHeight = window.innerHeight * 16 / 9;
         if(widthCalcuByHeight > containerWidth){
@@ -38,15 +42,10 @@ export default function LoginPage({ children }: React.PropsWithChildren){
         setUuid(captchaImagResp.data.data.uuid);
     };
 
-    const fetchUserInfo = async () => {
-        const userInfo = await initialState?.fetchUserInfo?.();
+    const refreshUserInfo = async () => {
+        const userInfo = await fetchUserInfo();
         if (userInfo) {
-            flushSync(() => {
-                setInitialState((s) => ({
-                    ...s,
-                    currentUser: userInfo,
-                }));
-            });
+            setInitialState(userInfo);
         }
     };
 
@@ -60,20 +59,21 @@ export default function LoginPage({ children }: React.PropsWithChildren){
                 const expireTime = current.setTime(current.getTime() + 1000 * 12 * 60 * 60);
                 setSessionToken(response.data.data?.access_token, response.data.data?.access_token, expireTime);
                 message.success(defaultLoginSuccessMessage);
-                await fetchUserInfo();
+                await refreshUserInfo();
                 console.log('login ok');
                 const urlParams = new URL(window.location.href).searchParams;
-                router.push(urlParams.get('redirect') || '/');
+                router.push(urlParams.get('redirect') || '/dashboard');
                 return;
             } else {
                 console.log(response.data.msg);
                 clearSessionToken();
                 getCaptchaCode();
             }
-            } catch (error) {
+        } catch (error) {
             const defaultLoginFailureMessage = '登录失败，请重试！';
             console.log(error);
             message.error(defaultLoginFailureMessage);
+            router.push("/login")
         }
     };
 
@@ -95,6 +95,7 @@ export default function LoginPage({ children }: React.PropsWithChildren){
     }, []); // 空数组确保这个effect只在mount和unmount时运行
 
     return(
+    <Provider store={userinfoStore}>
     <div>
         <div className="w-screen h-screen min-w-[1280px] bg-[url(/image/loginBg.jpg)] bg-no-repeat bg-cover overflow-hidden"
             >
@@ -134,12 +135,12 @@ export default function LoginPage({ children }: React.PropsWithChildren){
                     <Form.Item<API.LoginParams>
                         className="!mt-5"
                         label={<span className="text-[1rem] h-10 items-center justify-center text-center flex">验证码</span>}
-                        name="uuid"
+                        name="code"
                         rules={[{ required: true, message: '请输入验证码!' }]}
                     >
                         <div className="w-full !h-10 flex flex-row gap-5">
                             <Input className="!h-10 !flex-1" placeholder="请输入验证码" prefix={<SafetyOutlined />} />
-                            <Image className="!h-10 !w-35 cursor-pointer" onClick={()=>{getCaptchaCode()}} preview={false} src={captchaCode}></Image>
+                            <Image className="!h-10 !w-35 cursor-pointer" onClick={()=>{getCaptchaCode()}} preview={false} src={captchaCode?captchaCode:"/image/loginBg.jpg"}></Image>
                         </div>
                     </Form.Item>
                     <Form.Item<API.LoginParams>
@@ -147,11 +148,13 @@ export default function LoginPage({ children }: React.PropsWithChildren){
                         label={true}
                         colon={false}
                         >
-                            <Button className="!h-10 w-full" type="primary">登录</Button>
+                            <Button className="!h-10 w-full" type="primary" htmlType="submit">登录</Button>
                     </Form.Item>
                 </Form>
             </div>
         </div>
-    </div>) 
+    </div>
+    </Provider>
+    ) 
     
 }
