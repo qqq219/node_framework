@@ -22,7 +22,6 @@ export async function fetchUserInfo() {
   const response = await getUserInfo({
     skipErrorHandler: true,
   });
-  console.log("jinjian=====>response" + JSON.stringify(response))
   if (response.data.user.avatar === '') {
     response.data.user.avatar =
       'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';

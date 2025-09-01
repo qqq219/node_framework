@@ -7,7 +7,6 @@ import {ConfigProvider} from 'antd';
 import { getLocale, getMessages } from 'next-intl/server';
 import { NextIntlClientProvider } from 'next-intl';
 import '@ant-design/v5-patch-for-react-19';
-import { userinfoStore } from "./common/store/userinfostore";
 
 const RootLayout = async function({ children }: React.PropsWithChildren) {
   const locale = await getLocale()

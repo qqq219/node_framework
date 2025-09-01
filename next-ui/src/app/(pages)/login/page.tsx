@@ -1,16 +1,15 @@
 'use client'
 import { LockOutlined, SafetyOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input, message } from "antd";
+import { Button, ConfigProvider, Form, Input, message, Spin } from "antd";
 import { FormProps, useForm } from "antd/es/form/Form";
 import clsx from 'clsx';
 import { useEffect, useState } from "react";
 import { Image } from "antd";
-import { getCaptchaImg, login } from "../services/auth";
-import { clearSessionToken, fetchUserInfo, setSessionToken } from "../common/utils/access";
 import { useRouter } from "next/navigation";
-import { useSelector, useDispatch, Provider } from 'react-redux';
-import { setInitialState } from "../common/store/userinfostore";
-import { userinfoStore } from "../common/store/userinfostore";
+import { getCaptchaImg, login } from "@/app/services/auth";
+import { clearSessionToken, fetchUserInfo, setSessionToken } from "@/app/common/utils/access";
+import { setInitialState } from "@/app/common/store/store";
+
 
 
 export default function LoginPage({ children }: React.PropsWithChildren){
@@ -19,6 +18,7 @@ export default function LoginPage({ children }: React.PropsWithChildren){
     const [captchaCode, setCaptchaCode] = useState<string>('');
     const [uuid, setUuid] = useState<string>('');
     const router = useRouter()
+    const [spinning, setSpinning] = useState(false);
     // const initialState = useSelector((state:any) => state.userInfo.value);
     
     const handleResize = () => {
@@ -33,7 +33,9 @@ export default function LoginPage({ children }: React.PropsWithChildren){
     };
 
     const getCaptchaCode = async () => {
+        setSpinning(true);
         const captchaImagResp = await getCaptchaImg();
+        setSpinning(false);
         if(captchaImagResp.data.code !== 200){
             throw new Error("获取验证码失败");
         }
@@ -51,6 +53,7 @@ export default function LoginPage({ children }: React.PropsWithChildren){
 
     const handleSubmit = async (values: API.LoginParams) => {
         try {
+            setSpinning(true);
             // 登录
             const response = await login({ ...values, uuid });
             if (response.data.code === 200) {
@@ -62,18 +65,21 @@ export default function LoginPage({ children }: React.PropsWithChildren){
                 await refreshUserInfo();
                 console.log('login ok');
                 const urlParams = new URL(window.location.href).searchParams;
-                router.push(urlParams.get('redirect') || '/dashboard');
+                setSpinning(false);
+                router.push(urlParams.get('redirect') || '/system/dashboard');
                 return;
             } else {
                 console.log(response.data.msg);
                 clearSessionToken();
                 getCaptchaCode();
+                setSpinning(false);
             }
         } catch (error) {
             const defaultLoginFailureMessage = '登录失败，请重试！';
             console.log(error);
             message.error(defaultLoginFailureMessage);
             router.push("/login")
+            setSpinning(false);
         }
     };
 
@@ -95,7 +101,6 @@ export default function LoginPage({ children }: React.PropsWithChildren){
     }, []); // 空数组确保这个effect只在mount和unmount时运行
 
     return(
-    <Provider store={userinfoStore}>
     <div>
         <div className="w-screen h-screen min-w-[1280px] bg-[url(/image/loginBg.jpg)] bg-no-repeat bg-cover overflow-hidden"
             >
@@ -109,6 +114,15 @@ export default function LoginPage({ children }: React.PropsWithChildren){
                     onFinishFailed={onFinishFailed}
                     size="large"
                 >
+                <ConfigProvider
+                    theme={{
+                        token: {
+                            colorBgContainer: 'rgba(255, 255, 255, 0)',
+                        },
+                    }}
+                >
+                            <Spin spinning={spinning} className="text-color-primary">
+
                     <Form.Item
                         className="text-center"
                         label={true}
@@ -150,11 +164,13 @@ export default function LoginPage({ children }: React.PropsWithChildren){
                         >
                             <Button className="!h-10 w-full" type="primary" htmlType="submit">登录</Button>
                     </Form.Item>
+                    </Spin>
+                    </ConfigProvider>
                 </Form>
             </div>
         </div>
+
     </div>
-    </Provider>
     ) 
     
 }

@@ -27,3 +27,12 @@ typeOrm:
   retryAttempts: 10
 jwt:
   secretkey: dgijinbineknwekngnbnksndvwkenkjnkkjeiq
+perm:
+  router:
+    whitelist: [
+      { path: '/api/auth/code', method: 'GET' },
+      { path: '/api/auth/login', method: 'POST' },
+      { path: '/logout', method: 'POST' },
+      { path: '/perm/{id}', method: 'GET' },
+      { path: '/upload', method: 'POST' },
+    ]
