@@ -166,11 +166,13 @@ export default function FrameworkLayout({ children }: React.PropsWithChildren) {
                     items={routerItems}/>
                   
               </div>
-              <div className="flex-1 w-0">
+              <div className="flex flex-col flex-1 w-0">
                 <div className="mt-10 pl-8">
                     <Breadcrumb items={breadcrumbItems}></Breadcrumb>
                 </div>
-                {children}
+                <div className='flex-1 h-0 overflow-auto'>
+                  {children}
+                </div>
               </div>
             </div>
           </div>

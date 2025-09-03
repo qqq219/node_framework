@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { getCaptchaImg, login } from "@/app/services/auth";
 import { clearSessionToken, fetchUserInfo, setSessionToken } from "@/app/common/utils/access";
 import { setInitialState } from "@/app/common/store/store";
+import { useDispatch } from "react-redux";
 
 
 
@@ -19,7 +20,7 @@ export default function LoginPage({ children }: React.PropsWithChildren){
     const [uuid, setUuid] = useState<string>('');
     const router = useRouter()
     const [spinning, setSpinning] = useState(false);
-    // const initialState = useSelector((state:any) => state.userInfo.value);
+    const dispatchEvent = useDispatch();
     
     const handleResize = () => {
         const containerWidth = window.innerWidth < 1280?1280:window.innerWidth
@@ -47,7 +48,7 @@ export default function LoginPage({ children }: React.PropsWithChildren){
     const refreshUserInfo = async () => {
         const userInfo = await fetchUserInfo();
         if (userInfo) {
-            setInitialState(userInfo);
+            dispatchEvent(setInitialState(userInfo));
         }
     };
 
@@ -144,7 +145,7 @@ export default function LoginPage({ children }: React.PropsWithChildren){
                         name="password"
                         rules={[{ required: true, message: '请输入密码!' }]}
                     >
-                        <Input className="!h-10 w-full" placeholder="请输入密码" prefix={<LockOutlined />} />
+                        <Input className="!h-10 w-full" placeholder="请输入密码" type="password" prefix={<LockOutlined />} />
                     </Form.Item>
                     <Form.Item<API.LoginParams>
                         className="!mt-5"

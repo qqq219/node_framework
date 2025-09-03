@@ -7,9 +7,9 @@ export default function BizPageLayout({ children }: React.PropsWithChildren) {
     const loading = useSelector((state:any) => state?.loading);
     return (
         <>
-            <Spin spinning={loading} fullscreen></Spin>
             <FrameworkLayout>
                 {children}
+                <Spin spinning={loading} fullscreen></Spin>
             </FrameworkLayout>
         </>
     );

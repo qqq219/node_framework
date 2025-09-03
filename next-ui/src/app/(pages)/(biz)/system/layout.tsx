@@ -5,8 +5,8 @@ import { HighlightOutlined, TrademarkOutlined } from '@ant-design/icons';
 export default function SystemLayout({ children }: React.PropsWithChildren) {
     return (
         <div className="w-full h-full flex flex-col relative">
-            <div className="pl-8 pr-8 pt-0 flex-1 flex flex-col h-0">
-                <div className="w-full flex-1 overflow-auto">
+            <div className="pl-8 pr-8 pt-0 flex-1 flex flex-col h-0 ">
+                <div className="w-full flex-1 overflow-auto h-0">
                     {children}
                 </div>
             </div>

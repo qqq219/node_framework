@@ -5,10 +5,11 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 // 创建切片（包含状态和修改状态的方法）
 const userinfoSlice = createSlice({
   name: 'userInfo', // 切片名称（用于区分不同状态）
-  initialState:{value:{}},
+  initialState:{},
   reducers: {
     setInitialState: (state, action) => {
-      state.value = action.payload; // Redux Toolkit 内部自动处理了不可变性
+      console.log("jinjian========>setInitialState:", JSON.stringify(action.payload));
+      state = action.payload; // Redux Toolkit 内部自动处理了不可变性
       return state;
     },
   },

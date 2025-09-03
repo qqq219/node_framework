@@ -26,7 +26,7 @@ export default function FrameworkHeader() {
         {
             key: '1',
             label: (
-            <Link rel="个人中心" href="/usercenter">
+            <Link rel="个人中心" href="/system/usercenter">
                 个人中心
             </Link>
             ),
@@ -58,7 +58,6 @@ export default function FrameworkHeader() {
                         height={25}
                         className="rounded-full cursor-pointer hover:opacity-80 duration-300"
                     />
-
                     <span className='text-sm ml-2'>若依</span>
                     </div>        
                      </Dropdown>

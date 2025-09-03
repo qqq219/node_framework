@@ -681,7 +681,6 @@ export class SysUserService {
   }
 
   async updateProfile(user: any, updateProfileReq: UpdateProfileReq) {
-
     await this.sysUserEntityRepository.update({ userId: user.user.userId }, updateProfileReq);
     const userData = await this.redisUtil.get(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`);
     userData.user = Object.assign(userData.user, updateProfileReq)
@@ -727,7 +726,6 @@ export class SysUserService {
       delete post.updateTime;
     })
     delete userData.password;
-    delete userData.createTime;
     delete userData.createBy;
     delete userData.updateBy;
     delete userData.updateTime;

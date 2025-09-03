@@ -342,7 +342,7 @@ export default function UserPage({ children }: React.PropsWithChildren) {
     return (
         <div className='w-full h-full flex flex-row'>
             <div className='w-60 h-full pt-5 pr-5'>
-                <div className='w-full h-full rounded-md p-2' style={{border:"var(--border-primary)"}}>
+                <div className='w-full h-full rounded-md p-2 border-' style={{border:"var(--border-primary)"}}>
                     {
                         deptTree && deptTree.length > 0 &&
                         <Tree
