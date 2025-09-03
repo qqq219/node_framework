@@ -2,17 +2,19 @@
 import { setInitialState, setLoading } from "@/app/common/store/store";
 import { fetchUserInfo } from "@/app/common/utils/access";
 import { getDictSelectOption } from "@/app/services/dict";
+import { uploadFile } from "@/app/services/file";
 import { updateUserProfile, updateUserPwd } from "@/app/services/user";
 import { InsertRowAboveOutlined, MailOutlined, PhoneOutlined, SaveOutlined, SearchOutlined, UsergroupDeleteOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Card,Form,Image, Input, message, Radio, Tabs  } from "antd";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function UserCenterPage() {
     const [userInfoForm] = Form.useForm();
     const [sexOptions, setSexOptions] = useState<any>([]);
     const [modifyPwdForm] = Form.useForm();
+
     const userInfo = useSelector((state:API.CurrentUser) => state.userinfo);
     const dispatch = useDispatch();
     const refreshUserInfo = async () => {
@@ -48,6 +50,15 @@ export default function UserCenterPage() {
         return Promise.reject(new Error('两次密码输入不一致'));
     };
 
+    const sendProfile = async (event:any) => {
+                console.log("=============jinjian sendProfile" + JSON.stringify(event))
+        const formData = new FormData();
+        formData.append("file", event.taget.files[0]);
+        console.log("=============jinjian sendProfile")
+        const response = await uploadFile(formData);
+        
+    };
+
     useEffect( () => {
         dispatch(setLoading(true));
         getDictSelectOption('sys_user_sex').then((data) => {
@@ -56,13 +67,14 @@ export default function UserCenterPage() {
         });
         userInfoForm.setFieldsValue(userInfo);
     }, []);
+    
     return (
         <div className='w-full h-full flex flex-row gap-4 pt-5'>
             {/*条件筛选栏 */}
             <Card 
                 className="w-[25%] h-fit" 
                 title="个人资料">
-                <div className="w-ful flex flex-col items-center justify-center" style={{borderBottom:"var(--border-primary)"}}>
+                <div className="w-ful flex flex-col items-center justify-center pb-5" style={{borderBottom:"var(--border-primary)"}}>
                     <div>
                         <Image
                             width={100}
@@ -71,9 +83,16 @@ export default function UserCenterPage() {
                             style={{borderRadius:"50%", border:"var(--border-primary)"}}
                             />
                     </div>
-                     <Button color="primary" variant="text">
-                        修改头像
-                    </Button>
+                    <label htmlFor="js-file-uploader" className="text-color-primary cursor-pointer hover:opacity-70">上传图片</label>
+                    <input
+                        id="js-file-uploader"
+                        onChange={sendProfile}
+                        type="file"
+                        accept="image/png, image/jpeg"
+                        hidden
+                    >
+                        
+                    </input>
                 </div>    
                 <div className="w-ful flex flex-row h-10 items-center" style={{borderBottom:"var(--border-primary)"}}>
                     <span className="flex-1"><UserOutlined /> 登录名称:</span>  
