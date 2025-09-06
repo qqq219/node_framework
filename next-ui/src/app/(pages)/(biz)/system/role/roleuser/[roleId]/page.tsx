@@ -56,7 +56,7 @@ const cancelAuthUser = async (roleId: number, userId: number) => {
 	}
 };
 
-export default function RoleUserPage({ children, params }: {children:React.PropsWithChildren, params: Promise<{ roleId: number }>}) {
+export default function RoleUserPage({ params }: {params: Promise<{ roleId: number }>}) {
     const param = use(params)
 
     const roleId = param.roleId;

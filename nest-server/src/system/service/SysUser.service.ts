@@ -520,8 +520,10 @@ export class SysUserService {
       });
       await roleEntity.insert().values(roleValues).execute();
     }
-
-    Reflect.deleteProperty(updateUserDto, "password");
+    const salt = bcrypt.genSaltSync(10);
+    if (updateUserDto.password) {
+      updateUserDto.password = bcrypt.hashSync(updateUserDto.password, salt);
+    }
     delete (updateUserDto as any).dept;
     delete (updateUserDto as any).roles;
     delete (updateUserDto as any).roleIds;

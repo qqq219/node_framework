@@ -88,7 +88,7 @@ const handleExport = async () => {
   }
 };
 
-export default function RolePage({ children }: React.PropsWithChildren) {
+export default function RolePage() {
 
     const [editDialogVisible, setEditDialogVisible] = useState(false);
 
@@ -256,7 +256,7 @@ export default function RolePage({ children }: React.PropsWithChildren) {
             <Link
                 href={"/system/role/roleuser/" + record.roleId}
                 type="link"
-                key="batchRemove"
+                key="setUser"
                 >
             分配用户
             </Link>

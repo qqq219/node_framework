@@ -8,7 +8,6 @@ const userinfoSlice = createSlice({
   initialState:{},
   reducers: {
     setInitialState: (state, action) => {
-      console.log("jinjian========>setInitialState:", JSON.stringify(action.payload));
       state = action.payload; // Redux Toolkit 内部自动处理了不可变性
       return state;
     },

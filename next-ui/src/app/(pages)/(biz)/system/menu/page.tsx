@@ -87,7 +87,7 @@ const handleExport = async () => {
   }
 };
 
-export default function MenuPage({ children }: React.PropsWithChildren) {
+export default function MenuPage() {
     
     const [checkStrictly, setCheckStrictly] = useState(false);
 

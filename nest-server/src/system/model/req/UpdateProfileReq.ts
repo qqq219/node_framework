@@ -9,6 +9,7 @@ export class UpdateProfileReq {
   @Length(0, 30)
   nickName: string;
 
+  @IsOptional()
   @IsEmail()
   @Length(0, 50)
   email: string;

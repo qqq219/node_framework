@@ -86,7 +86,7 @@ const handleExport = async () => {
   }
 };
 
-export default function DictDataPage({ children, params }: {children:React.PropsWithChildren, params: Promise<{ dicttype: string }>}) {
+export default function DictDataPage({  params }: {params: Promise<{ dicttype: string }>}) {
 
     const param = use(params)
 

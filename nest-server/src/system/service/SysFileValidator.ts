@@ -1,10 +1,16 @@
-import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+import { PipeTransform, HttpException, HttpStatus, Injectable, ArgumentMetadata } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class FileSizeValidationPipe implements PipeTransform {
-  transform(value: any, metadata: ArgumentMetadata) {
-    // "value" is an object containing the file's attributes and metadata
-    const oneKb = 1000;
-    return value.size < oneKb;
+export class FileTypePipe implements PipeTransform<Express.Multer.File> {
+
+  transform(value: Express.Multer.File, metadata:ArgumentMetadata) {
+    // if (value.mimetype === 'image/png') {
+    //   throw new HttpException(
+    //     '文件类型错误，' + value.mimetype,
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
+    return value;
   }
 }

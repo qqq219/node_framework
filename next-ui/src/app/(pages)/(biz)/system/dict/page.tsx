@@ -85,7 +85,7 @@ const handleExport = async () => {
   }
 };
 
-export default function DictTypePage({ children }: React.PropsWithChildren) {
+export default function DictTypePage() {
 
     const [editDialogVisible, setEditDialogVisible] = useState(false);
 

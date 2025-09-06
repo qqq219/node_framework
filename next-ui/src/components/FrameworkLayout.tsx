@@ -54,14 +54,18 @@ export default function FrameworkLayout({ children }: React.PropsWithChildren) {
         if(keyPath == undefined){
           return;
         }
+        const routerItem = routerList.find(routerItem=>routerItem.menuId == Number(keyPath[0]));
+        if(routerItem == undefined || routerItem.menuType != MenuType.C){
+          return;
+        }
         const routerPaths = keyPath.reverse().map((key) => {
           return getBreadcrumbItem(Number(key));
         });
         setBreadcrumbItems(routerPaths)
     }
 
-    const onMenuClick: MenuProps['onClick'] = ({ item, key, keyPath, domEvent }) => {
-      updateBreadcrumbItems(keyPath)
+    const onMenuClick: MenuProps['onClick'] = (item) => {
+      updateBreadcrumbItems(item.keyPath)
     };
 
     const getBreadcrumbItem = (key:number) => {

@@ -90,7 +90,7 @@ const handleExport = async () => {
   }
 };
 
-export default function UserPage({ children }: React.PropsWithChildren) {
+export default function UserPage() {
 
     const [editDialogVisible, setEditDialogVisible] = useState(false);
 

@@ -249,7 +249,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                                 rules={[{ required: false, message: '请输入权限标识' }]}
                                 hidden={menuTypeId === 'M'}
                                 >
-                                <Input placeholder="请输入权限标识" type='number' />
+                                <Input placeholder="请输入权限标识" />
                             </Form.Item>
                         </Col> 
                         <Col span={12}>

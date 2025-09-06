@@ -35,7 +35,6 @@ export class AuthStrategy extends PassportStrategy(Strategy) {
     const user = await this.redisUtil.get(`${CacheEnum.LOGIN_TOKEN_KEY}${payload.user_key}`);
     // 如果用用户信息，代表 token 没有过期，没有则 token 已失效
     if (!user) throw new UnauthorizedException('登录已过期，请重新登录');
-    console.log("user====>" + JSON.stringify(user))
     return user;
   }
 }

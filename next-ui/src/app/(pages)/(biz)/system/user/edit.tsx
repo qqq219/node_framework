@@ -174,7 +174,7 @@ const EditUser: React.FC<UserFormProps> = (props) => {
                             <Form.Item<API.System.User>
                                 label="用户密码"
                                 name="password"
-                                rules={[{ required: true, message: '请输入用户密码' }]}
+                                rules={[{ required: false, message: '请输入用户密码' }]}
                                 labelCol={{span: 6}}
                                 >
                                 <Input.Password placeholder="请输入用户密码" iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>

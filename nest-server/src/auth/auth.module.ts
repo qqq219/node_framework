@@ -9,6 +9,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './gurads/Auth.guard';
+import { RoleGuard } from './gurads/Role.guard';
+import { PermissionGuard } from './gurads/Permission.guard';
 
 @Module({
   imports: [ 
@@ -27,7 +29,15 @@ import { JwtAuthGuard } from './gurads/Auth.guard';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
-    }
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RoleGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionGuard,
+    },
   ],
   exports:[SysLoginService]
 })

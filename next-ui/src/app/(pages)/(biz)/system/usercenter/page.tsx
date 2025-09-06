@@ -42,6 +42,7 @@ export default function UserCenterPage() {
         }
     };
 
+
     const checkPassword = (rule: any, value: string) => {
         const login_password = modifyPwdForm.getFieldValue('newPassword');
         if (value === login_password) {
@@ -51,12 +52,25 @@ export default function UserCenterPage() {
     };
 
     const sendProfile = async (event:any) => {
-                console.log("=============jinjian sendProfile" + JSON.stringify(event))
+              
         const formData = new FormData();
-        formData.append("file", event.taget.files[0]);
-        console.log("=============jinjian sendProfile")
+        formData.append("file", event.target.files[0]);
         const response = await uploadFile(formData);
-        
+        if(response.data.code === 200){
+            const data = { avatar:response.data.data } as API.CurrentUser;
+            const resp = await updateUserProfile(data);
+            if (resp.data.code === 200) {
+                message.success('保存成功');
+                refreshUserInfo();
+            } 
+            else {
+                message.warning(resp.data.msg);
+            }
+            message.success('上传成功');
+        }
+        else{
+            message.error('上传失败');
+        }
     };
 
     useEffect( () => {
@@ -83,7 +97,7 @@ export default function UserCenterPage() {
                             style={{borderRadius:"50%", border:"var(--border-primary)"}}
                             />
                     </div>
-                    <label htmlFor="js-file-uploader" className="text-color-primary cursor-pointer hover:opacity-70">上传图片</label>
+                    <label htmlFor="js-file-uploader" className="text-color-primary cursor-pointer hover:opacity-70">修改头像</label>
                     <input
                         id="js-file-uploader"
                         onChange={sendProfile}

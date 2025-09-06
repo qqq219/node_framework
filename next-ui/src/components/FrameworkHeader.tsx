@@ -1,16 +1,16 @@
 
-import Image from 'next/image';
 import { CodeSandboxOutlined, FontColorsOutlined, SmileOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import { Dropdown, MenuProps, message } from 'antd';
+import { Dropdown, MenuProps, message, Image } from 'antd';
 import { clearSessionToken } from '@/app/common/utils/access';
 import { useRouter } from 'next/navigation';
 import { logout } from '@/app/services/auth';
 import { setInitialState, setLoading } from '@/app/common/store/store';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function FrameworkHeader() {
     const router = useRouter();
+    const userInfo = useSelector((state:API.CurrentUser) => state.userinfo);
     const dispatch = useDispatch();
     const loginOut = async () => {
         dispatch(setLoading(true))
@@ -52,13 +52,13 @@ export default function FrameworkHeader() {
                     <Dropdown menu={{ items }} className='!w-25'>  
                     <div className='flex flex-row items-center'>   
                     <Image
-                        src="/image/userIcon.png"
+                        src={userInfo?.avatar || "/image/userIcon.png"}
                         alt="User Avatar"
                         width={25}
                         height={25}
                         className="rounded-full cursor-pointer hover:opacity-80 duration-300"
                     />
-                    <span className='text-sm ml-2'>若依</span>
+                    <span className='text-sm ml-2'>{userInfo?.nickName}</span>
                     </div>        
                      </Dropdown>
                 </div>

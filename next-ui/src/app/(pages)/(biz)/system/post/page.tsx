@@ -84,7 +84,7 @@ const handleExport = async () => {
   }
 };
 
-export default function PostPage({ children }: React.PropsWithChildren) {
+export default function PostPage() {
 
     const [editDialogVisible, setEditDialogVisible] = useState(false);
 

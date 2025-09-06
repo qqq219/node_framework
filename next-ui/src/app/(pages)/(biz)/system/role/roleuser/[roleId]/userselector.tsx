@@ -165,7 +165,6 @@ const UserSelectorModal: React.FC<DataScopeFormProps> = (props) => {
                                 loading={loading}
                                 sticky={true}
                                 pagination={false}
-                                
                                 rowKey="userId"
                             >
                             </Table>

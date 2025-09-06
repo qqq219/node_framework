@@ -40,16 +40,51 @@ import { SysUserController } from './controller/SysUser.controller';
 import { SysLogininforService } from './service/SysLogininfor.service';
 import { SysLogininforEntity } from './model/entity/SysLogininfor.entity';
 import { SysLogininforDao } from './dao/SysLogininfor.dao';
+import { SysFileController } from './controller/SysFile.controller';
+import { MulterModule, MulterModuleOptions } from '@nestjs/platform-express';
+import { ConfigService } from '@nestjs/config';
+import { extname, join } from 'path';
+import { diskStorage } from 'multer';
+import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-static';
 
 @Module({
   imports: [
+    ServeStaticModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+         const rootPath = configService.get("file.uploadPath");// 静态文件目录
+         return [
+          {
+            rootPath,
+            serveRoot: configService.get("file.serverPath"),//文件虚拟路径, 必须以 / 开头， 如 http://localhost:8081/static/****.jpg  , 如果不需要则 设置 ''
+            serveStaticOptions: {
+              cacheControl: true,
+            },
+          },
+        ] as ServeStaticModuleOptions[]
+      }
+    }),
+    MulterModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => <MulterModuleOptions>({
+        storage: diskStorage({
+            destination: configService.get("file.uploadPath"), // 设置文件上传的目标目录
+            filename: (req, file, callback) => {
+                const fileExtName = extname(file.originalname); // 获取原始文件名中的扩展名
+                const fileName = `${Date.now()}${fileExtName}`;
+                // 使用当前时间作为文件名的一部分，并加上原始扩展名
+                callback(null, fileName);
+            },
+        }),
+      })
+    }),
     TypeOrmModule.forFeature([
       SysMenuEntity, SysDeptEntity, SysPostEntity, SysDictDataEntity, SysDictTypeEntity, SysConfigEntity, SysRoleEntity, SysRoleMenuEntity,SysUserEntity,
       SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity,SysLogininforEntity
     ])
   ],
-  controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController, SysRoleController,SysUserController
-    
+  controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController, SysRoleController,SysUserController,
+    SysFileController,
   ],
   providers: [
     //service

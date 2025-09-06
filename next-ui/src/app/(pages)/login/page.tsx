@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 
 
 
-export default function LoginPage({ children }: React.PropsWithChildren){
+export default function LoginPage(){
     const [loginForm] = useForm()
     const [loginFormWidth, setLoginFormWidth] = useState<number>(0);
     const [captchaCode, setCaptchaCode] = useState<string>('');

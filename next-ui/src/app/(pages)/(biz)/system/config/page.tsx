@@ -84,7 +84,7 @@ const handleExport = async () => {
   }
 };
 
-export default function ConfigPage({ children }: React.PropsWithChildren) {
+export default function ConfigPage() {
 
     const [editDialogVisible, setEditDialogVisible] = useState(false);
 

@@ -31,6 +31,7 @@ export class SysUserDto {
   @Length(0, 30)
   userName: string;
 
+  @IsOptional()
   @IsString()
   @Length(0, 200)
   password: string;
