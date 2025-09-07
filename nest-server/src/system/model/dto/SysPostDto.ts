@@ -1,10 +1,13 @@
-
+import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsNumber, IsOptional, IsString, Length } from "class-validator";
 import { Type } from "class-transformer";
 import { StatusEnum } from "./SysMenuDto";
 
 export class SysPostDto {
 
+  @ApiProperty({
+    required: true,
+  })
   @IsOptional()
   @IsNumber()
   @Type(()=>Number)
@@ -23,11 +26,15 @@ export class SysPostDto {
   @IsEnum(StatusEnum)
   status?: string;
 
+  @ApiProperty({
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @Length(0, 500)
   remark?: string;
 
+  @ApiProperty({ required: true })
   @IsOptional()
   @IsNumber()
   @Type(()=>Number)

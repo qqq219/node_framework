@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
-
+import { ApiProperty } from "@nestjs/swagger";
 
 @Entity('sys_logininfor', {
   comment: '系统访问记录',
@@ -31,6 +31,7 @@ export class SysLogininforEntity {
   public msg: string;
 
   //0正常 1停用
+  @ApiProperty({ type: String, description: '状态' })
   @Column({ type: 'char', name: 'status', default: '0', length: 1, comment: '状态' })
   public status: string;
 

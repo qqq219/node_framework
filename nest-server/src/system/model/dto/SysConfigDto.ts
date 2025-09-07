@@ -1,4 +1,5 @@
 import { IsEnum, IsNumber, IsOptional, IsString, Length } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 
 export enum TypeEnum {
@@ -29,6 +30,9 @@ export class SysConfigDto {
   @IsEnum(TypeEnum)
   configType: string;
 
+  @ApiProperty({
+    required: true,
+  })
   @IsOptional()
   @IsString()
   @Length(0, 500)

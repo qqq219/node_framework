@@ -1,40 +1,41 @@
-module.exports = {
-    "server":{
-        "port": 8081
-    },
-    "redis":{
-        "host": "localhost",
-        "port": 6379,
-        "password": "",
-        "db": 0
-    },
-    "typeOrm":{
-        type: 'mysql',
-        host: 'localhost',
-        port: 3306,
-        username: 'root',
-        password: '*****',
-        database: 'ruoyi-en',
-        synchronize: false,
-        logging: true,
-        connectorPackage: 'mysql2',
-        "extra": {
-            "connectionLimit": 10, // 根据需要调整连接池大小
-            "acquireTimeout": 10000, // 获取连接的超时时间
-            "waitForConnections": true, // 当没有连接可用时是否等待
-            "queueLimit": 0, // 排队等待连接的请求数量限制
-            "idleTimeout": 60000, // 空闲连接超时时间（毫秒）
-            "connectTimeout": 30000, // 连接超时时间（毫秒）
-        },
-        "keepConnectionAlive": true,
-        retryDelay: 3000, // 重试间隔时间（毫秒）
-        retryAttempts: 10, // 重试次数
-    },
-    "swagger":{
-        enable:true,
-        title:"nest-react-app",
-        desc:"Background system based on Nest.js + Umi full stack development",
-        version:"1.0.0"
-    }
-
-}
+redis:
+    options:
+      host: "110.41.165.112"
+      port: 6379
+      password: "q4217715"
+      db: 2
+    type: "single"
+typeOrm:
+  type: 'mysql'
+  host: '110.41.165.112'
+  port: 3896
+  username: 'ruoyi_next_nestjs'
+  password: 'B87ReMK5HCDErBtp'
+  database: 'ruoyi_next_nestjs'
+  synchronize: false
+  logging: true
+  connectorPackage: 'mysql'
+  extra: 
+    connectionLimit: 10
+    acquireTimeout: 10000
+    waitForConnections: true
+    queueLimit: 0
+    idleTimeout: 60000
+    connectTimeout: 30000
+  keepConnectionAlive: true
+  retryDelay: 3000
+  retryAttempts: 10
+jwt:
+  secretkey: dgijinbineknwekngnbnksndvwkenkjnkkjeiq
+perm:
+  router:
+    whitelist: [
+      { path: '/api/auth/code', method: 'GET' },
+      { path: '/api/auth/login', method: 'POST' },
+      { path: '/logout', method: 'POST' },
+      { path: '/perm/{id}', method: 'GET' },
+      { path: '/upload', method: 'POST' },
+    ]
+file:
+  uploadPath: '/root/nextFramework/uploads' # 文件上传路径
+  serverPath: '/static/uploads' # 文件服务路径

@@ -7,7 +7,9 @@ import { ResultData } from "src/common/model/ResultData";
 import * as Useragent from 'useragent';
 import { GenerateUUID } from "src/common/utils/normal.tool";
 import { createMath } from "src/common/utils/captcha";
+import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 
+@ApiTags('登录模块')
 @Controller("auth")
 export class TokenController {
     constructor(
@@ -15,6 +17,13 @@ export class TokenController {
         private readonly redisUtil: RedisUtil
     ) {}
     
+    @ApiOperation({
+      summary:"登录"
+    })
+    @ApiBody({
+      type: LoginDto,
+      required: true,
+    })
     @Post('/login')
     @HttpCode(200)
     async login(@Body() user: LoginDto, @Request() req) {
@@ -39,6 +48,9 @@ export class TokenController {
       return this.loginService.login(user, clientInfo);
     }
 
+  @ApiOperation({
+    summary:"退出登录"
+  })
   @Delete('/logout')
   @HttpCode(200)
   async logout(@Request() req) {
@@ -60,6 +72,9 @@ export class TokenController {
       return this.loginService.logout(clientInfo);
   }
 
+  @ApiOperation({
+    summary:"获取验证码"
+  })
   @Get('/code')
   async captchaImage() {
     //是否开启验证码

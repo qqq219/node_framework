@@ -4,19 +4,29 @@ import { SysDeptReq } from "../model/req/SysDeptReq";
 import { ResultData } from "src/common/model/ResultData";
 import { SysDeptDto } from "../model/dto/SysDeptDto";
 import { RequirePermission } from "src/auth/decorator/RequirePremission.decorator";
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Log } from 'src/common/interceptor/Log';
+import { BusinessType } from 'src/common/model/enum/BusinessType';
 
+@ApiTags('部门管理')
 @Controller('system/dept')
 export class SysDeptController {
   constructor(
     private readonly deptService:SysDeptService
   ) {}
-  
+
+  @ApiOperation({
+    summary: '部门管理-列表',
+  })
   @RequirePermission("system:dept:list")
   @Get('/list')
   findAll(@Query() query: SysDeptReq) {
     return this.deptService.findAll(query);
   }
 
+  @ApiOperation({
+    summary: '部门管理-详情',
+  })
   @RequirePermission("system:dept:query")
   @Get(':id')
   async findOne(@Param('id') id: string) {
@@ -24,6 +34,14 @@ export class SysDeptController {
     return ResultData.ok(data);
   }
 
+  @ApiOperation({
+    summary: '部门管理-创建',
+  })
+  @ApiBody({
+    type: SysDeptDto,
+    required: true,
+  })
+  @Log({title:"部门管理-ADD",businessType:BusinessType.ADD})
   @RequirePermission("system:dept:add")
   @Post()
   @HttpCode(200)
@@ -31,18 +49,33 @@ export class SysDeptController {
     return this.deptService.create(createDeptDto);
   }
 
+  @ApiOperation({
+    summary: '部门管理-黑名单',
+  })
   @RequirePermission("system:dept:query")
   @Get('/list/exclude/:id')
   findListExclude(@Param('id') id: string) {
     return this.deptService.findListExclude(+id);
   }
 
+  @ApiOperation({
+    summary: '部门管理-更新',
+  })
+  @ApiBody({
+    type: SysDeptDto,
+    required: true,
+  })
+  @Log({title:"部门管理-EDIT",businessType:BusinessType.EDIT})
   @RequirePermission("system:dept:edit")
   @Put()
   update(@Body() updateDeptDto: SysDeptDto) {
     return this.deptService.update(updateDeptDto);
   }
-  
+
+  @ApiOperation({
+    summary: '部门管理-删除',
+  })
+  @Log({title:"部门管理-DELETE",businessType:BusinessType.DELETE})
   @RequirePermission("system:dept:remove")
   @Delete(':id')
   remove(@Param('id') id: string) {

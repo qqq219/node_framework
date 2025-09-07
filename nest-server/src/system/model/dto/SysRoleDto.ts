@@ -1,4 +1,4 @@
-
+import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString, Length } from "class-validator";
 import { Type } from "class-transformer";
 
@@ -9,15 +9,20 @@ export enum StatusEnum {
 
 export class SysRoleDto {
 
+  @ApiProperty({
+    required: false,
+  })
   @IsOptional()
   @IsNumber()
   @Type(()=>Number)
   roleId: number;
 
+  @ApiProperty({ required: true })
   @IsString()
   @Length(0, 30)
   roleName: string;
 
+  @ApiProperty({ required: true })
   @IsString()
   @Length(0, 100)
   roleKey: string;
@@ -30,20 +35,28 @@ export class SysRoleDto {
   @IsArray()
   deptIds?: Array<number>;
 
+  @ApiProperty({ required: true })
   @IsOptional()
   @IsNumber()
   @Type(()=>Number)
   roleSort?: number;
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   @IsEnum(StatusEnum)
   status?: string;
 
+  @ApiProperty({
+    required: false,
+  })
   @IsOptional()
   @IsString()
   dataScope: string;
 
+  @ApiProperty({
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @Length(0, 500)
