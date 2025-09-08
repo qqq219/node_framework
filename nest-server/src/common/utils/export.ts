@@ -105,5 +105,5 @@ export async function ExportTable(
   res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
   res.setHeader('X-Content-Type-Options', 'nosniff');
   // 将 Excel 文件的二进制流数据返回给客户端
-  res.end(buffer, 'binary');
+  res.send(buffer);
 }

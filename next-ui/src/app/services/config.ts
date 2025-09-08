@@ -1,4 +1,5 @@
 import { request } from "../common/utils/axiosrequest";
+import { downloadFile } from "../common/utils/downloadFile";
 
 // 查询参数配置列表
 export async function getConfigList(params?: API.System.ConfigListParams) {
@@ -48,11 +49,13 @@ export async function removeConfig(ids: string) {
 }
 
 // 导出参数配置
-export function exportConfig(params?: API.System.ConfigListParams) { 
-  return request<API.Result>(`/api/system/config/export`, {
-    method: 'GET',
-    params
-  });
+export async function exportConfig(params?: API.System.ConfigListParams) { 
+    const response = await request<API.Result>(`/api/system/config/export`, {
+      method: 'GET',
+      responseType: 'blob',
+      params
+    });
+    downloadFile(response, '参数配置.xlsx');
 }
 
 

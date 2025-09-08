@@ -46,6 +46,9 @@ import { ConfigService } from '@nestjs/config';
 import { extname, join } from 'path';
 import { diskStorage } from 'multer';
 import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-static';
+import { SysOperlogService } from './service/SysOperlog.service';
+import { SysOperlogEntity } from './model/entity/SysOperlog.entity';
+import { SysOperlogDao } from './dao/SysOperlog.dao';
 
 @Module({
   imports: [
@@ -80,7 +83,7 @@ import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-stati
     }),
     TypeOrmModule.forFeature([
       SysMenuEntity, SysDeptEntity, SysPostEntity, SysDictDataEntity, SysDictTypeEntity, SysConfigEntity, SysRoleEntity, SysRoleMenuEntity,SysUserEntity,
-      SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity,SysLogininforEntity
+      SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity,SysLogininforEntity,SysOperlogEntity
     ])
   ],
   controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController, SysRoleController,SysUserController,
@@ -90,13 +93,13 @@ import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-stati
     //service
     ...[
         SysMenuService, SysDeptService, SysPostService, SysDictTypeService, SysDictDataService, SysConfigService, RedisUtil, SysRoleService, SysUserService,
-        SysLogininforService
+        SysLogininforService,SysOperlogService
     ],
     //dao
     ...[
-      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao, SysRoleDao, SysUserDao, SysLogininforDao
+      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao, SysRoleDao, SysUserDao, SysLogininforDao,SysOperlogDao
     ]
   ],
-  exports: [SysUserService, SysLogininforService]
+  exports: [SysUserService, SysLogininforService,SysOperlogService]
 })
 export class SystemModule {}

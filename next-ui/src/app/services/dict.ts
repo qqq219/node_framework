@@ -1,6 +1,7 @@
 import { DictValueEnumObj } from "@/components/DictTag";
 import { request } from "../common/utils/axiosrequest";
 import { HttpResult } from "../common/enum/httpEnum";
+import { downloadFile } from "../common/utils/downloadFile";
 
 
 
@@ -124,11 +125,13 @@ export async function removeDictType(ids: string) {
 }
 
 // 导出字典类型
-export function exportDictType(params?: API.System.DictTypeListParams) {
-  return request<API.Result>('/api/system/dict/type/export', {
-    method: 'GET',
-    params
-  });
+export async function exportDictType(params?: API.System.DictTypeListParams) {
+    const response = await request<API.Result>(`/api/system/dict/type/export`, {
+      method: 'GET',
+      responseType: 'blob',
+      params
+    });
+    downloadFile(response, '字典类型.xlsx');
 }
 
 // 获取字典选择框列表

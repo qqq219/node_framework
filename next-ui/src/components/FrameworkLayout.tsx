@@ -32,9 +32,17 @@ export default function FrameworkLayout({ children }: React.PropsWithChildren) {
         if(item.menuType === MenuType.F){
           return;
         }
+        let label = null;
+        if(item.menuType == MenuType.C ) 
+        {
+          label = <Link target={item.isFrame == 0? "_blank":"_self"} href={item.component}>{item.menuName}</Link>
+        }
+        else{
+          label = item.menuName;
+        }
         const node: MenuItem = {
           key: item.menuId,
-          label: item.menuType == MenuType.C ? <Link href={item.component}>{item.menuName}</Link> : item.menuName,
+          label: label,
           icon: createIcon(item.icon),
         } as MenuItem;
         if (node && 'children' in item && item.children && item.menuType === MenuType.M) {

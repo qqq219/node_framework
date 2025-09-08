@@ -27,6 +27,13 @@ export class SysConfigController {
     return this.sysConfigService.queryList(query);
   }
 
+  @ApiOperation({ summary: '导出参数设置xlsx文件' })
+  @RequirePermission("system:config:export")
+  @Get('/export')
+  async export(@Res() res: Response, @Query() req: SysConfigReq): Promise<any> {
+    return this.sysConfigService.export(res, req);
+  }
+
   @ApiOperation({
     summary: '参数设置-创建',
   })

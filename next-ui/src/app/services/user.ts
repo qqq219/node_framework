@@ -2,6 +2,7 @@
 import { DataNode } from 'antd/es/tree';
 import { request } from '../common/utils/axiosrequest';
 import { formatTreeData } from '../common/utils/tree';
+import { downloadFile } from '../common/utils/downloadFile';
 
 // 查询用户信息列表
 export async function getUserList(params?: API.System.UserListParams, options?: { [key: string]: any }) {
@@ -56,12 +57,13 @@ export async function removeUser(ids: string, options?: { [key: string]: any }) 
 }
 
 // 导出用户信息
-export function exportUser(params?: API.System.UserListParams, options?: { [key: string]: any }) {
-  return request<API.Result>(`/api/system/user/export`, {
+export async function exportUser(params?: API.System.UserListParams, options?: { [key: string]: any }) {
+  const response = await request<API.Result>(`/api/system/user/export`, {
     method: 'GET',
-    params,
-    ...(options || {})
+    responseType: 'blob',
+    params
   });
+  downloadFile(response, '用户信息.xlsx');
 }
 
 // 用户状态修改

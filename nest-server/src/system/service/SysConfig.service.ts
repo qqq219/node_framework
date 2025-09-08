@@ -4,6 +4,8 @@ import { SysConfigDto } from "../model/dto/SysConfigDto";
 import { SysConfigDao } from "../dao/SysConfig.dao";
 import { ResultData } from 'src/common/model/ResultData';
 import { RedisUtil } from 'src/common/utils/Redis.tool';
+import { ExportTable } from 'src/common/utils/export';
+import { SysConfigEntity } from '../model/entity/SysConfig.entity';
 
 @Injectable()
 export class SysConfigService {
@@ -75,5 +77,28 @@ export class SysConfigService {
     list.forEach((item) => {
     });
   }
+
+  /**
+     * 导出参数配置数据为xlsx文件
+     * @param res
+     * @param req
+     */
+    async export(res: Response, req: SysConfigReq) {
+      Reflect.deleteProperty(req, "current")
+      Reflect.deleteProperty(req, "pageSize")
+      const list = await this.queryList(req);
+      const options = {
+        sheetName: '参数配置',
+        data: list.rows as SysConfigEntity[],
+        header: [
+          { title: '参数名称', dataIndex: 'configName' },
+          { title: '参数键名', dataIndex: 'configKey' },
+          { title: '参数键值', dataIndex: 'configValue' },
+          { title: '系统内置', dataIndex: 'configType' },
+          { title: '备注', dataIndex: 'remark' },
+        ],
+      };
+      await ExportTable(options, res as any);
+    }
 
 }

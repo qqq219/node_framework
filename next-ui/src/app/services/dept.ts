@@ -1,4 +1,5 @@
 import { request } from "../common/utils/axiosrequest";
+import { downloadFile } from "../common/utils/downloadFile";
 
 
 // 查询部门列表
@@ -56,9 +57,11 @@ export async function removeDept(ids: string) {
 }
 
 // 导出部门
-export function exportDept(params?: API.System.DeptListParams) { 
-  return request<API.Result>(`/api/system/dept/export`, {
-    method: 'GET',
-    params
-  });
+export async function exportDept(params?: API.System.DeptListParams) { 
+    const response = await request<API.Result>(`/api/system/dept/export`, {
+      method: 'GET',
+      responseType: 'blob',
+      params
+    });
+    downloadFile(response, '参数配置.xlsx');
 }

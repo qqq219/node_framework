@@ -1,4 +1,5 @@
 import { request } from "../common/utils/axiosrequest";
+import { downloadFile } from "../common/utils/downloadFile";
 
 
 // 查询岗位信息列表
@@ -49,9 +50,11 @@ export async function removePost(ids: string) {
 }
 
 // 导出岗位信息
-export function exportPost(params?: API.System.PostListParams) { 
-  return request<API.Result>(`/api/system/post/export`, {
+export async function exportPost(params?: API.System.PostListParams) { 
+  const response = await request<API.Result>(`/api/system/post/export`, {
     method: 'GET',
+    responseType: 'blob',
     params
   });
+  downloadFile(response, '岗位信息.xlsx');
 }

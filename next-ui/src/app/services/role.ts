@@ -1,5 +1,6 @@
 import { ContentType } from "../common/enum/httpEnum";
 import { request } from "../common/utils/axiosrequest";
+import { downloadFile } from "../common/utils/downloadFile";
 
 
 // 查询角色信息列表
@@ -48,11 +49,13 @@ export async function removeRole(ids: string) {
 }
 
 // 导出角色信息
-export function exportRole(params?: API.System.RoleListParams) {
-  return request<API.Result>(`/api/system/role/export`, {
+export async function exportRole(params?: API.System.RoleListParams) {
+  const response = await request<API.Result>(`/api/system/role/export`, {
     method: 'GET',
+    responseType: 'blob',
     params
   });
+  downloadFile(response, '角色信息.xlsx');
 }
 
 // 获取角色菜单列表

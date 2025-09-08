@@ -1,4 +1,5 @@
 import { request } from "../common/utils/axiosrequest";
+import { downloadFile } from "../common/utils/downloadFile";
 
 // 查询菜单权限列表
 export async function getMenuList(params?: API.System.MenuListParams, options?: { [key: string]: any }) {
@@ -53,12 +54,13 @@ export async function removeMenu(ids: string, options?: { [key: string]: any }) 
 }
 
 // 导出菜单权限
-export function exportMenu(params?: API.System.MenuListParams, options?: { [key: string]: any }) { 
-  return request<API.Result>(`/api/system/menu/export`, {
+export async function exportMenu(params?: API.System.MenuListParams, options?: { [key: string]: any }) { 
+  const response = await request<API.Result>(`/api/system/menu/export`, {
     method: 'GET',
-    params,
-    ...(options || {})
+    responseType: 'blob',
+    params
   });
+  downloadFile(response, '菜单权限.xlsx');
 }
 
 // 查询菜单权限详细

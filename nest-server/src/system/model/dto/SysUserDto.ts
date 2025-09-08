@@ -40,6 +40,7 @@ export class SysUserDto {
 
   @ApiProperty({ required: true })
   @IsString()
+  @IsOptional()
   @Length(0, 200)
   password: string;
 

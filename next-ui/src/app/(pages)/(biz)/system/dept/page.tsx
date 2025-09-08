@@ -298,7 +298,7 @@ export default function DeptPage() {
                                 }}>
                                     批量删除
                             </Button>
-                            <Button type="primary" className='w-button-primary'>+ 导出</Button>
+                            <Button type="primary" className='w-button-primary' onClick={handleExport}>+ 导出</Button>
                             <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateDeptTree()}}><SyncOutlined /></div>
                         </div>
                     </div>

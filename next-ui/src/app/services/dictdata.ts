@@ -1,4 +1,5 @@
 import { request } from "../common/utils/axiosrequest";
+import { downloadFile } from "../common/utils/downloadFile";
 
 
 // 查询字典数据列表
@@ -57,13 +58,14 @@ export async function removeDictData(ids: string, options?: { [key: string]: any
 }
 
 // 导出字典数据
-export function exportDictData(
+export async function exportDictData(
   params?: API.System.DictDataListParams,
   options?: { [key: string]: any },
 ) {
-  return request<API.Result>(`/api/system/dict/data/export`, {
+  const response = await request<API.Result>(`/api/system/dict/data/export`, {
     method: 'GET',
-    params,
-    ...(options || {}),
+    responseType: 'blob',
+    params
   });
+  downloadFile(response, '字典数据.xlsx');
 }
