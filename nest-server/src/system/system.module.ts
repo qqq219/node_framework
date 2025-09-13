@@ -49,6 +49,10 @@ import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-stati
 import { SysOperlogService } from './service/SysOperlog.service';
 import { SysOperlogEntity } from './model/entity/SysOperlog.entity';
 import { SysOperlogDao } from './dao/SysOperlog.dao';
+import { GenController } from './controller/Gen.controller';
+import { GenService } from './service/Gen.service';
+import { GenTableColumnEntity } from './model/entity/GenTableCloumn.entity';
+import { GenTableEntity } from './model/entity/GenTable.entity';
 
 @Module({
   imports: [
@@ -83,21 +87,21 @@ import { SysOperlogDao } from './dao/SysOperlog.dao';
     }),
     TypeOrmModule.forFeature([
       SysMenuEntity, SysDeptEntity, SysPostEntity, SysDictDataEntity, SysDictTypeEntity, SysConfigEntity, SysRoleEntity, SysRoleMenuEntity,SysUserEntity,
-      SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity,SysLogininforEntity,SysOperlogEntity
+      SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity,SysLogininforEntity,SysOperlogEntity,GenTableColumnEntity,GenTableEntity
     ])
   ],
   controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController, SysRoleController,SysUserController,
-    SysFileController,
+    SysFileController, GenController
   ],
   providers: [
     //service
     ...[
         SysMenuService, SysDeptService, SysPostService, SysDictTypeService, SysDictDataService, SysConfigService, RedisUtil, SysRoleService, SysUserService,
-        SysLogininforService,SysOperlogService
+        SysLogininforService,SysOperlogService,GenService
     ],
     //dao
     ...[
-      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao, SysRoleDao, SysUserDao, SysLogininforDao,SysOperlogDao
+      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao, SysRoleDao, SysUserDao, SysLogininforDao, SysOperlogDao,
     ]
   ],
   exports: [SysUserService, SysLogininforService,SysOperlogService]

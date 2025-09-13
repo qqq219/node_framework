@@ -9,11 +9,4 @@ export class SysConfigService {
         @InjectRedis() private readonly redis: Redis
     ){}
     
-    async hello(){
-        this.redis.set("jinjian", "3333");
-        const value = await this.redis.get("jinjian");
-        console.log("jinjian====>" + value)
-        return "jinjian";
-    }
-    
 }

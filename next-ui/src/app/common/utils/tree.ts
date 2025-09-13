@@ -131,4 +131,26 @@ export function formatRoleMenuTreeData(arrayList: API.System.RoleMenuNode[]): Da
   return treeSelectData;
 }
 
+export function formatRouterSelectorTreeData(arrayList: any): DataNode[] {
+  const routerTreeData: DataNode[] = arrayList.map((item: any) => {
+    if(item.menuType === MenuType.F){
+      return;
+    }
+    const node: DataNode = {
+      id: item.menuId,
+      title: item.menuName,
+      key: item.menuId,
+      value: item.menuId,
+    } as DataNode;
+    if (node && 'children' in item && item.children && item.menuType === MenuType.M) {
+        //@ts-ignore
+        node.children = formatRouterSelectorTreeData(item.children);
+    }
+    return node;
+  });
+  return routerTreeData;
+}
+
+
+
 

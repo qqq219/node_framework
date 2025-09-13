@@ -18,9 +18,7 @@ export class SysConfigController {
     summary: '参数设置-列表',
   })
   @ApiBody({
-    type: SysConfigReq,
-    required: true,
-  })
+    type: SysConfigReq,})
   @RequirePermission("system:config:list")
   @Get('/list')
   findAll(@Query() query: SysConfigReq) {
@@ -87,3 +85,5 @@ export class SysConfigController {
     return this.sysConfigService.remove(configIds);
   }
 }
+
+
