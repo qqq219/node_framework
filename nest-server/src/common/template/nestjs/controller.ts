@@ -12,13 +12,12 @@ export const controllerTem = (options) => {
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, ValidationPipe } from "@nestjs/common";
 import { ${serviceName} } from "../service/${className}.service";
-import { RequirePermission } from "apps/auth/src/decorator/RequirePremission.decorator";
+import { RequirePermission } from "src/auth/decorator/RequirePremission.decorator";
 import { ${className}Req } from "../model/req/${className}Req";
-import { ResultData } from "apps/common/src/model/ResultData";
+import { ResultData } from "src/common/model/ResultData";
 import { ${className}Dto } from "../model/dto/${className}Dto";
-import { ValidateGroupEnum } from "apps/common/src/model/enum/ValidateGroupEnum";
-import { Log } from "apps/common/src/decorator/Log";
-import { BusinessType } from "apps/common/src/model/enum/BusinessType";
+import { Log } from "src/common/interceptor/Log";
+import { BusinessType } from "src/common/model/enum/BusinessType";
 
 @ApiTags('${functionName}')
 @Controller('${moduleName}/${businessName}')
@@ -49,7 +48,7 @@ export class ${className}Controller {
     @Log({title:"${functionName}-ADD",businessType:BusinessType.ADD})
     @RequirePermission("${moduleName}:${businessName}:add")
     @Post()
-    async create(@Body(new ValidationPipe({ groups: [ValidateGroupEnum.CREATE] })) create${className}Dto: ${className}Dto) {
+    async create(@Body(new ValidationPipe()) create${className}Dto: ${className}Dto) {
       await this.${lfclassName}Service.create(create${className}Dto);
       return ResultData.ok();
     }
@@ -74,7 +73,7 @@ export class ${className}Controller {
     @Log({title:"${functionName}-EDIT",businessType:BusinessType.EDIT})
     @RequirePermission("${moduleName}:${businessName}:edit")
     @Put()
-    async update(@Body(new ValidationPipe({ groups: [ValidateGroupEnum.UPDATE] })) update${className}Dto: ${className}Dto) {
+    async update(@Body(new ValidationPipe()) update${className}Dto: ${className}Dto) {
       await this.${lfclassName}Service.update(update${className}Dto);
       return ResultData.ok();
     }

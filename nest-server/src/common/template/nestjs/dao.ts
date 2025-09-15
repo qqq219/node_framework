@@ -17,7 +17,7 @@ import { In, Repository } from "typeorm";
 import { ${className}Entity } from "../model/entity/${className}.entity";
 import { ${className}Req } from "../model/req/${className}Req";
 import { ${className}Dto } from "../model/dto/${className}Dto";
-import { StringUtils } from "apps/common/src/utils/StringUtils";
+import { StringUtils } from "src/common/utils/StringUtils";
 
 @Injectable()
 export class ${className}Dao {

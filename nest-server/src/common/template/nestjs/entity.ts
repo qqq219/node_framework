@@ -6,8 +6,8 @@ export const entityTem = (options) => {
   const contentTem = content(options);
   return `
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { ConvertDate } from "apps/common/src/model/ConvertDate";
-import { DateTransformer } from "apps/common/src/conversion/DateTransformer";
+import { ConvertDate } from "src/common/model/ConvertDate";
+import { DateTransformer } from "src/common/conversion/DateTransformer";
 
 
 @Entity('${tableName}', {

@@ -6,12 +6,12 @@ import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
 import EditUser from './edit';
-import { addUser, exportUser, getDeptTree, getUser, getUserList, removeUser, updateUser } from '@/app/services/user';
+import { addUser, exportUser, getDeptTree, getUser, getUserList, removeUser, updateUser } from '@/app/services/system/user';
 import Tree, { DataNode } from 'antd/es/tree';
 import { formatRoleMenuTreeData } from '@/app/common/utils/tree';
-import { getDictSelectOption, getDictValueEnum } from '@/app/services/dict';
-import { getPostList } from '@/app/services/post';
-import { getRoleList } from '@/app/services/role';
+import { getDictSelectOption, getDictValueEnum } from '@/app/services/system/dict';
+import { getPostList } from '@/app/services/system/post';
+import { getRoleList } from '@/app/services/system/role';
 import { DefaultOptionType } from 'antd/es/select';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];

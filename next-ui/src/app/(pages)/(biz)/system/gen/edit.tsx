@@ -3,10 +3,10 @@ import { Modal,Form,Row,Col,FormProps,Radio, Input, Tabs, message, TreeSelect, S
 import _ from 'lodash';
 import TextArea from 'antd/es/input/TextArea';
 import ColumnInfo from './ColumnInfo';
-import { getMenuList, getMenuTree, getRouterList } from '@/app/services/menu';
-import { getGenCode } from '@/app/services/gen';
+import { getMenuList, getMenuTree, getRouterList } from '@/app/services/system/menu';
+import { getGenCode } from '@/app/services/system/gen';
 import { buildTreeData, formatRoleMenuTreeData, formatRouterSelectorTreeData, formatTreeData } from '@/app/common/utils/tree';
-import { getDictTypeList } from '@/app/services/dict';
+import { getDictTypeList } from '@/app/services/system/dict';
 
 export type GenFormData = Record<string, unknown> & Partial<API.System.GenCodeType>;
 

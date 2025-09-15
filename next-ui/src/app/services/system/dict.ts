@@ -1,7 +1,7 @@
 import { DictValueEnumObj } from "@/components/DictTag";
-import { request } from "../common/utils/axiosrequest";
-import { HttpResult } from "../common/enum/httpEnum";
-import { downloadFile } from "../common/utils/downloadFile";
+import { request } from "../../common/utils/axiosrequest";
+import { HttpResult } from "../../common/enum/httpEnum";
+import { downloadFile } from "../../common/utils/downloadFile";
 
 
 

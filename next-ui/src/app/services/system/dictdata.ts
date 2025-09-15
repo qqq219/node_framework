@@ -1,5 +1,5 @@
-import { request } from "../common/utils/axiosrequest";
-import { downloadFile } from "../common/utils/downloadFile";
+import { request } from "../../common/utils/axiosrequest";
+import { downloadFile } from "../../common/utils/downloadFile";
 
 
 // 查询字典数据列表

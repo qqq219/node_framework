@@ -1,9 +1,9 @@
 'use client';
 import { setInitialState, setLoading } from "@/app/common/store/store";
 import { fetchUserInfo } from "@/app/common/utils/access";
-import { getDictSelectOption } from "@/app/services/dict";
-import { uploadFile } from "@/app/services/file";
-import { updateUserProfile, updateUserPwd } from "@/app/services/user";
+import { getDictSelectOption } from "@/app/services/system/dict";
+import { uploadFile } from "@/app/services/system/file";
+import { updateUserProfile, updateUserPwd } from "@/app/services/system/user";
 import { InsertRowAboveOutlined, MailOutlined, PhoneOutlined, SaveOutlined, SearchOutlined, UsergroupDeleteOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Card,Form,Image, Input, message, Radio, Tabs  } from "antd";
 import dayjs from "dayjs";

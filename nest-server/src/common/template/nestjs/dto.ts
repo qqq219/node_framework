@@ -5,8 +5,7 @@ export const dtoTem = (options) => {
 import { IsString, IsNumber, IsBoolean, IsDate, IsOptional, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from "class-transformer";
-import { ValidateGroupEnum } from "apps/common/src/model/enum/ValidateGroupEnum";
-import { ConvertDate } from "apps/common/src/model/ConvertDate";
+import { ConvertDate } from "src/common/model/ConvertDate";
 
 export class ${className}Dto {
   ${dto}
@@ -24,7 +23,7 @@ const dtoIsDto = (options) => {
         if (column.isPk == "1") {
             str += `
     @ApiProperty({ required: ${required} })${!required ? `
-    @IsOptional({groups:[ValidateGroupEnum.CREATE]})` : ''}
+    @IsOptional()` : ''}
     ${getValidatorDecoratorPk(javaType)}
     ${javaField}: ${javaType};
             `
@@ -53,11 +52,11 @@ function getValidatorDecorator(javaType) {
 }
 function getValidatorDecoratorPk(javaType){
     switch (javaType) {
-        case 'string': return `@IsString({},{groups:[ValidateGroupEnum.UPDATE]})`;
-        case 'number': return `@IsNumber({},{groups:[ValidateGroupEnum.UPDATE]})
+        case 'string': return `@IsString()`;
+        case 'number': return `@IsNumber()
     @Type(()=>Number)`;
-        case 'boolean': return `@IsBoolean({},{groups:[ValidateGroupEnum.UPDATE]})`;
-        case 'Date': return `@IsDate({},{groups:[ValidateGroupEnum.UPDATE]})
+        case 'boolean': return `@IsBoolean()`;
+        case 'Date': return `@IsDate()
     @Type(() => Date)`;
         default: return ``;
     }

@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { useEffect, useState } from "react";
 import { Image } from "antd";
 import { useRouter } from "next/navigation";
-import { getCaptchaImg, login } from "@/app/services/auth";
+import { getCaptchaImg, login } from "@/app/services/system/auth";
 import { clearSessionToken, fetchUserInfo, setSessionToken } from "@/app/common/utils/access";
 import { setInitialState } from "@/app/common/store/store";
 import { useDispatch } from "react-redux";

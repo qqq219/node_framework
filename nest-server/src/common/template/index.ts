@@ -6,11 +6,11 @@ import {moduleTem} from './nestjs/module.js'
 import {serviceTem} from './nestjs/service.js'
 import { daoTem } from "./nestjs/dao";
 import { reqTem } from "./nestjs/req";
-import { reactServiceTem } from "./react/service";
-import { reactTypesTem } from "./react/types";
-import { reactIndexTem } from "./react";
-import { reactEditTem } from "./react/edit";
+import { reactServiceTem } from "./nextjs/service.js";
+import { reactTypesTem } from "./nextjs/types.js";
+import { reactPageTem } from "./nextjs/page.js";
 import { menuSqlTem } from "./sql/menu.sql";
+import { reactEditTem } from './nextjs/edit.js'
 
 const templates = {
     'tool/template/nestjs/entity.ts.vm': entityTem,
@@ -20,13 +20,10 @@ const templates = {
     'tool/template/nestjs/dao.ts.vm': daoTem,
     'tool/template/nestjs/service.ts.vm': serviceTem,
     'tool/template/nestjs/module.ts.vm': moduleTem,
-    // 'tool/template/vue/api.js.vm': apiTempalte,
-    // 'tool/template/vue/indexVue.vue.vm': indexVue,
-    // 'tool/template/vue/dialogVue.vue.vm': dialogVue,
-    'tool/template/react/service.ts.vm': reactServiceTem,
-    'tool/template/react/types.ts.vm': reactTypesTem,
-    'tool/template/react/index.ts.vm': reactIndexTem,
-    'tool/template/react/edit.ts.vm': reactEditTem,
+    'tool/template/nextjs/service.ts.vm': reactServiceTem,
+    'tool/template/nextjs/types.ts.vm': reactTypesTem,
+    'tool/template/nextjs/page.ts.vm': reactPageTem,
+    'tool/template/nextjs/edit.ts.vm': reactEditTem,
     'tool/template/sql/menu.sql.ts.vm': menuSqlTem,
 };
 

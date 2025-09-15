@@ -6,7 +6,7 @@ import { buildTreeData } from '@/app/common/utils/tree';
 import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
-import { addDept, exportDept, getDeptList, removeDept, updateDept } from '@/app/services/dept';
+import { addDept, exportDept, getDeptList, removeDept, updateDept } from '@/app/services/system/dept';
 import EditDept from './edit';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];

@@ -1,5 +1,6 @@
-import { request } from "../common/utils/axiosrequest";
-import { downloadFile } from "../common/utils/downloadFile";
+
+import { request } from "@/app/common/utils/axiosrequest";
+import { downloadFile } from "@/app/common/utils/downloadFile";
 
 
 // 查询部门列表

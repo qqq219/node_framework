@@ -1,13 +1,17 @@
+
+
+/**
+ * @author zhanjian
+ */
+
 'use client'
 import {FormProps,Table, Modal, Form, Input, Button, Select, message, Pagination} from 'antd';
 import type {TableProps, TableColumnsType} from 'antd';
 import { useEffect, useState } from 'react'
-import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
-import EditDictType from './edit';
-import { addDictType, exportDictType, getDictTypeList, removeDictType, updateDictType } from '@/app/services/system/dict';
-import Link from 'next/link';
+import EditDemoTestOne from './edit';
+import { addDemoTestOne, exportDemoTestOne, getDemoTestOneList, removeDemoTestOne, updateDemoTestOne } from '@/app/services/demoTestOne';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
 
@@ -16,10 +20,10 @@ type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
  *
  * @param fields
  */
-const handleUpdate = async (fields: API.System.DictType) => {
+const handleUpdate = async (fields: API.System.DemoTestOne) => {
   const hide = message.loading('loading...');
   try {
-    await updateDictType(fields);
+    await updateDemoTestOne(fields);
     hide();
     message.success('success');
     return true;
@@ -35,11 +39,11 @@ const handleUpdate = async (fields: API.System.DictType) => {
  *
  * @param selectedRows
  */
-const handleRemove = async (selectedRows: API.System.DictType[]) => {
+const handleRemove = async (selectedRows: API.System.DemoTestOne[]) => {
   const hide = message.loading('loading...');
   if (!selectedRows) return true;
   try {
-    await removeDictType(selectedRows.map((row) => row.dictId).join(','));
+    await removeDemoTestOne(selectedRows.map((row) => row.demoTestOneId).join(','));
     hide();
     message.success('success');
     return true;
@@ -50,12 +54,12 @@ const handleRemove = async (selectedRows: API.System.DictType[]) => {
   }
 };
 
-const handleRemoveOne = async (selectedRow: API.System.DictType) => {
+const handleRemoveOne = async (selectedRow: API.System.DemoTestOne) => {
   const hide = message.loading('loading...');
   if (!selectedRow) return true;
   try {
-    const params = [selectedRow.dictId];
-    await removeDictType(params.join(','));
+    const params = [selectedRow.demoTestOneId];
+    await removeDemoTestOne(params.join(','));
     hide();
     message.success('success');
     return true;
@@ -74,7 +78,7 @@ const handleRemoveOne = async (selectedRow: API.System.DictType) => {
 const handleExport = async () => {
   const hide = message.loading('loading...');
   try {
-    await exportDictType();
+    await exportDemoTestOne();
     hide();
     message.success('success');
     return true;
@@ -85,27 +89,27 @@ const handleExport = async () => {
   }
 };
 
-export default function DictTypePage() {
+export default function DemoTestOnePage() {
 
     const [editDialogVisible, setEditDialogVisible] = useState(false);
 
-    const [dictTypeList, setDictTypeList] = useState<API.System.DictType[]>([]);
+    const [demoTestOneList, setDemoTestOneList] = useState<API.System.DemoTestOne[]>([]);
 
     const [currentPage, setCurrentPage] = useState(1);
 
     const[totalCount,  setTotalCount] = useState(0);
 
-    const [currentRow, setCurrentRow] = useState<API.System.DictType>();
+    const [currentRow, setCurrentRow] = useState<API.System.DemoTestOne>();
 
     const [loading, setLoading] = useState(false);
 
     const [paramsForm] = Form.useForm();
 
-    const [selectedRows, setSelectedRows] = useState<API.System.DictType[]>([]);
+    const [selectedRows, setSelectedRows] = useState<API.System.DemoTestOne[]>([]);
 
     const onPageChange = (page:number, pageSize:number) => {
         setCurrentPage(page);
-        updateDictTypeList(page);
+        updateDemoTestOneList(page);
     }
 
     /**
@@ -113,9 +117,9 @@ export default function DictTypePage() {
      *
      * @param fields
      */
-    const handleAdd = async (fields: API.System.DictType) => {
+    const handleAdd = async (fields: API.System.DemoTestOne) => {
         try {
-            await addDictType(fields);
+            await addDemoTestOne(fields);
             message.success('success');
             return true;
         } catch (error) {
@@ -124,15 +128,15 @@ export default function DictTypePage() {
         }
     };
 
-    const updateDictTypeList = async (current:number) => {
+    const updateDemoTestOneList = async (current:number) => {
         setLoading(true);
         try{
-            const dictTypeListParams:API.System.DictTypeListParams = paramsForm.getFieldsValue();
-            dictTypeListParams.current = current as unknown as string;
-            dictTypeListParams.pageSize = "10";
-            const res = await getDictTypeList(dictTypeListParams);
-            const listData:API.System.DictType[] = res.data.rows as API.System.DictType[]
-            setDictTypeList(listData);
+            const demoTestOneListParams:API.System.DemoTestOneListParams = paramsForm.getFieldsValue();
+            demoTestOneListParams.current = current as unknown as string;
+            demoTestOneListParams.pageSize = "10";
+            const res = await getDemoTestOneList(demoTestOneListParams);
+            const listData:API.System.DemoTestOne[] = res.data.rows as API.System.DemoTestOne[]
+            setDemoTestOneList(listData);
             setTotalCount(res.data.total);
             setLoading(false);
         }
@@ -143,16 +147,16 @@ export default function DictTypePage() {
 
     const resetFormParams = () => {
         paramsForm.resetFields();
-        updateDictTypeList(1);
+        updateDemoTestOneList(1);
     }
 
     useEffect(() => {
-        updateDictTypeList(1);
+        updateDemoTestOneList(1);
     }, []);
 
-    const rowSelection: TableRowSelection<API.System.DictType> = {
+    const rowSelection: TableRowSelection<API.System.DemoTestOne> = {
         onChange: (selectedRowKeys, selectedRows) => {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            console.log('selectedRowKeys: ${selectedRowKeys}', 'selectedRows: ', selectedRows);
         },
         onSelect: (record, selected, selectedRows) => {
             console.log(record, selected, selectedRows);
@@ -164,51 +168,57 @@ export default function DictTypePage() {
         },
     };
 
-    const addMenuBtnOnClick = ()=>{
+    const addBtnOnClick = ()=>{
         setEditDialogVisible(!editDialogVisible);
     }
 
-    const onFinish: FormProps<API.System.DictTypeListParams>['onFinish'] = (values) => {
+    const onFinish: FormProps<API.System.DemoTestOneListParams>['onFinish'] = (values) => {
         console.log('Success:', values);
-        updateDictTypeList(currentPage)
+        updateDemoTestOneList(currentPage)
     };
 
-    const onFinishFailed: FormProps<API.System.DictTypeListParams>['onFinishFailed'] = (errorInfo) => {
+    const onFinishFailed: FormProps<API.System.DemoTestOneListParams>['onFinishFailed'] = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
-    const columns: TableColumnsType<API.System.DictType> = [
-    {
-        title: '字典主键',
-        dataIndex: 'dictId',
-        key: 'dictId',
-    },
-    {
-        title: '字典名称',
-        dataIndex: 'dictName',
-        key: 'dictName',
-    },
-    {
-        title: '字典类型',
-        dataIndex: 'dictType',
-        key: 'dictType',
-        render: (_, record) => {
-            return ( <Link href={"/system/dictdata/" + record.dictType}>{record.dictType}</Link>);
-        },
-    },
-    {
-        title: 'status',
+    const columns: TableColumnsType<API.System.DemoTestOne> = [
+    
+      {
+        title:"测试名",
+        dataIndex: 'testName',
+        key: 'testName',
+      },
+        
+      {
+        title:"测试类型",
+        dataIndex: 'testType',
+        key: 'testType',
+      },
+        
+      {
+        title:"状态",
         dataIndex: 'status',
         key: 'status',
-        render: (_, record) => {
-            return ( <Tag color={record.status == "0"?"blue":"red"}>{record.status == "0"?"正常":"停用"}</Tag>);
-        },
-    },
-    {
-        title: '备注',
+      },
+        
+      {
+        title:"测试内容",
+        dataIndex: 'testContent',
+        key: 'testContent',
+      },
+        
+      {
+        title:"生效时间",
+        dataIndex: 'startDate',
+        key: 'startDate',
+      },
+        
+      {
+        title:"备注",
         dataIndex: 'remark',
-        key: 'remark'
-    },
+        key: 'remark',
+      },
+        
     {
         title: '操作',
         key: 'action',
@@ -218,6 +228,7 @@ export default function DictTypePage() {
                 type="link"
                 size="small"
                 key="edit"
+                hidden={!access.hasPerms('system:demoTestOne:edit')}
                 onClick={() => {
                     setEditDialogVisible(true);
                     setCurrentRow(record);  
@@ -234,12 +245,13 @@ export default function DictTypePage() {
                     Modal.confirm({
                     title: '删除',
                     content: '确定删除该项吗',
+                    hidden={!access.hasPerms('system:demoTestOne:delete')}
                     okText: '确认',
                     cancelText: '取消',
                     onOk: async () => {
                         const success = await handleRemoveOne(record);
                         if (success) {
-                            updateDictTypeList(1);
+                            updateDemoTestOneList(1);
                         }
                     },
                     });
@@ -265,30 +277,49 @@ export default function DictTypePage() {
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
                         className='w-full flex !p-0 flex-row gap-3'>
-                        <Form.Item<API.System.DictType>
-                            label="字典名称"
-                            name="dictName"
-                            rules={[{ required: false, message: '请输入字典名称' }]}>
-                            <Input className='!w-64' allowClear/>
-                        </Form.Item>
-                        <Form.Item<API.System.DictType>
-                            label="字典类型"
-                            name="dictType"
-                            rules={[{ required: false, message: '请输入字典类型' }]}>
-                            <Input className='!w-64' allowClear/>
-                        </Form.Item>
-                        <Form.Item<API.System.DictType>
-                            label="状态"
-                            name="status"
-                            rules={[{ required: false, message: '请输入状态' }]}>
-                            <Select
-                                options={[
-                                    { value: '0', label: '正常' },
-                                    { value: '1', label: '停用' }
-                                ]}
-                                className='!w-64'
-                                allowClear/>
-                        </Form.Item>
+                        
+      <Form.Item<API.System.DemoTestOne>
+          label="测试名"
+          name="test_name"
+          rules={[{ required: true, message: '请输入测试名' }]}>
+          <Input className='!w-64' allowClear/><Input className='!w-64' allowClear/>
+      </Form.Item>
+        
+      <Form.Item<API.System.DemoTestOne>
+          label="测试类型"
+          name="test_type"
+          rules={[{ required: true, message: '请输入测试类型' }]}>
+          <Input className='!w-64' allowClear/>
+      </Form.Item>
+        
+      <Form.Item<API.System.DemoTestOne>
+          label="状态"
+          name="status"
+          rules={[{ required: true, message: '请输入状态' }]}>
+          <Input className='!w-64' allowClear/><Input className='!w-64' allowClear/>
+      </Form.Item>
+        
+      <Form.Item<API.System.DemoTestOne>
+          label="测试内容"
+          name="test_content"
+          rules={[{ required: true, message: '请输入测试内容' }]}>
+          <Input className='!w-64' allowClear/><Input className='!w-64' allowClear/>
+      </Form.Item>
+        
+      <Form.Item<API.System.DemoTestOne>
+          label="生效时间"
+          name="start_date"
+          rules={[{ required: true, message: '请输入生效时间' }]}>
+          <Input className='!w-64' allowClear/><Input className='!w-64' allowClear/>
+      </Form.Item>
+        
+      <Form.Item<API.System.DemoTestOne>
+          label="备注"
+          name="remark"
+          rules={[{ required: true, message: '请输入备注' }]}>
+          <Input className='!w-64' allowClear/><Input className='!w-64' allowClear/>
+      </Form.Item>
+        
                         <div className='flex-1 flex justify-start'>
                             <Button className='w-button-primary' onClick={resetFormParams}>重置</Button>
                             <Button type="primary" className='ml-5 w-button-primary' htmlType="submit">查询</Button>
@@ -300,13 +331,19 @@ export default function DictTypePage() {
             <div className="mt-6 flex-1 w-full rounded-md p-5 h-0" style={{border:"var(--border-primary)"}}>
                 <div className="h-full w-full flex flex-col">
                     <div className='w-full h-10 flex flex-row items-center pr-5'>
-                        <span className='text-1xl font-bold'>字典列表</span>
+                        <span className='text-1xl font-bold'>岗位列表</span>
                         <div className='flex flex-1 flex-row gap-5 items-end justify-end'>
-                            <Button type="primary" className='w-button-primary' onClick={addMenuBtnOnClick}>+ 新建</Button>
+                            <Button 
+                              type="primary" 
+                              className='w-button-primary' 
+                              onClick={addBtnOnClick}>
+                              hidden={!access.hasPerms('system:demoTestOne:add')}
+                              + 新建
+                            </Button>
                             <Button
                                 type="primary"
                                 key="remove"
-                                hidden={selectedRows?.length === 0}
+                                hidden={selectedRows?.length === 0 ..........}
                                 onClick={async () => {
                                     Modal.confirm({
                                         title: '是否确认删除所选数据项?',
@@ -316,7 +353,7 @@ export default function DictTypePage() {
                                             const success = await handleRemove(selectedRows);
                                             if (success) {
                                                 setSelectedRows([]);
-                                                updateDictTypeList(currentPage);
+                                                updateDemoTestOneList(currentPage);
                                             }
                                         },
                                         onCancel() {},
@@ -325,18 +362,18 @@ export default function DictTypePage() {
                                     批量删除
                             </Button>
                             <Button type="primary" className='w-button-primary' onClick={handleExport}>+ 导出</Button>
-                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateDictTypeList(currentPage)}}><SyncOutlined /></div>
+                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateDemoTestOneList(currentPage)}}><SyncOutlined /></div>
                         </div>
                     </div>
                     <div className='flex flex-1 flex-col mt-5 w-full h-0 overflow-auto'>
-                        <Table<API.System.DictType>
+                        <Table<API.System.DemoTestOne>
                             rowSelection={rowSelection}
-                            dataSource={dictTypeList}
+                            dataSource={demoTestOneList}
                             columns={columns}
                             loading={loading}
                             sticky={true}
                             pagination={false}
-                            rowKey="dictId"
+                            rowKey="demoTestOneId"
                         >
                         </Table>
                         <div className='mt-4 w-full flex flex-col items-center'>
@@ -346,20 +383,20 @@ export default function DictTypePage() {
                 </div>
             </div>
             {/*编辑弹窗 */}
-            <EditDictType
+            <EditDemoTestOne
                 onSubmit={async (values) => {
                     let success = false;
-                    if (values.menuId) {
-                        success = await handleUpdate({ ...values } as API.System.DictType);
+                    if (values.demoTestOneId) {
+                        success = await handleUpdate({ ...values } as API.System.DemoTestOne);
                     } else {
-                        success = await handleAdd({ ...values } as API.System.DictType);
+                        success = await handleAdd({ ...values } as API.System.DemoTestOne);
                     }
                     if (success) {
                         setEditDialogVisible(false);
                         setCurrentRow(undefined);
                         //延迟获取数据，防止取不到最新的数据
                         setTimeout(() => {
-                            updateDictTypeList(currentPage);
+                            updateDemoTestOneList(currentPage);
                         }, 100);
                     }
                 } }
@@ -368,8 +405,9 @@ export default function DictTypePage() {
                     setCurrentRow(undefined);
                 } }
                 values={currentRow || {}}
-                open={editDialogVisible} dictTypeList={[]}            >
-            </EditDictType>
+                open={editDialogVisible} demoTestOneList={[]}            >
+            </EditDemoTestOne>
      </div>
     );
 }
+    

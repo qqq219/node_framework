@@ -1,4 +1,4 @@
-import { request } from "../common/utils/axiosrequest";
+import { request } from "../../common/utils/axiosrequest";
 
 
 export async function getCaptchaImg(params?: Record<string, any>, options?: Record<string, any>) {

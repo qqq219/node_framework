@@ -7,7 +7,9 @@ export const reactServiceTem = (options) => {
   const primaryFiled = columns.find(filed => filed.isPk == "1");
   const primaryType = primaryFiled?(primaryFiled.javaType || "string"):"string"
   return `
-import { request } from '@umijs/max';
+
+import { request } from "@/app/common/utils/axiosrequest";
+import { downloadFile } from "@/app/common/utils/downloadFile";
 
 // query ${functionName} list
 export async function get${className}List(params?: API.${upperModuleName}.${className}ListParams) {
@@ -57,11 +59,13 @@ export async function remove${className}(ids: string) {
 }
 
 // export ${functionName}
-export function export${className}(params?: API.${upperModuleName}.${className}ListParams) {
-  return request<API.Result>(\`/api/${moduleName}/${businessName}/export\`, {
+export async function export${className}(params?: API.${upperModuleName}.${className}ListParams) {
+  const response = await request<API.Result>('/api/${moduleName}/${businessName}/export', {
     method: 'GET',
+    responseType: 'blob',
     params
   });
+  downloadFile(response, '${className}.xlsx');
 }
 
     `;

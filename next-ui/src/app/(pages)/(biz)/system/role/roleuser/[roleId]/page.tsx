@@ -5,7 +5,7 @@ import { use, useEffect, useState } from 'react'
 import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
-import { allocatedUserList, authUserCancel, authUserCancelAll, authUserSelectAll, unallocatedUserList } from '@/app/services/role';
+import { allocatedUserList, authUserCancel, authUserCancelAll, authUserSelectAll, unallocatedUserList } from '@/app/services/system/role';
 import UserSelectorModal from './userselector';
 import { HttpResult } from '@/app/common/enum/httpEnum';
 

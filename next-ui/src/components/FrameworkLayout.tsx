@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import "@/asserts/home.css";  
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Menu, message } from 'antd';
-import {getRouterList} from '../app/services/menu'
+import {getRouterList} from '../app/services/system/menu'
 import { buildTreeData } from '@/app/common/utils/tree';
 import { MenuType } from '@/app/common/enum/menu';
 import { createIcon } from '@/app/common/utils/IconUtil';

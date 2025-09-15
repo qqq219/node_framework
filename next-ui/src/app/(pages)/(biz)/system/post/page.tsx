@@ -2,11 +2,10 @@
 import {FormProps,Table, Modal, Form, Input, Button, Select, message, Pagination} from 'antd';
 import type {TableProps, TableColumnsType} from 'antd';
 import { useEffect, useState } from 'react'
-import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
 import EditPost from './edit';
-import { addPost, exportPost, getPostList, removePost, updatePost } from '@/app/services/post';
+import { addPost, exportPost, getPostList, removePost, updatePost } from '@/app/services/system/post';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
 
@@ -163,7 +162,7 @@ export default function PostPage() {
         },
     };
 
-    const addMenuBtnOnClick = ()=>{
+    const addBtnOnClick = ()=>{
         setEditDialogVisible(!editDialogVisible);
     }
 
@@ -304,7 +303,7 @@ export default function PostPage() {
                     <div className='w-full h-10 flex flex-row items-center pr-5'>
                         <span className='text-1xl font-bold'>岗位列表</span>
                         <div className='flex flex-1 flex-row gap-5 items-end justify-end'>
-                            <Button type="primary" className='w-button-primary' onClick={addMenuBtnOnClick}>+ 新建</Button>
+                            <Button type="primary" className='w-button-primary' onClick={addBtnOnClick}>+ 新建</Button>
                             <Button
                                 type="primary"
                                 key="remove"

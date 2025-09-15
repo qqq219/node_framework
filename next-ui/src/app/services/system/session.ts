@@ -1,8 +1,8 @@
 
 import { MenuDataItem } from '@ant-design/pro-components';
 import React, { lazy } from 'react';
-import { request } from '../common/utils/axiosrequest';
-import { createIcon } from '../common/utils/IconUtil';
+import { request } from '../../common/utils/axiosrequest';
+import { createIcon } from '../../common/utils/IconUtil';
 
 
 let remoteMenu: any = null;

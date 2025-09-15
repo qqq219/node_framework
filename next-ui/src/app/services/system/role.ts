@@ -1,6 +1,6 @@
-import { ContentType } from "../common/enum/httpEnum";
-import { request } from "../common/utils/axiosrequest";
-import { downloadFile } from "../common/utils/downloadFile";
+import { ContentType } from "../../common/enum/httpEnum";
+import { request } from "../../common/utils/axiosrequest";
+import { downloadFile } from "../../common/utils/downloadFile";
 
 
 // 查询角色信息列表

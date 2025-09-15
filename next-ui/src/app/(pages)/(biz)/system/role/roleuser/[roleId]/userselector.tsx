@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Form, FormProps, Input, Modal, Table, TableColumnsType, Tag } from 'antd';
 import { ActionType, ParamsType, ProColumns, ProTable, RequestData } from '@ant-design/pro-components';
-import { unallocatedUserList } from '@/app/services/role';
+import { unallocatedUserList } from '@/app/services/system/role';
 import { TableRowSelection } from 'antd/es/table/interface';
 
 export type DataScopeFormProps = {

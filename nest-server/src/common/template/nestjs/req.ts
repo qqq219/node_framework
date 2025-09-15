@@ -5,8 +5,8 @@ export const reqTem = (options) => {
 import { IsString, IsNumber, IsBoolean, IsDate, IsOptional, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from "class-transformer";
-import { PagingDto } from "apps/common/src/model/dto/PagingDto";
-import { ConvertDate } from "apps/common/src/model/ConvertDate";
+import { PagingDto } from "src/common/model/dto/PagingDto";
+import { ConvertDate } from "src/common/model/ConvertDate";
 
 export class ${className}Req extends PagingDto {
 ${req}

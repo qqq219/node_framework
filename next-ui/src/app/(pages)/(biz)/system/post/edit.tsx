@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Modal,Form,Row,Col,FormProps,Radio, Input } from 'antd';
-import _ from 'lodash';
 
 export type PostFormData = Record<string, unknown> & Partial<API.System.Post>;
 
@@ -16,8 +15,6 @@ const { TextArea } = Input;
 
 const EditPost: React.FC<PostFormProps> = (props) => {
     const [editPostForm] = Form.useForm();
-
-    const { postList } = props;
     
     const handleOk = () => {
         editPostForm.submit();

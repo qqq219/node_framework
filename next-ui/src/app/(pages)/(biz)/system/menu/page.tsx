@@ -3,7 +3,7 @@ import {FormProps,Table, Modal, Form, Input, Button, Select, message} from 'antd
 import type {TableProps, TableColumnsType} from 'antd';
 import { useEffect, useState } from 'react'
 import EditMenu from './edit';
-import {getMenuList, addMenu, updateMenu, removeMenu, exportMenu} from '../../../../services/menu'
+import {getMenuList, addMenu, updateMenu, removeMenu, exportMenu} from '../../../../services/system/menu'
 import { buildTreeData } from '@/app/common/utils/tree';
 import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'

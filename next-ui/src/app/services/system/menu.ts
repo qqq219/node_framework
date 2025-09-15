@@ -1,5 +1,5 @@
-import { request } from "../common/utils/axiosrequest";
-import { downloadFile } from "../common/utils/downloadFile";
+import { request } from "../../common/utils/axiosrequest";
+import { downloadFile } from "../../common/utils/downloadFile";
 
 // 查询菜单权限列表
 export async function getMenuList(params?: API.System.MenuListParams, options?: { [key: string]: any }) {

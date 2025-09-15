@@ -1,5 +1,5 @@
 import { checkRole, matchPermission } from './permission';
-import { getUserInfo } from '@/app/services/session';
+import { getUserInfo } from '@/app/services/system/session';
 /**
  * @see https://umijs.org/zh-CN/plugins/plugin-access
  * */

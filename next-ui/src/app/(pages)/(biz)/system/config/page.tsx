@@ -6,7 +6,7 @@ import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
 import EditConfig from './edit';
-import { addConfig, exportConfig, getConfigList, removeConfig, updateConfig } from '@/app/services/config';
+import { addConfig, exportConfig, getConfigList, removeConfig, updateConfig } from '@/app/services/system/config';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
 
@@ -34,6 +34,7 @@ const handleUpdate = async (fields: API.System.Config) => {
  *
  * @param selectedRows
  */
+
 const handleRemove = async (selectedRows: API.System.Config[]) => {
   const hide = message.loading('loading...');
   if (!selectedRows) return true;

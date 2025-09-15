@@ -1,6 +1,6 @@
 
-import { request } from "../common/utils/axiosrequest";
-import { downLoadZip } from "../common/utils/downloadFile";
+import { request } from "../../common/utils/axiosrequest";
+import { downLoadZip } from "../../common/utils/downloadFile";
 
 
 // 查询分页列表

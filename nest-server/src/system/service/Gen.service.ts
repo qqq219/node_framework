@@ -179,26 +179,15 @@ export class GenService{
         { content: list['tool/template/nestjs/dao.ts.vm'], path: `nestjs/${item.packageName}/dao/${item.className}.dao.ts` },
         { content: list['tool/template/nestjs/service.ts.vm'], path: `nestjs/${item.packageName}/service/${item.className}.service.ts` },
         { content: list['tool/template/nestjs/module.ts.vm'], path: `nestjs/${item.packageName}/${item.className}.module.ts` },
+        // nextjs-ui
+        { content: list['tool/template/nextjs/service.ts.vm'], path: `nextjs/src/app/common/services/${item.moduleName}/${lfclassName}.ts` },
 
-        // { content: list['tool/template/vue/api.js.vm'], path: `vue/${item.BusinessName}/${item.businessName}.js` },
-        // { content: list['tool/template/vue/indexVue.vue.vm'], path: `vue/${item.BusinessName}/${item.businessName}/index.vue` },
-        // { content: list['tool/template/vue/dialogVue.vue.vm'], path: `vue/${item.BusinessName}/${item.businessName}/components/indexDialog.vue` },
-        // react-ui
-        { content: list['tool/template/react/service.ts.vm'], path: `react/services/${item.moduleName}/${lfclassName}.ts` },
-
-        { content: list['tool/template/react/types.ts.vm'], path: `react/types/${item.moduleName}/${lfclassName}.d.ts` },
-        { content: list['tool/template/react/index.ts.vm'], path: `react/pages/${uppercaseFirstLetter(item.moduleName)}/${item.className}/index.tsx` },
-        { content: list['tool/template/react/edit.ts.vm'], path: `react/pages/${uppercaseFirstLetter(item.moduleName)}/${item.className}/edit.tsx` },
+        { content: list['tool/template/nextjs/types.ts.vm'], path: `nextjs/src/app/common/model//${item.moduleName}/${lfclassName}.d.ts` },
+        { content: list['tool/template/nextjs/page.ts.vm'], path: `nextjs/src/app/(page)/(biz)/${lowercaseFirstLetter(item.moduleName)}/${lfclassName}/page.tsx` },
+        { content: list['tool/template/nextjs/edit.ts.vm'], path: `nextjs/src/app/(page)/(biz)/${lowercaseFirstLetter(item.moduleName)}/${lfclassName}/edit.tsx` },
         //menu sql
         { content: list['tool/template/sql/menu.sql.ts.vm'], path: `/${lfclassName}Menu.sql` },
       ];
-      if(i18n){
-        templates= [
-          ...templates,
-          { content: list['tool/template/react/i18n.zh.ts.vm'], path: `react/locales/zh-CN/${item.moduleName}/${lfclassName}.ts` },
-          { content: list['tool/template/react/i18n.en.ts.vm'], path: `react/locales/en-US/${item.moduleName}/${lfclassName}.ts` },
-        ]
-      }
 
       for (const template of templates) {
         if (!template.content) throw new Error('One or more templates are undefined');

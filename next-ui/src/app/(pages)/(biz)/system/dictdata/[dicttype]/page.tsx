@@ -6,8 +6,8 @@ import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
 import EditDictData from './edit';
-import { addDictData, exportDictData, getDictDataList, removeDictData, updateDictData } from '@/app/services/dictdata';
-import { getByDictType, getDictType } from '@/app/services/dict';
+import { addDictData, exportDictData, getDictDataList, removeDictData, updateDictData } from '@/app/services/system/dictdata';
+import { getByDictType, getDictType } from '@/app/services/system/dict';
 import Link from 'next/link';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];

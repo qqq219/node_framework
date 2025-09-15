@@ -53,6 +53,10 @@ import { GenController } from './controller/Gen.controller';
 import { GenService } from './service/Gen.service';
 import { GenTableColumnEntity } from './model/entity/GenTableCloumn.entity';
 import { GenTableEntity } from './model/entity/GenTable.entity';
+import { DemoTestOneEntity } from './model/entity/DemoTestOne.entity';
+import { DemoTestOneController } from './controller/DemoTestOne.controller';
+import { DemoTestOneService } from './service/DemoTestOne.service';
+import { DemoTestOneDao } from './dao/DemoTestOne.dao';
 
 @Module({
   imports: [
@@ -87,21 +91,21 @@ import { GenTableEntity } from './model/entity/GenTable.entity';
     }),
     TypeOrmModule.forFeature([
       SysMenuEntity, SysDeptEntity, SysPostEntity, SysDictDataEntity, SysDictTypeEntity, SysConfigEntity, SysRoleEntity, SysRoleMenuEntity,SysUserEntity,
-      SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity,SysLogininforEntity,SysOperlogEntity,GenTableColumnEntity,GenTableEntity
+      SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity,SysLogininforEntity,SysOperlogEntity,GenTableColumnEntity,GenTableEntity,DemoTestOneEntity
     ])
   ],
   controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController, SysRoleController,SysUserController,
-    SysFileController, GenController
+    SysFileController, GenController, DemoTestOneController
   ],
   providers: [
     //service
     ...[
         SysMenuService, SysDeptService, SysPostService, SysDictTypeService, SysDictDataService, SysConfigService, RedisUtil, SysRoleService, SysUserService,
-        SysLogininforService,SysOperlogService,GenService
+        SysLogininforService,SysOperlogService,GenService,DemoTestOneService
     ],
     //dao
     ...[
-      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao, SysRoleDao, SysUserDao, SysLogininforDao, SysOperlogDao,
+      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao, SysRoleDao, SysUserDao, SysLogininforDao, SysOperlogDao,DemoTestOneDao
     ]
   ],
   exports: [SysUserService, SysLogininforService,SysOperlogService]

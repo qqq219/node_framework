@@ -1,6 +1,6 @@
 import { Button, Card, message, Layout, TableColumnsType, Table, Modal, Form, FormProps, Input, Pagination } from 'antd';
 import React, { useState } from 'react';
-import { importTables, queryTableList } from '@/app/services/gen';
+import { importTables, queryTableList } from '@/app/services/system/gen';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { SyncOutlined } from '@ant-design/icons';
 

@@ -5,7 +5,7 @@ import { use, useEffect, useState } from 'react'
 import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import EditGen from './edit';
-import { batchGenCode, genCode, getGenCodeList, previewCode, removeData, syncDbInfo, updateData } from '@/app/services/gen';
+import { batchGenCode, genCode, getGenCodeList, previewCode, removeData, syncDbInfo, updateData } from '@/app/services/system/gen';
 import { useRouter } from 'next/navigation';
 import ImportTableList from './import';
 import PreviewModel from './PreviewModel';

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Dropdown, MenuProps, message, Image } from 'antd';
 import { clearSessionToken } from '@/app/common/utils/access';
 import { useRouter } from 'next/navigation';
-import { logout } from '@/app/services/auth';
+import { logout } from '@/app/services/system/auth';
 import { setInitialState, setLoading } from '@/app/common/store/store';
 import { useDispatch, useSelector } from 'react-redux';
 

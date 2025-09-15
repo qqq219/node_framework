@@ -1,8 +1,8 @@
 
 import { DataNode } from 'antd/es/tree';
-import { request } from '../common/utils/axiosrequest';
-import { formatTreeData } from '../common/utils/tree';
-import { downloadFile } from '../common/utils/downloadFile';
+import { request } from '../../common/utils/axiosrequest';
+import { formatTreeData } from '../../common/utils/tree';
+import { downloadFile } from '../../common/utils/downloadFile';
 
 // 查询用户信息列表
 export async function getUserList(params?: API.System.UserListParams, options?: { [key: string]: any }) {

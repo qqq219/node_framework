@@ -6,7 +6,7 @@ import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
 import EditRole from './edit';
-import { addRole, exportRole, getDeptTreeSelect, getRole, getRoleList, getRoleMenuList, removeRole, updateRole, updateRoleDataScope } from '@/app/services/role';
+import { addRole, exportRole, getDeptTreeSelect, getRole, getRoleList, getRoleMenuList, removeRole, updateRole, updateRoleDataScope } from '@/app/services/system/role';
 import { DataNode } from 'antd/es/tree';
 import { formatDeptTreeData, formatRoleMenuTreeData } from '@/app/common/utils/tree';
 import DataScopeEdit from './datascopeedit';
