@@ -6,6 +6,8 @@
  * @return 是否包含
  */
 
+import { GenTableColumnEntity } from "src/system/model/entity/GenTableCloumn.entity";
+
 export function arraysContains(array: string[], value: string): boolean {
   return array.includes(value);
 }
@@ -67,5 +69,15 @@ export function lowercaseFirstLetter(str) {
 }
 export function uppercaseFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function getPkField(columns:GenTableColumnEntity[]):string{
+  const item = columns.find(item=>{
+    item.isPk == "1";
+  });
+  if(item == null){
+    return columns[0].javaField
+  }
+  return item.javaField;
 }
 

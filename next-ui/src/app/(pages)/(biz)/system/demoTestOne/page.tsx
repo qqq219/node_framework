@@ -1,5 +1,3 @@
-
-
 /**
  * @author zhanjian
  */
@@ -10,8 +8,10 @@ import type {TableProps, TableColumnsType} from 'antd';
 import { useEffect, useState } from 'react'
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
+import access from '@/app/common/utils/access';
+import { useSelector } from 'react-redux';
 import EditDemoTestOne from './edit';
-import { addDemoTestOne, exportDemoTestOne, getDemoTestOneList, removeDemoTestOne, updateDemoTestOne } from '@/app/services/demoTestOne';
+import { addDemoTestOne, exportDemoTestOne, getDemoTestOneList, removeDemoTestOne, updateDemoTestOne } from '@/app/services/system/demoTestOne';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
 
@@ -43,7 +43,7 @@ const handleRemove = async (selectedRows: API.System.DemoTestOne[]) => {
   const hide = message.loading('loading...');
   if (!selectedRows) return true;
   try {
-    await removeDemoTestOne(selectedRows.map((row) => row.demoTestOneId).join(','));
+    await removeDemoTestOne(selectedRows.map((row) => row.testId).join(','));
     hide();
     message.success('success');
     return true;
@@ -58,7 +58,7 @@ const handleRemoveOne = async (selectedRow: API.System.DemoTestOne) => {
   const hide = message.loading('loading...');
   if (!selectedRow) return true;
   try {
-    const params = [selectedRow.demoTestOneId];
+    const params = [selectedRow.testId];
     await removeDemoTestOne(params.join(','));
     hide();
     message.success('success');
@@ -90,6 +90,8 @@ const handleExport = async () => {
 };
 
 export default function DemoTestOnePage() {
+
+    const userInfo = useSelector((state:API.CurrentUser) => state.userinfo);
 
     const [editDialogVisible, setEditDialogVisible] = useState(false);
 
@@ -228,7 +230,7 @@ export default function DemoTestOnePage() {
                 type="link"
                 size="small"
                 key="edit"
-                hidden={!access.hasPerms('system:demoTestOne:edit')}
+                hidden={!access(userInfo).hasPerms('system:demoTestOne:edit')}
                 onClick={() => {
                     setEditDialogVisible(true);
                     setCurrentRow(record);  
@@ -245,7 +247,6 @@ export default function DemoTestOnePage() {
                     Modal.confirm({
                     title: '删除',
                     content: '确定删除该项吗',
-                    hidden={!access.hasPerms('system:demoTestOne:delete')}
                     okText: '确认',
                     cancelText: '取消',
                     onOk: async () => {
@@ -280,14 +281,14 @@ export default function DemoTestOnePage() {
                         
       <Form.Item<API.System.DemoTestOne>
           label="测试名"
-          name="test_name"
+          name="testName"
           rules={[{ required: true, message: '请输入测试名' }]}>
-          <Input className='!w-64' allowClear/><Input className='!w-64' allowClear/>
+          <Input className='!w-64' allowClear/>
       </Form.Item>
         
       <Form.Item<API.System.DemoTestOne>
           label="测试类型"
-          name="test_type"
+          name="testType"
           rules={[{ required: true, message: '请输入测试类型' }]}>
           <Input className='!w-64' allowClear/>
       </Form.Item>
@@ -296,28 +297,28 @@ export default function DemoTestOnePage() {
           label="状态"
           name="status"
           rules={[{ required: true, message: '请输入状态' }]}>
-          <Input className='!w-64' allowClear/><Input className='!w-64' allowClear/>
+          <Input className='!w-64' allowClear/>
       </Form.Item>
         
       <Form.Item<API.System.DemoTestOne>
           label="测试内容"
-          name="test_content"
+          name="testContent"
           rules={[{ required: true, message: '请输入测试内容' }]}>
-          <Input className='!w-64' allowClear/><Input className='!w-64' allowClear/>
+          <Input className='!w-64' allowClear/>
       </Form.Item>
         
       <Form.Item<API.System.DemoTestOne>
           label="生效时间"
-          name="start_date"
+          name="startDate"
           rules={[{ required: true, message: '请输入生效时间' }]}>
-          <Input className='!w-64' allowClear/><Input className='!w-64' allowClear/>
+          <Input className='!w-64' allowClear/>
       </Form.Item>
         
       <Form.Item<API.System.DemoTestOne>
           label="备注"
           name="remark"
           rules={[{ required: true, message: '请输入备注' }]}>
-          <Input className='!w-64' allowClear/><Input className='!w-64' allowClear/>
+          <Input className='!w-64' allowClear/>
       </Form.Item>
         
                         <div className='flex-1 flex justify-start'>
@@ -331,19 +332,19 @@ export default function DemoTestOnePage() {
             <div className="mt-6 flex-1 w-full rounded-md p-5 h-0" style={{border:"var(--border-primary)"}}>
                 <div className="h-full w-full flex flex-col">
                     <div className='w-full h-10 flex flex-row items-center pr-5'>
-                        <span className='text-1xl font-bold'>岗位列表</span>
+                        <span className='text-1xl font-bold'>测试demo1</span>
                         <div className='flex flex-1 flex-row gap-5 items-end justify-end'>
                             <Button 
                               type="primary" 
                               className='w-button-primary' 
-                              onClick={addBtnOnClick}>
-                              hidden={!access.hasPerms('system:demoTestOne:add')}
+                              onClick={addBtnOnClick}
+                              hidden={!access(userInfo).hasPerms('system:demoTestOne:add')}>
                               + 新建
                             </Button>
                             <Button
                                 type="primary"
                                 key="remove"
-                                hidden={selectedRows?.length === 0 ..........}
+                                hidden={selectedRows?.length === 0}
                                 onClick={async () => {
                                     Modal.confirm({
                                         title: '是否确认删除所选数据项?',
@@ -373,7 +374,7 @@ export default function DemoTestOnePage() {
                             loading={loading}
                             sticky={true}
                             pagination={false}
-                            rowKey="demoTestOneId"
+                            rowKey="testId"
                         >
                         </Table>
                         <div className='mt-4 w-full flex flex-col items-center'>
@@ -386,7 +387,7 @@ export default function DemoTestOnePage() {
             <EditDemoTestOne
                 onSubmit={async (values) => {
                     let success = false;
-                    if (values.demoTestOneId) {
+                    if (values.testId) {
                         success = await handleUpdate({ ...values } as API.System.DemoTestOne);
                     } else {
                         success = await handleAdd({ ...values } as API.System.DemoTestOne);
@@ -410,4 +411,3 @@ export default function DemoTestOnePage() {
      </div>
     );
 }
-    

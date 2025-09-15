@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { getCaptchaImg, login } from "@/app/services/system/auth";
 import { clearSessionToken, fetchUserInfo, setSessionToken } from "@/app/common/utils/access";
 import { setInitialState } from "@/app/common/store/store";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 
 
@@ -21,7 +21,15 @@ export default function LoginPage(){
     const router = useRouter()
     const [spinning, setSpinning] = useState(false);
     const dispatchEvent = useDispatch();
-    
+    const userInfo = useSelector((state:API.CurrentUser) => state.userinfo);
+    useEffect(()=>{
+        if(userInfo == null || userInfo.userId == undefined){
+            const urlParams = new URL(window.location.href).searchParams;
+            if(urlParams.get('redirect') != "/login"){
+                refreshUserInfo();
+            }
+        }
+    },[]);
     const handleResize = () => {
         const containerWidth = window.innerWidth < 1280?1280:window.innerWidth
         const widthCalcuByHeight = window.innerHeight * 16 / 9;
@@ -47,8 +55,11 @@ export default function LoginPage(){
 
     const refreshUserInfo = async () => {
         const userInfo = await fetchUserInfo();
-        if (userInfo) {
+        if (userInfo && userInfo.userId) {
             dispatchEvent(setInitialState(userInfo));
+            const urlParams = new URL(window.location.href).searchParams;
+            setSpinning(false);
+            router.push(urlParams.get('redirect') || '/system/dashboard');
         }
     };
 
@@ -64,10 +75,6 @@ export default function LoginPage(){
                 setSessionToken(response.data.data?.access_token, response.data.data?.access_token, expireTime);
                 message.success(defaultLoginSuccessMessage);
                 await refreshUserInfo();
-                console.log('login ok');
-                const urlParams = new URL(window.location.href).searchParams;
-                setSpinning(false);
-                router.push(urlParams.get('redirect') || '/system/dashboard');
                 return;
             } else {
                 console.log(response.data.msg);

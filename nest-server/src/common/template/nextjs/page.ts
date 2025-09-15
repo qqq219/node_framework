@@ -1,13 +1,12 @@
 import { GenTableColumnEntity } from "src/system/model/entity/GenTableCloumn.entity";
-import { lowercaseFirstLetter, uppercaseFirstLetter } from "../../utils/gen.tool";
+import { getPkField, lowercaseFirstLetter, uppercaseFirstLetter } from "../../utils/gen.tool";
 
 export const reactPageTem = (options) => {
-  const { businessName, functionAuthor, moduleName,className,columns } = options;
+  const { businessName, functionName, functionAuthor, moduleName,className,columns } = options;
   const lfclassName = lowercaseFirstLetter(className);
   const upperModuleName = uppercaseFirstLetter(moduleName);
-  return `
-
-/**
+  const pkField:string = getPkField(columns);
+  return `/**
  * @author ${functionAuthor}
  */
 
@@ -17,8 +16,10 @@ import type {TableProps, TableColumnsType} from 'antd';
 import { useEffect, useState } from 'react'
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import { Tag } from 'antd';
+import access from '@/app/common/utils/access';
+import { useSelector } from 'react-redux';
 import Edit${className} from './edit';
-import { add${className}, export${className}, get${className}List, remove${className}, update${className} } from '@/app/services/${lfclassName}';
+import { add${className}, export${className}, get${className}List, remove${className}, update${className} } from '@/app/services/${moduleName}/${lfclassName}';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
 
@@ -50,7 +51,7 @@ const handleRemove = async (selectedRows: API.${upperModuleName}.${className}[])
   const hide = message.loading('loading...');
   if (!selectedRows) return true;
   try {
-    await remove${className}(selectedRows.map((row) => row.${lfclassName}Id).join(','));
+    await remove${className}(selectedRows.map((row) => row.${pkField}).join(','));
     hide();
     message.success('success');
     return true;
@@ -65,7 +66,7 @@ const handleRemoveOne = async (selectedRow: API.${upperModuleName}.${className})
   const hide = message.loading('loading...');
   if (!selectedRow) return true;
   try {
-    const params = [selectedRow.${lfclassName}Id];
+    const params = [selectedRow.${pkField}];
     await remove${className}(params.join(','));
     hide();
     message.success('success');
@@ -97,6 +98,8 @@ const handleExport = async () => {
 };
 
 export default function ${className}Page() {
+
+    const userInfo = useSelector((state:API.CurrentUser) => state.userinfo);
 
     const [editDialogVisible, setEditDialogVisible] = useState(false);
 
@@ -199,7 +202,7 @@ export default function ${className}Page() {
                 type="link"
                 size="small"
                 key="edit"
-                hidden={!access.hasPerms('${moduleName}:${businessName}:edit')}
+                hidden={!access(userInfo).hasPerms('${moduleName}:${businessName}:edit')}
                 onClick={() => {
                     setEditDialogVisible(true);
                     setCurrentRow(record);  
@@ -216,7 +219,6 @@ export default function ${className}Page() {
                     Modal.confirm({
                     title: '删除',
                     content: '确定删除该项吗',
-                    hidden={!access.hasPerms('${moduleName}:${businessName}:delete')}
                     okText: '确认',
                     cancelText: '取消',
                     onOk: async () => {
@@ -260,19 +262,19 @@ export default function ${className}Page() {
             <div className="mt-6 flex-1 w-full rounded-md p-5 h-0" style={{border:"var(--border-primary)"}}>
                 <div className="h-full w-full flex flex-col">
                     <div className='w-full h-10 flex flex-row items-center pr-5'>
-                        <span className='text-1xl font-bold'>岗位列表</span>
+                        <span className='text-1xl font-bold'>${functionName}</span>
                         <div className='flex flex-1 flex-row gap-5 items-end justify-end'>
                             <Button 
                               type="primary" 
                               className='w-button-primary' 
-                              onClick={addBtnOnClick}>
-                              hidden={!access.hasPerms('${moduleName}:${businessName}:add')}
+                              onClick={addBtnOnClick}
+                              hidden={!access(userInfo).hasPerms('${moduleName}:${businessName}:add')}>
                               + 新建
                             </Button>
                             <Button
                                 type="primary"
                                 key="remove"
-                                hidden={selectedRows?.length === 0 ..........}
+                                hidden={selectedRows?.length === 0}
                                 onClick={async () => {
                                     Modal.confirm({
                                         title: '是否确认删除所选数据项?',
@@ -302,7 +304,7 @@ export default function ${className}Page() {
                             loading={loading}
                             sticky={true}
                             pagination={false}
-                            rowKey="${lfclassName}Id"
+                            rowKey="${pkField}"
                         >
                         </Table>
                         <div className='mt-4 w-full flex flex-col items-center'>
@@ -315,7 +317,7 @@ export default function ${className}Page() {
             <Edit${className}
                 onSubmit={async (values) => {
                     let success = false;
-                    if (values.${lfclassName}Id) {
+                    if (values.${pkField}) {
                         success = await handleUpdate({ ...values } as API.${upperModuleName}.${className});
                     } else {
                         success = await handleAdd({ ...values } as API.${upperModuleName}.${className});
@@ -381,7 +383,7 @@ export default function ${className}Page() {
     if(item.htmlType == 'select'){
       //todo
     }else{
-      str+=`<Input className='!w-64' allowClear/>`
+      str=`<Input className='!w-64' allowClear/>`
     }
     return str
   }

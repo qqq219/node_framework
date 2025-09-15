@@ -1,12 +1,10 @@
 import { checkRole, matchPermission } from './permission';
 import { getUserInfo } from '@/app/services/system/session';
-/**
- * @see https://umijs.org/zh-CN/plugins/plugin-access
- * */
-export default function access(initialState: { currentUser?: API.CurrentUser } | undefined) {
+
+export default function access(initialState: API.CurrentUser | undefined) {
   const { currentUser } = initialState ?? {};
   const hasPerms = (perm: string) => {
-    return matchPermission(initialState?.currentUser?.permissions, perm);
+    return matchPermission(initialState?.permissions, perm);
   };
   const roleFiler = (route: { authority: string[] }) => {
     return checkRole(initialState?.currentUser?.roles, route.authority);

@@ -1,5 +1,3 @@
-
-
 /**
  * @author zhanjian
  */
@@ -38,7 +36,7 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
 
     useEffect(() => {
         editDemoTestOneForm.resetFields();
-        if(props.values.demoTestOneId != undefined){
+        if(props.values.testId != undefined){
             editDemoTestOneForm.setFieldsValue({
                 
       testId: props.values.testId,
@@ -59,7 +57,7 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
     return (
         <div>
             <Modal
-                title="添加/编辑岗位"
+                title="添加/编辑demoTestOne"
                 closable={{ 'aria-label': 'Custom Close Button' }}
                 open={props.open}
                 onOk={handleOk}
@@ -76,8 +74,8 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
                     className='!p-5'
                 >
                     <Form.Item<API.System.DemoTestOne>
-                        name="demoTestOneId"
-                        label="demoTestOneId"
+                        name="testId"
+                        label="testId"
                         hidden={true}
                         >
                     </Form.Item>
@@ -87,8 +85,8 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
         <Col span={12}>
             <Form.Item<API.System.DemoTestOne>
                 label="测试id111"
-                name="test_id"
-                rules={[{ required: 0, message: '请输入测试id111' }]}
+                name="testId"
+                rules={[{ required: true, message: '请输入测试id111' }]}
                 labelCol={{span: 6}}
                 >
                 <Input placeholder="请输入测试id111" />
@@ -98,8 +96,8 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
         <Col span={12}>
             <Form.Item<API.System.DemoTestOne>
                 label="测试名"
-                name="test_name"
-                rules={[{ required: 0, message: '请输入测试名' }]}
+                name="testName"
+                rules={[{ required: true, message: '请输入测试名' }]}
                 labelCol={{span: 6}}
                 >
                 <Input placeholder="请输入测试名" />
@@ -109,8 +107,8 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
         <Col span={12}>
             <Form.Item<API.System.DemoTestOne>
                 label="测试类型"
-                name="test_type"
-                rules={[{ required: 0, message: '请输入测试类型' }]}
+                name="testType"
+                rules={[{ required: true, message: '请输入测试类型' }]}
                 labelCol={{span: 6}}
                 >
                 <Input placeholder="请输入测试类型" />
@@ -121,7 +119,7 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
             <Form.Item<API.System.DemoTestOne>
                 label="状态"
                 name="status"
-                rules={[{ required: 0, message: '请输入状态' }]}
+                rules={[{ required: true, message: '请输入状态' }]}
                 labelCol={{span: 6}}
                 >
                 <Input placeholder="请输入状态" />
@@ -131,8 +129,8 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
         <Col span={12}>
             <Form.Item<API.System.DemoTestOne>
                 label="测试内容"
-                name="test_content"
-                rules={[{ required: 0, message: '请输入测试内容' }]}
+                name="testContent"
+                rules={[{ required: true, message: '请输入测试内容' }]}
                 labelCol={{span: 6}}
                 >
                 <Input placeholder="请输入测试内容" />
@@ -142,8 +140,8 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
         <Col span={12}>
             <Form.Item<API.System.DemoTestOne>
                 label="生效时间"
-                name="start_date"
-                rules={[{ required: 0, message: '请输入生效时间' }]}
+                name="startDate"
+                rules={[{ required: true, message: '请输入生效时间' }]}
                 labelCol={{span: 6}}
                 >
                 <Input placeholder="请输入生效时间" />
@@ -154,7 +152,7 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
             <Form.Item<API.System.DemoTestOne>
                 label="备注"
                 name="remark"
-                rules={[{ required: 0, message: '请输入备注' }]}
+                rules={[{ required: true, message: '请输入备注' }]}
                 labelCol={{span: 6}}
                 >
                 <Input placeholder="请输入备注" />
@@ -170,5 +168,3 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
 }
 
 export default EditDemoTestOne;
-
-    

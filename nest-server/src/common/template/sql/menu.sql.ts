@@ -8,7 +8,7 @@ export const menuSqlTem = (options) => {
 
 -- 菜单 (Menu) SQL
 insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-values('${functionName}', '${optObj.parentMenuId}', '1', '${lfclassName}', '/${uppercaseFirstLetter(moduleName)}/${className}', 1, 0, 'C', '0', '0', '${moduleName}:${businessName}:list', '#', 'admin', sysdate(), '', null, '${functionName} Menu');
+values('${functionName}', '${optObj.parentMenuId}', '1', '${lfclassName}', '/${lowercaseFirstLetter(moduleName)}/${lfclassName}', 1, 0, 'C', '0', '0', '${moduleName}:${businessName}:list', '#', 'admin', sysdate(), '', null, '${functionName} Menu');
 
 -- 操作权限父菜单 (operate permission parent menu) ID
 SELECT @parentId := LAST_INSERT_ID();

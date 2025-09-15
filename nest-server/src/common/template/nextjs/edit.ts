@@ -119,7 +119,7 @@ export default Edit${className};
             <Form.Item<API.${upperModuleName}.${className}>
                 label="${item.columnComment}"
                 name="${item.javaField}"
-                rules={[{ required: ${item.isRequired}, message: '请输入${item.columnComment}' }]}
+                rules={[{ required: ${item.isRequired?true:false}, message: '请输入${item.columnComment}' }]}
                 labelCol={{span: 6}}
                 >
                 <Input placeholder="请输入${item.columnComment}" />
