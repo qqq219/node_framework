@@ -102,6 +102,8 @@ export default function UserPage() {
 
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [pageSize, setPageSize] = useState(10);
+
     const[totalCount,  setTotalCount] = useState(0);
 
     const [currentRow, setCurrentRow] = useState<API.System.User>();
@@ -121,7 +123,8 @@ export default function UserPage() {
 
     const onPageChange = (page:number, pageSize:number) => {
         setCurrentPage(page);
-        updateUserList(page);
+        setPageSize(pageSize);
+        updateUserList(page, pageSize);
     }
 
     const fetchUserInfo = async (userId: number) => {
@@ -163,12 +166,12 @@ export default function UserPage() {
         }
     };
 
-    const updateUserList = async (current:number) => {
+    const updateUserList = async (current:number, pageSize:number) => {
         setLoading(true);
         try{
             const userListParams = paramsForm.getFieldsValue();
             userListParams.current = current as unknown as string;
-            userListParams.pageSize = "10";
+            userListParams.pageSize = String(pageSize);
             const res = await getUserList({...userListParams,...{deptId:deptId}});
             const listData:API.System.User[] = res.data.rows as API.System.User[]
             setUserList(listData);
@@ -182,7 +185,7 @@ export default function UserPage() {
 
     const resetFormParams = () => {
         paramsForm.resetFields();
-        updateUserList(1);
+        updateUserList(1, pageSize);
     }
 
     const updateDeptTreeData = async () => {
@@ -199,12 +202,12 @@ export default function UserPage() {
         getDictSelectOption('sys_user_sex').then((data) => {
             setSexOptions(data);
         });
-        updateUserList(1);
+        updateUserList(1, pageSize);
         updateDeptTreeData();
     }, []);
 
     useEffect( () => {
-        updateUserList(1);
+        updateUserList(1, pageSize);
     }, [deptId]);
 
     const rowSelection: TableRowSelection<API.System.User> = {
@@ -252,7 +255,7 @@ export default function UserPage() {
 
     const onFinish: FormProps<API.System.UserListParams>['onFinish'] = (values) => {
         console.log('Success:', values);
-        updateUserList(currentPage)
+        updateUserList(currentPage, pageSize)
     };
 
     const onFinishFailed: FormProps<API.System.UserListParams>['onFinishFailed'] = (errorInfo) => {
@@ -326,7 +329,7 @@ export default function UserPage() {
                     onOk: async () => {
                         const success = await handleRemoveOne(record);
                         if (success) {
-                            updateUserList(1);
+                            updateUserList(1, pageSize);
                         }
                     },
                     });
@@ -432,7 +435,7 @@ export default function UserPage() {
                                                 const success = await handleRemove(selectedRows);
                                                 if (success) {
                                                     setSelectedRows([]);
-                                                    updateUserList(currentPage);
+                                                    updateUserList(currentPage, pageSize);
                                                 }
                                             },
                                             onCancel() {},
@@ -441,7 +444,7 @@ export default function UserPage() {
                                         批量删除
                                 </Button>
                                 <Button type="primary" className='w-button-primary' onClick={handleExport}>+ 导出</Button>
-                                <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateUserList(currentPage)}}><SyncOutlined /></div>
+                                <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateUserList(currentPage, pageSize)}}><SyncOutlined /></div>
                             </div>
                         </div>
                         <div className='flex flex-1 flex-col mt-5 w-full h-0 overflow-auto'>
@@ -473,7 +476,7 @@ export default function UserPage() {
                         if (success) {
                             setEditDialogVisible(false);
                             setCurrentRow(undefined);
-                            updateUserList(1);
+                            updateUserList(1, pageSize);
                         }
                     }}
                     onCancel={() => {

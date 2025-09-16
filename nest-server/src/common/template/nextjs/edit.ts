@@ -1,12 +1,12 @@
-import { lowercaseFirstLetter, uppercaseFirstLetter } from "../../utils/gen.tool";
+import { getPkField, lowercaseFirstLetter, uppercaseFirstLetter } from "../../utils/gen.tool";
 import { GenConstants } from "../../model/constant/GenConstants";
 import { GenTableColumnEntity } from "src/system/model/entity/GenTableCloumn.entity";
 
 export const reactEditTem = (options) => {
-  const { businessName, functionAuthor, moduleName,className,columns } = options;
+  const { functionName, functionAuthor, moduleName,className,columns } = options;
   const lfclassName = lowercaseFirstLetter(className);
   const upperModuleName = uppercaseFirstLetter(moduleName);
-  const primaryFiled = columns.find(filed => filed.isPk == "1");
+  const pkField:string = getPkField(columns);
   return `
 
 /**
@@ -15,6 +15,8 @@ export const reactEditTem = (options) => {
 
 import React, { useEffect } from 'react';
 import { Modal,Form,Row,Col,FormProps,Radio, Input } from 'antd';
+import access from '@/app/common/utils/access';
+import { useSelector } from 'react-redux';
 
 export type ${className}FormData = Record<string, unknown> & Partial<API.${upperModuleName}.${className}>;
 
@@ -27,6 +29,9 @@ export type ${className}FormProps = {
 }
 
 const Edit${className}: React.FC<${className}FormProps> = (props) => {
+
+    const userInfo = useSelector((state:API.CurrentUser) => state.userinfo);
+    
     const [edit${className}Form] = Form.useForm();
     
     const handleOk = () => {
@@ -47,7 +52,7 @@ const Edit${className}: React.FC<${className}FormProps> = (props) => {
 
     useEffect(() => {
         edit${className}Form.resetFields();
-        if(props.values.${columns[0].javaField} != undefined){
+        if(props.values.${pkField} != undefined){
             edit${className}Form.setFieldsValue({
                 ${createFormValueAssign(columns)}
             });
@@ -57,7 +62,7 @@ const Edit${className}: React.FC<${className}FormProps> = (props) => {
     return (
         <div>
             <Modal
-                title="添加/编辑${businessName}"
+                title="添加/编辑${functionName}"
                 closable={{ 'aria-label': 'Custom Close Button' }}
                 open={props.open}
                 onOk={handleOk}
@@ -74,8 +79,8 @@ const Edit${className}: React.FC<${className}FormProps> = (props) => {
                     className='!p-5'
                 >
                     <Form.Item<API.${upperModuleName}.${className}>
-                        name="${columns[0].javaField}"
-                        label="${columns[0].javaField}"
+                        name="${pkField}"
+                        label="${pkField}"
                         hidden={true}
                         >
                     </Form.Item>

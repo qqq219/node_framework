@@ -92,6 +92,8 @@ export default function DictTypePage() {
     const [dictTypeList, setDictTypeList] = useState<API.System.DictType[]>([]);
 
     const [currentPage, setCurrentPage] = useState(1);
+      
+    const [pageSize, setPageSize] = useState(10);
 
     const[totalCount,  setTotalCount] = useState(0);
 
@@ -105,7 +107,8 @@ export default function DictTypePage() {
 
     const onPageChange = (page:number, pageSize:number) => {
         setCurrentPage(page);
-        updateDictTypeList(page);
+        setPageSize(pageSize)
+        updateDictTypeList(page, pageSize);
     }
 
     /**
@@ -124,12 +127,12 @@ export default function DictTypePage() {
         }
     };
 
-    const updateDictTypeList = async (current:number) => {
+    const updateDictTypeList = async (current:number, pageSize:number) => {
         setLoading(true);
         try{
             const dictTypeListParams:API.System.DictTypeListParams = paramsForm.getFieldsValue();
-            dictTypeListParams.current = current as unknown as string;
-            dictTypeListParams.pageSize = "10";
+            dictTypeListParams.current = String(current);
+            dictTypeListParams.pageSize = String(pageSize);
             const res = await getDictTypeList(dictTypeListParams);
             const listData:API.System.DictType[] = res.data.rows as API.System.DictType[]
             setDictTypeList(listData);
@@ -143,11 +146,11 @@ export default function DictTypePage() {
 
     const resetFormParams = () => {
         paramsForm.resetFields();
-        updateDictTypeList(1);
+        updateDictTypeList(1, pageSize);
     }
 
     useEffect(() => {
-        updateDictTypeList(1);
+        updateDictTypeList(1, pageSize);
     }, []);
 
     const rowSelection: TableRowSelection<API.System.DictType> = {
@@ -170,7 +173,7 @@ export default function DictTypePage() {
 
     const onFinish: FormProps<API.System.DictTypeListParams>['onFinish'] = (values) => {
         console.log('Success:', values);
-        updateDictTypeList(currentPage)
+        updateDictTypeList(currentPage, pageSize)
     };
 
     const onFinishFailed: FormProps<API.System.DictTypeListParams>['onFinishFailed'] = (errorInfo) => {
@@ -239,7 +242,7 @@ export default function DictTypePage() {
                     onOk: async () => {
                         const success = await handleRemoveOne(record);
                         if (success) {
-                            updateDictTypeList(1);
+                            updateDictTypeList(1, pageSize);
                         }
                     },
                     });
@@ -316,7 +319,7 @@ export default function DictTypePage() {
                                             const success = await handleRemove(selectedRows);
                                             if (success) {
                                                 setSelectedRows([]);
-                                                updateDictTypeList(currentPage);
+                                                updateDictTypeList(currentPage, pageSize);
                                             }
                                         },
                                         onCancel() {},
@@ -325,7 +328,7 @@ export default function DictTypePage() {
                                     批量删除
                             </Button>
                             <Button type="primary" className='w-button-primary' onClick={handleExport}>+ 导出</Button>
-                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateDictTypeList(currentPage)}}><SyncOutlined /></div>
+                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateDictTypeList(currentPage, pageSize)}}><SyncOutlined /></div>
                         </div>
                     </div>
                     <div className='flex flex-1 flex-col mt-5 w-full h-0 overflow-auto'>
@@ -359,7 +362,7 @@ export default function DictTypePage() {
                         setCurrentRow(undefined);
                         //延迟获取数据，防止取不到最新的数据
                         setTimeout(() => {
-                            updateDictTypeList(currentPage);
+                            updateDictTypeList(currentPage, pageSize);
                         }, 100);
                     }
                 } }

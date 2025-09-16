@@ -22,14 +22,6 @@ export default function LoginPage(){
     const [spinning, setSpinning] = useState(false);
     const dispatchEvent = useDispatch();
     const userInfo = useSelector((state:API.CurrentUser) => state.userinfo);
-    useEffect(()=>{
-        if(userInfo == null || userInfo.userId == undefined){
-            const urlParams = new URL(window.location.href).searchParams;
-            if(urlParams.get('redirect') != "/login"){
-                refreshUserInfo();
-            }
-        }
-    },[]);
     const handleResize = () => {
         const containerWidth = window.innerWidth < 1280?1280:window.innerWidth
         const widthCalcuByHeight = window.innerHeight * 16 / 9;
@@ -103,6 +95,12 @@ export default function LoginPage(){
     useEffect(() => {
         handleResize();
         window.addEventListener('resize', handleResize);
+        if(userInfo == null || userInfo.userId == undefined){
+            const urlParams = new URL(window.location.href).searchParams;
+            if(urlParams.get('redirect') != "/login"){
+                refreshUserInfo();
+            }
+        }
         getCaptchaCode();
         // 组件卸载时移除事件监听器，防止内存泄漏   
         return () => window.removeEventListener('resize', handleResize);

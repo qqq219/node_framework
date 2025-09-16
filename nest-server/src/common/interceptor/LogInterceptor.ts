@@ -3,7 +3,7 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler, UseIntercep
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Reflector } from "@nestjs/core";
-import { SysOperlogService } from "src/system/service/SysOperlog.service";
+import { SysOperLogService } from "src/system/service/SysOperLog.service";
 import { LOG_METADATA, LogMetadata } from "./Log";
 
 @Injectable()
@@ -11,7 +11,7 @@ export class LogInterceptor implements NestInterceptor {
   private readonly logger = new Logger(LogInterceptor.name)
   constructor(
     private reflector: Reflector,
-    private readonly loggerService: SysOperlogService,
+    private readonly loggerService: SysOperLogService,
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {

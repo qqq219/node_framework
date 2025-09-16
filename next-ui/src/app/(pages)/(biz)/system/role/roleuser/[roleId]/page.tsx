@@ -67,6 +67,8 @@ export default function RoleUserPage({ params }: {params: Promise<{ roleId: numb
 
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [pageSize, setPageSize] = useState(10);
+
     const[totalCount,  setTotalCount] = useState(0);
 
     const [currentRow, setCurrentRow] = useState<API.System.User>();
@@ -81,10 +83,11 @@ export default function RoleUserPage({ params }: {params: Promise<{ roleId: numb
 
     const onPageChange = (page:number, pageSize:number) => {
         setCurrentPage(page);
-        updateUserList(page);
+        setPageSize(pageSize);
+        updateUserList(page, pageSize);
     }
 
-    const updateUserList = async (current:number) => {
+    const updateUserList = async (current:number, pageSize:number) => {
         setLoading(true);
         try{
             const roleUserListParams:API.System.RoleListParams = paramsForm.getFieldsValue();
@@ -103,11 +106,11 @@ export default function RoleUserPage({ params }: {params: Promise<{ roleId: numb
 
     const resetFormParams = () => {
         paramsForm.resetFields();
-        updateUserList(1);
+        updateUserList(1, pageSize);
     }
 
     useEffect(() => {
-        updateUserList(1);
+        updateUserList(1, pageSize);
     }, []);
 
     const rowSelection: TableRowSelection<API.System.User> = {
@@ -132,7 +135,7 @@ export default function RoleUserPage({ params }: {params: Promise<{ roleId: numb
 
     const onFinish: FormProps<API.System.UserListParams>['onFinish'] = (values) => {
         console.log('Success:', values);
-        updateUserList(currentPage)
+        updateUserList(currentPage, pageSize)
     };
 
     const onFinishFailed: FormProps<API.System.UserListParams>['onFinishFailed'] = (errorInfo) => {
@@ -189,7 +192,7 @@ export default function RoleUserPage({ params }: {params: Promise<{ roleId: numb
                         setSelectedRows([]);
                         const success = await cancelAuthUser(roleId, record.userId);
                         if (success) {
-                            updateUserList(1);
+                            updateUserList(1, pageSize);
                         }
                     },
                     });
@@ -267,7 +270,7 @@ export default function RoleUserPage({ params }: {params: Promise<{ roleId: numb
 										    if (success) {
 											    setSelectedRows([]);
                                                 setSelectedRowKeys([]);
-                                                updateUserList(currentPage);
+                                                updateUserList(currentPage, pageSize);
                                             }
                                         },
                                         onCancel() {},
@@ -276,7 +279,7 @@ export default function RoleUserPage({ params }: {params: Promise<{ roleId: numb
                                     批量取消授权
                             </Button>
                             <Button type="primary" className='w-button-primary'>+ 导出</Button>
-                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateUserList(currentPage)}}><SyncOutlined /></div>
+                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateUserList(currentPage, pageSize)}}><SyncOutlined /></div>
                         </div>
                     </div>
                     <div className='flex flex-1 flex-col mt-5 w-full h-0 overflow-auto'>
@@ -306,7 +309,7 @@ export default function RoleUserPage({ params }: {params: Promise<{ roleId: numb
                         authUserSelectAll({ roleId: roleId, userIds: userIds }).then(resp => {
                             if (resp.data.code === HttpResult.SUCCESS) {
                                 message.success('success！');
-                                updateUserList(1);
+                                updateUserList(1, pageSize);
                             } else {
                                 message.warning(resp.data.msg);
                             }

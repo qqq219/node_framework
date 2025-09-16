@@ -107,6 +107,8 @@ export default function ${className}Page() {
 
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [pageSize, setPageSize] = useState(10);
+
     const[totalCount,  setTotalCount] = useState(0);
 
     const [currentRow, setCurrentRow] = useState<API.${upperModuleName}.${className}>();
@@ -119,7 +121,8 @@ export default function ${className}Page() {
 
     const onPageChange = (page:number, pageSize:number) => {
         setCurrentPage(page);
-        update${className}List(page);
+        setPageSize(pageSize)
+        update${className}List(page, pageSize);
     }
 
     /**
@@ -138,12 +141,12 @@ export default function ${className}Page() {
         }
     };
 
-    const update${className}List = async (current:number) => {
+    const update${className}List = async (current:number, pageSize:number) => {
         setLoading(true);
         try{
             const ${lfclassName}ListParams:API.${upperModuleName}.${className}ListParams = paramsForm.getFieldsValue();
-            ${lfclassName}ListParams.current = current as unknown as string;
-            ${lfclassName}ListParams.pageSize = "10";
+            ${lfclassName}ListParams.current = String(current);
+            ${lfclassName}ListParams.pageSize = String(pageSize);
             const res = await get${className}List(${lfclassName}ListParams);
             const listData:API.${upperModuleName}.${className}[] = res.data.rows as API.${upperModuleName}.${className}[]
             set${className}List(listData);
@@ -157,11 +160,11 @@ export default function ${className}Page() {
 
     const resetFormParams = () => {
         paramsForm.resetFields();
-        update${className}List(1);
+        update${className}List(1, pageSize);
     }
 
     useEffect(() => {
-        update${className}List(1);
+        update${className}List(1, pageSize);
     }, []);
 
     const rowSelection: TableRowSelection<API.${upperModuleName}.${className}> = {
@@ -184,7 +187,7 @@ export default function ${className}Page() {
 
     const onFinish: FormProps<API.${upperModuleName}.${className}ListParams>['onFinish'] = (values) => {
         console.log('Success:', values);
-        update${className}List(currentPage)
+        update${className}List(currentPage, pageSize)
     };
 
     const onFinishFailed: FormProps<API.${upperModuleName}.${className}ListParams>['onFinishFailed'] = (errorInfo) => {
@@ -224,7 +227,7 @@ export default function ${className}Page() {
                     onOk: async () => {
                         const success = await handleRemoveOne(record);
                         if (success) {
-                            update${className}List(1);
+                            update${className}List(1, pageSize);
                         }
                     },
                     });
@@ -284,7 +287,7 @@ export default function ${className}Page() {
                                             const success = await handleRemove(selectedRows);
                                             if (success) {
                                                 setSelectedRows([]);
-                                                update${className}List(currentPage);
+                                                update${className}List(currentPage, pageSize);
                                             }
                                         },
                                         onCancel() {},
@@ -293,7 +296,7 @@ export default function ${className}Page() {
                                     批量删除
                             </Button>
                             <Button type="primary" className='w-button-primary' onClick={handleExport}>+ 导出</Button>
-                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{update${className}List(currentPage)}}><SyncOutlined /></div>
+                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{update${className}List(currentPage, pageSize)}}><SyncOutlined /></div>
                         </div>
                     </div>
                     <div className='flex flex-1 flex-col mt-5 w-full h-0 overflow-auto'>
@@ -327,7 +330,7 @@ export default function ${className}Page() {
                         setCurrentRow(undefined);
                         //延迟获取数据，防止取不到最新的数据
                         setTimeout(() => {
-                            update${className}List(currentPage);
+                            update${className}List(currentPage, pageSize);
                         }, 100);
                     }
                 } }
@@ -370,7 +373,7 @@ export default function ${className}Page() {
       <Form.Item<API.${upperModuleName}.${className}>
           label="${item.columnComment}"
           name="${item.javaField}"
-          rules={[{ required: ${item.isRequired?"true":"false"}, message: '请输入${item.columnComment}' }]}>
+          rules={[{ required: false, message: '请输入${item.columnComment}' }]}>
           ${createInputItem(item)}
       </Form.Item>
         `

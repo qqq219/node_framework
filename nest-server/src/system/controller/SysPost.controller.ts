@@ -71,8 +71,8 @@ export class SysPostController {
   @RequirePermission("system:post:remove")
   @Delete('/:ids')
   remove(@Param('ids') ids: string) {
-    const menuIds = ids.split(',').map((id) => id);
-    return this.postService.remove(menuIds);
+    const idlist = ids.split(',').map((id) => id);
+    return this.postService.remove(idlist);
   }
 
   @ApiOperation({ summary: '导出岗位管理xlsx文件' })

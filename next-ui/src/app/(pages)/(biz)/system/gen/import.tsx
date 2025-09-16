@@ -1,5 +1,5 @@
 import { Button, Card, message, Layout, TableColumnsType, Table, Modal, Form, FormProps, Input, Pagination } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { importTables, queryTableList } from '@/app/services/system/gen';
 import { TableRowSelection } from 'antd/es/table/interface';
 import { SyncOutlined } from '@ant-design/icons';
@@ -7,62 +7,45 @@ import { SyncOutlined } from '@ant-design/icons';
 export type ImportTableListData = Record<string, unknown> & Partial<API.System.GenCodeType>;
 
 export type ImportTableListProps = {
-  onCancel: (flag?: boolean, formVals?: ImportTableListData) => void;
-  onSubmit: (values: ImportTableListData) => Promise<void>;
+  onCancel: () => void;
+  onSubmit: (tableNames: string[]) => Promise<void>;
   open: boolean;
   values: Partial<API.System.GenCodeType>;
 }
 
-const handleImport = async (tables: string) => {
-  const hide = message.loading('loading...');
-  try {
-    await importTables(tables);
-    hide();
-    message.success('success');
-    return true;
-  } catch (error) {
-    hide();
-    message.error(error instanceof Error ? error.message : 'failed');
-    return false;
-  }
-};
-
 const ImportTableList: React.FC<ImportTableListProps> = (props) => {
   const [selectTables, setSelectTables] = useState<string[]>([]);
 
-  const [genTableList, setGenTableList] = useState<API.System.GenCodeTableListParams[]>([]);
+  const [genTableList, setGenTableList] = useState<API.System.GenCodeType[]>([]);
 
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [pageSize, setPageSize] = useState(10);
+
   const[totalCount,  setTotalCount] = useState(0);
 
-  const [currentRow, setCurrentRow] = useState<API.System.GenCodeTableListParams>();
+  const [currentRow, setCurrentRow] = useState<API.System.GenCodeType>();
 
   const [loading, setLoading] = useState(false);
 
   const [paramsForm] = Form.useForm();
 
-  const [selectedRows, setSelectedRows] = useState<API.System.GenCodeTableListParams[]>([]);
+  const [selectedRows, setSelectedRows] = useState<API.System.GenCodeType[]>([]);
 
-  const handleOk = () => {
-
-  };
-  const handleCancel = () => {
-      props.onCancel();
-  };
   const onPageChange = (page:number, pageSize:number) => {
       setCurrentPage(page);
-      updateGenTableList(page);
+      setPageSize(pageSize)
+      updateGenTableList(page, pageSize);
   }
 
-  const updateGenTableList = async (current:number) => {
+  const updateGenTableList = async (current:number, pageSize:number) => {
       setLoading(true);
       try{
           const genTableListParams:API.System.GenCodeTableListParams = paramsForm.getFieldsValue();
           genTableListParams.current = current as unknown as string;
-          genTableListParams.pageSize = "10";
+          genTableListParams.pageSize = String(pageSize);
           const res = await queryTableList(genTableListParams);
-          const listData:API.System.GenCodeTableListParams[] = res.data.rows as API.System.GenCodeTableListParams[]
+          const listData:API.System.GenCodeType[] = res.data.rows as API.System.GenCodeType[]
           setGenTableList(listData);
           setTotalCount(res.data.total);
           setLoading(false);
@@ -73,14 +56,21 @@ const ImportTableList: React.FC<ImportTableListProps> = (props) => {
   };
   const resetFormParams = () => {
       paramsForm.resetFields();
-      updateGenTableList(1);
+      updateGenTableList(1, pageSize);
   }
   const submitGenTable = ()=>{
-
+    props.onSubmit(selectedRows.map(item=>{return item.tableName}));
   }
+
   const handleReturn = ()=>{
-
+    props.onCancel()
   }
+  
+  useEffect(() => {
+      paramsForm.resetFields();
+      updateGenTableList(1, pageSize);
+  }, [props, props.open]);
+
   const onFinish: FormProps<API.System.GenCodeTableListParams>['onFinish'] = (values) => {
       console.log('Success:', values);
   };
@@ -88,7 +78,7 @@ const ImportTableList: React.FC<ImportTableListProps> = (props) => {
   const onFinishFailed: FormProps<API.System.GenCodeTableListParams>['onFinishFailed'] = (errorInfo) => {
       console.log('Failed:', errorInfo);
   };
-  const rowSelection: TableRowSelection<API.System.GenCodeTableListParams> = {
+  const rowSelection: TableRowSelection<API.System.GenCodeType> = {
       onChange: (selectedRowKeys, selectedRows) => {
           console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       },
@@ -102,7 +92,7 @@ const ImportTableList: React.FC<ImportTableListProps> = (props) => {
       },
   };
 
-  const columns: TableColumnsType<API.System.GenCodeTableListParams> = [
+  const columns: TableColumnsType<API.System.GenCodeType> = [
     {
       title:  "表名称" ,
       dataIndex: 'tableName',
@@ -123,9 +113,9 @@ const ImportTableList: React.FC<ImportTableListProps> = (props) => {
             title="导入数据表"
             closable={{ 'aria-label': 'Custom Close Button' }}
             open={props.open}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            className='!w-200'
+            className='!w-500'
+            footer={false}
+            onCancel={handleReturn}
             >
               <div className="mt-5 w-full flex p-6 rounded-md" style={{border:"var(--border-primary)"}}>
                 <div className="w-full">
@@ -151,25 +141,25 @@ const ImportTableList: React.FC<ImportTableListProps> = (props) => {
                 </div>
             </div>
             {/*表格栏 */}
-            <div className="mt-6 flex-1 w-full rounded-md p-5 h-0" style={{border:"var(--border-primary)"}}>
+            <div className="mt-6 flex-1 w-full rounded-md p-5" style={{border:"var(--border-primary)"}}>
                 <div className="h-full w-full flex flex-col">
                     <div className='w-full h-10 flex flex-row items-center pr-5'>
                         <span className='text-1xl font-bold'>数据表列表</span>
                         <div className='flex flex-1 flex-row gap-5 items-end justify-end'>
                             <Button type="primary" className='w-button-primary' onClick={submitGenTable}>+ 提交</Button>
                             <Button type="primary" className='w-button-primary' onClick={handleReturn}>+ 返回</Button>
-                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateGenTableList(currentPage)}}><SyncOutlined /></div>
+                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateGenTableList(currentPage, pageSize)}}><SyncOutlined /></div>
                         </div>
                     </div>
-                    <div className='flex flex-1 flex-col mt-5 w-full h-0 overflow-auto'>
-                        <Table<API.System.GenCodeTableListParams>
+                    <div className='flex flex-1 flex-col mt-5 w-full'>
+                        <Table<API.System.GenCodeType>
                             rowSelection={rowSelection}
                             dataSource={genTableList}
                             columns={columns}
                             loading={loading}
                             sticky={true}
                             pagination={false}
-                            rowKey="tableId"
+                            rowKey="tableName"
                         >
                         </Table>
                         <div className='mt-4 w-full flex flex-col items-center'>

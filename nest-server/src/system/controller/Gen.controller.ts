@@ -74,8 +74,9 @@ export class GenController {
   @ApiOperation({ summary: '删除表数据' })
   @RequirePermission("tool:gen:remove")
   @Delete('/:id')
-  remove(@Param('id') id: string) {
-    return this.genService.remove(+id);
+  remove(@Param('id') ids: string) {
+    const idlist:number[] = ids.split(',').map((id) => Number(id));
+    return this.genService.remove(idlist);
   }
 
 

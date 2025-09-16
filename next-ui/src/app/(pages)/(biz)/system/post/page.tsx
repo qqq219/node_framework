@@ -91,6 +91,8 @@ export default function PostPage() {
 
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [pageSize, setPageSize] = useState(10);
+
     const[totalCount,  setTotalCount] = useState(0);
 
     const [currentRow, setCurrentRow] = useState<API.System.Post>();
@@ -103,7 +105,8 @@ export default function PostPage() {
 
     const onPageChange = (page:number, pageSize:number) => {
         setCurrentPage(page);
-        updatePostList(page);
+        setPageSize(pageSize)
+        updatePostList(page, pageSize);
     }
 
     /**
@@ -122,12 +125,12 @@ export default function PostPage() {
         }
     };
 
-    const updatePostList = async (current:number) => {
+    const updatePostList = async (current:number, pageSize:number) => {
         setLoading(true);
         try{
             const postListParams:API.System.PostListParams = paramsForm.getFieldsValue();
             postListParams.current = current as unknown as string;
-            postListParams.pageSize = "10";
+            postListParams.pageSize = String(pageSize);
             const res = await getPostList(postListParams);
             const listData:API.System.Post[] = res.data.rows as API.System.Post[]
             setPostList(listData);
@@ -141,11 +144,11 @@ export default function PostPage() {
 
     const resetFormParams = () => {
         paramsForm.resetFields();
-        updatePostList(1);
+        updatePostList(1, pageSize);
     }
 
     useEffect(() => {
-        updatePostList(1);
+        updatePostList(1, pageSize);
     }, []);
 
     const rowSelection: TableRowSelection<API.System.Post> = {
@@ -168,7 +171,7 @@ export default function PostPage() {
 
     const onFinish: FormProps<API.System.PostListParams>['onFinish'] = (values) => {
         console.log('Success:', values);
-        updatePostList(currentPage)
+        updatePostList(currentPage, pageSize)
     };
 
     const onFinishFailed: FormProps<API.System.PostListParams>['onFinishFailed'] = (errorInfo) => {
@@ -234,7 +237,7 @@ export default function PostPage() {
                     onOk: async () => {
                         const success = await handleRemoveOne(record);
                         if (success) {
-                            updatePostList(1);
+                            updatePostList(1, pageSize);
                         }
                     },
                     });
@@ -317,7 +320,7 @@ export default function PostPage() {
                                             const success = await handleRemove(selectedRows);
                                             if (success) {
                                                 setSelectedRows([]);
-                                                updatePostList(currentPage);
+                                                updatePostList(currentPage, pageSize);
                                             }
                                         },
                                         onCancel() {},
@@ -326,7 +329,7 @@ export default function PostPage() {
                                     批量删除
                             </Button>
                             <Button type="primary" className='w-button-primary' onClick={handleExport}>+ 导出</Button>
-                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updatePostList(currentPage)}}><SyncOutlined /></div>
+                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updatePostList(currentPage, pageSize)}}><SyncOutlined /></div>
                         </div>
                     </div>
                     <div className='flex flex-1 flex-col mt-5 w-full h-0 overflow-auto'>
@@ -360,7 +363,7 @@ export default function PostPage() {
                         setCurrentRow(undefined);
                         //延迟获取数据，防止取不到最新的数据
                         setTimeout(() => {
-                            updatePostList(currentPage);
+                            updatePostList(currentPage, pageSize);
                         }, 100);
                     }
                 } }

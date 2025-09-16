@@ -1,14 +1,15 @@
 'use client'
 import {FormProps,Table, Modal, Form, Input, Button, Select, message, Pagination} from 'antd';
 import type {TableProps, TableColumnsType} from 'antd';
-import { use, useEffect, useState } from 'react'
+import { use, useEffect, useRef, useState } from 'react'
 import _ from "lodash"
 import {SyncOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import EditGen from './edit';
-import { batchGenCode, genCode, getGenCodeList, previewCode, removeData, syncDbInfo, updateData } from '@/app/services/system/gen';
+import { batchGenCode, genCode, getGenCodeList, importTables, previewCode, removeData, syncDbInfo, updateData } from '@/app/services/system/gen';
 import { useRouter } from 'next/navigation';
-import ImportTableList from './import';
+import ImportTableList, { ImportTableListData } from './import';
 import PreviewModel from './PreviewModel';
+import { Key } from 'antd/es/table/interface';
 
 type TableRowSelection<T extends object> = TableProps<T>['rowSelection'];
 
@@ -36,25 +37,19 @@ const handleEditUpdate = async (values: API.System.GenCodeType) => {
     }
 }
 
-const handleImportUpdate = async (values: API.System.GenCodeType) => {
-    const hide = message.loading('loading...');
-    try {
-      const resp = await updateData({ ...values } as API.System.GenCodeType);
-      hide();
-      if(resp.data.code === 200){
-        message.success('success');
-        return true;
-      }
-      else{
-        message.error(resp.data.msg);
-        return false;
-      }
-    } catch (error) {
-
-      message.error(error instanceof Error ? error.message : 'failed');
-      return false;
-    }
-}
+const handleImport = async (tables: string) => {
+  const hide = message.loading('loading...');
+  try {
+    await importTables(tables);
+    hide();
+    message.success('success');
+    return true;
+  } catch (error) {
+    hide();
+    message.error(error instanceof Error ? error.message : 'failed');
+    return false;
+  }
+};
 
 /**
  * 删除节点
@@ -78,6 +73,34 @@ const handleRemove = async (selectedRows: API.System.GenCodeType[]) => {
   }
 };
 
+const batchGenCodeBtnCallback = async (selectedRows: API.System.GenCodeType[]) => {
+  if (selectedRows.length === 0) {
+      message.error('请选择要生成的数据');
+    return false;
+  }
+  const hide = message.loading('loading...');
+  try {
+    const tableNames:string[] = selectedRows.map((row) => row.tableName);
+    let res;
+    if (selectedRows[0].genType === '1') {
+      res = await genCode(tableNames.join(','));
+      if (res?.data.code === 200) {
+        message.success(`success:${selectedRows[0].genPath}`);
+      } else {
+        message.error(res?res.data.message:"系统错误");
+      }
+    } else {
+      batchGenCode(tableNames.join(','));
+    }
+    hide();
+    return true;
+  }catch (error) {
+    hide();
+    message.error(error instanceof Error ? error.message : 'failed');
+    return false;
+  }
+}
+
 const handleRemoveOne = async (selectedRow: API.System.GenCodeType) => {
   const hide = message.loading('loading...');
   if (!selectedRow) return true;
@@ -96,10 +119,6 @@ const handleRemoveOne = async (selectedRow: API.System.GenCodeType) => {
   }
 };
 
-const handleImport = async () => {
-    window.open('/tool/gen/import');
-}
-
 export default function GenPage() {
 
     const [showPreview, setShowPreview] = useState<boolean>(false);
@@ -112,6 +131,7 @@ export default function GenPage() {
     const [genList, setGenList] = useState<API.System.GenCodeType[]>([]);
 
     const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
 
     const[totalCount,  setTotalCount] = useState(0);
 
@@ -123,19 +143,26 @@ export default function GenPage() {
 
     const [selectedRows, setSelectedRows] = useState<API.System.GenCodeType[]>([]);
 
+    const [selectedRowKeys, setSelectedRowsKeys] = useState<Key[]>([]);
+
     const router = useRouter();
 
     const onPageChange = (page:number, pageSize:number) => {
         setCurrentPage(page);
-        updateGenList(page);
+        setPageSize(pageSize)
+        updateGenList(page, pageSize);
     }
 
-    const updateGenList = async (current:number) => {
+    const handleImportBtnCallback = async () => {
+        setImportDialogVisible(true);
+    }
+
+    const updateGenList = async (current:number, pageSize:number) => {
         setLoading(true);
         try{
             const genListParams:API.System.GenCodeTableListParams = paramsForm.getFieldsValue();
-            genListParams.current = current as unknown as string;
-            genListParams.pageSize = "10";
+            genListParams.current = String(current);
+            genListParams.pageSize = String(pageSize);
             const res = await getGenCodeList(genListParams);
             const listData:API.System.GenCodeType[] = res.data.rows as API.System.GenCodeType[]
             setGenList(listData);
@@ -149,16 +176,18 @@ export default function GenPage() {
 
     const resetFormParams = () => {
         paramsForm.resetFields();
-        updateGenList(1);
+        updateGenList(1, pageSize);
     }
 
     useEffect(() => {
-        updateGenList(1);
+        updateGenList(1, pageSize);
     }, []);
 
     const rowSelection: TableRowSelection<API.System.GenCodeType> = {
+        selectedRowKeys:selectedRowKeys,
         onChange: (selectedRowKeys, selectedRows) => {
             console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            setSelectedRowsKeys(selectedRowKeys);
         },
         onSelect: (record, selected, selectedRows) => {
             console.log(record, selected, selectedRows);
@@ -170,13 +199,9 @@ export default function GenPage() {
         },
     };
 
-    const genCodeClick = ()=>{
-        setEditDialogVisible(!editDialogVisible);
-    }
-
     const onFinish: FormProps<API.System.GenCodeTableListParams>['onFinish'] = (values) => {
         console.log('Success:', values);
-        updateGenList(currentPage)
+        updateGenList(currentPage, pageSize)
     };
 
     const onFinishFailed: FormProps<API.System.GenCodeTableListParams>['onFinishFailed'] = (errorInfo) => {
@@ -203,11 +228,7 @@ export default function GenPage() {
     {
       title: "创建时间" ,
       dataIndex: 'createTime',
-    },
-    {
-      title: "更新时间",
-      dataIndex: 'updateTime',
-    },
+    },  
     {
         title: '操作',
         key: 'action',
@@ -255,30 +276,13 @@ export default function GenPage() {
               onOk: async () => {
                 const success = await handleRemoveOne(record);
                 if (success) {
-                  updateGenList(currentPage);
+                  updateGenList(currentPage, pageSize);
                 }
               },
             });
           }}
         >
           删除
-        </Button>
-        <Button
-          type="link"
-          size="small"
-          key="sync"
-          hidden={true}
-          onClick={() => {
-            syncDbInfo(record.tableName).then((res) => {
-              if (res.data.code === 200) {
-                message.success('success');
-              } else {
-                message.error('同步失败');
-              }
-            });
-          }}
-        >
-          同步
         </Button>
         <Button
           type="link"
@@ -337,7 +341,19 @@ export default function GenPage() {
                     <div className='w-full h-10 flex flex-row items-center pr-5'>
                         <span className='text-1xl font-bold'>代码生成列表</span>
                         <div className='flex flex-1 flex-row gap-5 items-end justify-end'>
-                            <Button type="primary" className='w-button-primary' onClick={genCodeClick}>+ 生成</Button>
+                            <Button 
+                              type="primary" 
+                              className='w-button-primary' 
+                              hidden={selectedRows?.length === 0}
+                              onClick={async () => {
+                                const success = await batchGenCodeBtnCallback(selectedRows);
+                                  if (success) {
+                                      setSelectedRows([]);
+                                      setSelectedRowsKeys([]);
+                                      updateGenList(currentPage, pageSize);
+                                  }
+                                }
+                            }>批量生成</Button>
                             <Button
                                 type="primary"
                                 key="remove"
@@ -351,7 +367,8 @@ export default function GenPage() {
                                             const success = await handleRemove(selectedRows);
                                             if (success) {
                                                 setSelectedRows([]);
-                                                updateGenList(currentPage);
+                                                setSelectedRowsKeys([]);
+                                                updateGenList(currentPage, pageSize);
                                             }
                                         },
                                         onCancel() {},
@@ -359,8 +376,8 @@ export default function GenPage() {
                                 }}>
                                     批量删除
                             </Button>
-                            <Button type="primary" className='w-button-primary' onClick={handleImport}>+ 导入</Button>
-                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateGenList(currentPage)}}><SyncOutlined /></div>
+                            <Button type="primary" className='w-button-primary' onClick={handleImportBtnCallback}>+ 导入</Button>
+                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateGenList(currentPage, pageSize)}}><SyncOutlined /></div>
                         </div>
                     </div>
                     <div className='flex flex-1 flex-col mt-5 w-full h-0 overflow-auto'>
@@ -369,7 +386,6 @@ export default function GenPage() {
                             dataSource={genList}
                             columns={columns}
                             loading={loading}
-                            sticky={true}
                             pagination={false}
                             rowKey="tableId"
                         >
@@ -392,7 +408,7 @@ export default function GenPage() {
                         setCurrentRow(undefined);
                         //延迟获取数据，防止取不到最新的数据
                         setTimeout(() => {
-                            updateGenList(currentPage);
+                            updateGenList(currentPage, pageSize);
                         }, 100);
                     }
                 } }
@@ -406,19 +422,20 @@ export default function GenPage() {
             </EditGen>
             {/*导入弹窗 */}
             <ImportTableList
-                onSubmit={async (values) => {
-                    let success = false;
-                    if (values.tableId) {
-                        success = await handleImportUpdate({ ...values } as API.System.GenCodeType);
-                    }
-                    if (success) {
-                        setImportDialogVisible(false);
-                        setCurrentRow(undefined);
-                        //延迟获取数据，防止取不到最新的数据
-                        setTimeout(() => {
-                            updateGenList(currentPage);
-                        }, 100);
-                    }
+                onSubmit={async (tableNames:string[]) => {
+                  if (tableNames.length < 1) {
+                    message.error('请选择要导入的表');
+                    return;
+                  }
+                  const success = await handleImport(tableNames.join(','));
+                  if (success) {
+                      setImportDialogVisible(false);
+                      setCurrentRow(undefined);
+                      //延迟获取数据，防止取不到最新的数据
+                      setTimeout(() => {
+                          updateGenList(currentPage, pageSize);
+                      }, 100);
+                  }
                 } }
                 onCancel={() => {
                     setImportDialogVisible(false);

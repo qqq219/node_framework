@@ -4,6 +4,8 @@
 
 import React, { useEffect } from 'react';
 import { Modal,Form,Row,Col,FormProps,Radio, Input } from 'antd';
+import access from '@/app/common/utils/access';
+import { useSelector } from 'react-redux';
 
 export type DemoTestOneFormData = Record<string, unknown> & Partial<API.System.DemoTestOne>;
 
@@ -16,6 +18,9 @@ export type DemoTestOneFormProps = {
 }
 
 const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
+
+    const userInfo = useSelector((state:API.CurrentUser) => state.userinfo);
+    
     const [editDemoTestOneForm] = Form.useForm();
     
     const handleOk = () => {
@@ -57,7 +62,7 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
     return (
         <div>
             <Modal
-                title="添加/编辑demoTestOne"
+                title="添加/编辑测试demo1"
                 closable={{ 'aria-label': 'Custom Close Button' }}
                 open={props.open}
                 onOk={handleOk}
@@ -156,6 +161,50 @@ const EditDemoTestOne: React.FC<DemoTestOneFormProps> = (props) => {
                 labelCol={{span: 6}}
                 >
                 <Input placeholder="请输入备注" />
+            </Form.Item>
+        </Col>
+      
+        <Col span={12}>
+            <Form.Item<API.System.DemoTestOne>
+                label="创建者"
+                name="createBy"
+                rules={[{ required: true, message: '请输入创建者' }]}
+                labelCol={{span: 6}}
+                >
+                <Input placeholder="请输入创建者" />
+            </Form.Item>
+        </Col>
+      
+        <Col span={12}>
+            <Form.Item<API.System.DemoTestOne>
+                label="创建时间"
+                name="createTime"
+                rules={[{ required: true, message: '请输入创建时间' }]}
+                labelCol={{span: 6}}
+                >
+                <Input placeholder="请输入创建时间" />
+            </Form.Item>
+        </Col>
+      
+        <Col span={12}>
+            <Form.Item<API.System.DemoTestOne>
+                label="更新者"
+                name="updateBy"
+                rules={[{ required: true, message: '请输入更新者' }]}
+                labelCol={{span: 6}}
+                >
+                <Input placeholder="请输入更新者" />
+            </Form.Item>
+        </Col>
+      
+        <Col span={12}>
+            <Form.Item<API.System.DemoTestOne>
+                label="更新时间"
+                name="updateTime"
+                rules={[{ required: true, message: '请输入更新时间' }]}
+                labelCol={{span: 6}}
+                >
+                <Input placeholder="请输入更新时间" />
             </Form.Item>
         </Col>
       

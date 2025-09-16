@@ -96,6 +96,8 @@ export default function RolePage() {
 
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [pageSize, setPageSize] = useState(10);
+
     const[totalCount,  setTotalCount] = useState(0);
 
     const [currentRow, setCurrentRow] = useState<API.System.Role>();
@@ -116,7 +118,8 @@ export default function RolePage() {
 
     const onPageChange = (page:number, pageSize:number) => {
         setCurrentPage(page);
-        updateRoleList(page);
+        setPageSize(pageSize);
+        updateRoleList(page, pageSize);
     }
 
     /**
@@ -135,12 +138,12 @@ export default function RolePage() {
         }
     };
 
-    const updateRoleList = async (current:number) => {
+    const updateRoleList = async (current:number, pageSize:number) => {
         setLoading(true);
         try{
             const roleListParams:API.System.RoleListParams = paramsForm.getFieldsValue();
             roleListParams.current = current as unknown as string;
-            roleListParams.pageSize = "10";
+            roleListParams.pageSize = String(pageSize);
             const res = await getRoleList(roleListParams);
             const listData:API.System.Role[] = res.data.rows as API.System.Role[]
             setRoleList(listData);
@@ -154,11 +157,11 @@ export default function RolePage() {
 
     const resetFormParams = () => {
         paramsForm.resetFields();
-        updateRoleList(1);
+        updateRoleList(1, pageSize);
     }
 
     useEffect(() => {
-        updateRoleList(1);
+        updateRoleList(1, pageSize);
     }, []);
 
     const rowSelection: TableRowSelection<API.System.Role> = {
@@ -190,7 +193,7 @@ export default function RolePage() {
 
     const onFinish: FormProps<API.System.RoleListParams>['onFinish'] = (values) => {
         console.log('Success:', values);
-        updateRoleList(currentPage)
+        updateRoleList(currentPage, pageSize)
     };
 
     const onFinishFailed: FormProps<API.System.RoleListParams>['onFinishFailed'] = (errorInfo) => {
@@ -293,7 +296,7 @@ export default function RolePage() {
                      onOk: async () => {
                          const success = await handleRemoveOne(record);
                          if (success) {
-                             updateRoleList(1);
+                             updateRoleList(1, pageSize);
                          }
                      },
                      });
@@ -370,7 +373,7 @@ export default function RolePage() {
                                             const success = await handleRemove(selectedRows);
                                             if (success) {
                                                 setSelectedRows([]);
-                                                updateRoleList(currentPage);
+                                                updateRoleList(currentPage, pageSize);
                                             }
                                         },
                                         onCancel() {},
@@ -382,7 +385,7 @@ export default function RolePage() {
                                 type="primary" 
                                 className='w-button-primary'
                                 onClick={handleExport}>+ 导出</Button>
-                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateRoleList(currentPage)}}><SyncOutlined /></div>
+                            <div className='w-fit h-fit text-[1.1rem] cursor-pointer hover:text-color-primary duration-300' onClick={()=>{updateRoleList(currentPage, pageSize)}}><SyncOutlined /></div>
                         </div>
                     </div>
                     <div className='flex flex-1 flex-col mt-5 w-full h-0 overflow-auto'>
@@ -415,7 +418,7 @@ export default function RolePage() {
                         setCurrentRow(undefined);
                         //延迟获取数据，防止取不到最新的数据
                         setTimeout(() => {
-                            updateRoleList(currentPage);
+                            updateRoleList(currentPage, pageSize);
                         }, 100);
                     }
                 } }

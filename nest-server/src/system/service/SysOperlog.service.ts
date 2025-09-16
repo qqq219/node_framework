@@ -1,34 +1,35 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { SysOperlogDao } from '../dao/SysOperlog.dao';
-import { SysOperlogEntity } from '../model/entity/SysOperlog.entity';
-import { SysOperlogReq } from '../model/req/SysOperlogReq';
-import { SysOperlogDto } from '../model/dto/SysOperlogDto';
 
+import { Injectable } from "@nestjs/common";
+import { SysOperLogReq } from "../model/req/SysOperLogReq";
+import { SysOperLogDao } from "../dao/SysOperLog.dao";
+import { SysOperLogDto } from "../model/dto/SysOperLogDto";
 
 @Injectable()
-export class SysOperlogService {
+export class SysOperLogService {
 
-  constructor(
-    private readonly sysOperlogDao:SysOperlogDao,
-    @InjectRepository(SysOperlogEntity)
-    private readonly sysOperlogEntityRepository: Repository<SysOperlogEntity>,
-  ) {}
-
-  async findAll(query:SysOperlogReq) {
-    const [list, total] = await this.sysOperlogDao.selectOperLogList(query);
-    return {
-      code:200,
-      msg:"success",
-      rows:list,
-      total
-    };
-  }
-
-  async create(createOperlogDto: SysOperlogDto) {
-    return await this.sysOperlogEntityRepository.save(createOperlogDto);
-  }
-
+    constructor(
+      private readonly sysOperLogDao:SysOperLogDao
+    ) {
+    }
+    
+    async findList(sysOperLogReq: SysOperLogReq) {
+      return await this.sysOperLogDao.selectSysOperLogList(sysOperLogReq);
+    }
+    
+    async create(createSysOperLogDto: SysOperLogDto) {
+      return await this.sysOperLogDao.insertSysOperLog(createSysOperLogDto);
+    }
+    
+    async findOne(id: number) {
+      return await this.sysOperLogDao.selectSysOperLogById(id);
+    }
+    
+    async update(updateSysOperLogDto: SysOperLogDto) {
+      return await this.sysOperLogDao.updateSysOperLog(updateSysOperLogDto);
+    }
+    
+    async remove(idList: number[]) {
+      return await this.sysOperLogDao.deleteSysOperLogByIds(idList);
+    }
 
 }

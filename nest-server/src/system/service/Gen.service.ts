@@ -2,7 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { GenListReq } from "../model/req/GenListReq";
 import { GenTableEntity } from "../model/entity/GenTable.entity";
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
-import { DataSource, Repository } from "typeorm";
+import { DataSource, In, Repository } from "typeorm";
 import { GenTableColumnEntity } from "../model/entity/GenTableCloumn.entity";
 import { GenTableDto } from "../model/dto/GenTableDto";
 import * as fs from 'fs-extra';
@@ -111,9 +111,9 @@ export class GenService{
     return ResultData.ok(result);
   }
 
-  async remove(id: number) {
-    await this.genTableEntityRepository.delete({ tableId: id });
-    await this.genTableColumnEntityRepository.delete({ tableId: id });
+  async remove(id: number[]) {
+    await this.genTableEntityRepository.delete({ tableId: In(id) });
+    await this.genTableColumnEntityRepository.delete({ tableId: In(id) });
     return ResultData.ok();
   }
 

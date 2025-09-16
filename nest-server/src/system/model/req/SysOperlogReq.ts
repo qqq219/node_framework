@@ -1,64 +1,98 @@
-import { IsEnum, IsNumber, IsOptional, IsString, Length } from "class-validator";
+
+import { IsString, IsNumber, IsBoolean, IsDate, IsOptional, IsEnum } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { Transform, Type } from "class-transformer";
 import { PagingDto } from "src/common/model/dto/PagingDto";
-import { StatusEnum } from "./SysRoleReq";
+import { ConvertDate } from "src/common/model/ConvertDate";
 
-export class SysOperlogReq extends PagingDto {
+export class SysOperLogReq extends PagingDto {
 
-  @IsOptional()
-  @IsString()
-  operId?: string;
-
-
-  @IsOptional()
-  @IsString()
-  @Length(0, 50)
-  title?: string;
-
-  @IsOptional()
-  businessType?: string;
-
-  @IsOptional()
-  @IsString()
-  method?: string;
-
-  @IsOptional()
-  @IsString()
-  requestMethod?: string;
-
-  @IsOptional()
-  @IsString()
-  operatorType?: string;
-
-  @IsOptional()
-  @IsString()
-  operName?: string;
-
-  @IsOptional()
-  @IsString()
-  deptName?: string;
-
-  @IsOptional()
-  @IsString()
-  operUrl?: string;
-
-  @IsOptional()
-  @IsString()
-  operIp?: string;
-
-  @IsOptional()
-  @IsString()
-  operLocation?: string;
-
-  @IsOptional()
-  @IsString()
-  operParam?: string;
-
-  @IsOptional()
-  operTime?: string;
-
-  @IsOptional()
-  @IsString()
-  @IsEnum(StatusEnum)
-  status?: string;
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsNumber()
+    @Type(()=>Number)
+    operId?: number;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    title?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    businessType?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    method?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    requestMethod?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    operatorType?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    operName?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    deptName?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    operUrl?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    operIp?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    operLocation?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    operParam?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    jsonResult?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    status?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    errorMsg?: string;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @Transform(({ value }) =>ConvertDate.convert(value))
+    operTime?: ConvertDate;
+        
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsNumber()
+    @Type(()=>Number)
+    costTime?: number;
+        
 }
-
+    

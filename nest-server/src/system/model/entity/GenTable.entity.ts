@@ -1,5 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ApiProperty } from '@nestjs/swagger';
+import { DateTransformer } from "src/common/conversion/DateTransformer";
+import { ConvertDate } from "src/common/model/ConvertDate";
 
 @Entity('gen_table', {
   comment: '代码生成业务表',
@@ -74,16 +76,16 @@ export class GenTableEntity{
   public createBy: string;
 
   @ApiProperty({ type: Date, description: '创建时间' })
-  @Column({ type: 'datetime', name: 'create_time', default: null, comment: '创建时间' })
-  public createTime: Date;
+  @Column({ type: 'datetime', name: 'create_time', default: null, comment: '创建时间', transformer:new DateTransformer()  })
+  public createTime: ConvertDate;
 
   @ApiProperty({ type: String, description: '更新者' })
   @Column({ type: 'varchar', name: 'update_by', length: 64, default: '', comment: '更新者' })
   public updateBy: string;
 
   @ApiProperty({ type: Date, description: '更新时间' })
-  @Column({ type: 'datetime', name: 'update_time', default: null, comment: '更新时间' })
-  public updateTime: Date;
+  @Column({ type: 'datetime', name: 'update_time', default: null, comment: '更新时间',transformer:new DateTransformer() })
+  public updateTime: ConvertDate;
 
   @ApiProperty({ type: String, description: '备注' })
   @Column({ type: 'varchar', name: 'remark', length: 500, default: null, comment: '备注' })

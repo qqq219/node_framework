@@ -180,7 +180,7 @@ const EditGen: React.FC<GenFormProps> = (props) => {
                                                 <Form.Item<API.System.GenCodeType>
                                                     label="备注"
                                                     name="remark"
-                                                    rules={[{ required: true, message: '请输入备注' }]}
+                                                    rules={[{ required: false, message: '请输入备注' }]}
                                                     labelCol={{span: 3}}
                                                     >
                                                     <TextArea  rows={4} placeholder="请输入备注" />
