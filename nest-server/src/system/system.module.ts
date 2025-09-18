@@ -37,9 +37,6 @@ import { SysRoleDeptEntity } from './model/entity/SysRoleDept.entity';
 import { SysUserPostEntity } from './model/entity/SysUserPost.entity';
 import { SysUserRoleEntity } from './model/entity/SysUserRole.entity';
 import { SysUserController } from './controller/SysUser.controller';
-import { SysLogininforService } from './service/SysLogininfor.service';
-import { SysLogininforEntity } from './model/entity/SysLogininfor.entity';
-import { SysLogininforDao } from './dao/SysLogininfor.dao';
 import { SysFileController } from './controller/SysFile.controller';
 import { MulterModule, MulterModuleOptions } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
@@ -64,6 +61,10 @@ import { SysOperLogService } from './service/SysOperLog.service';
 import { SysOperLogDao } from './dao/SysOperLog.dao';
 import { SysOnlineController } from './controller/SysOnline.controller';
 import { SysOnlineService } from './service/SysOnline.service';
+import { SysLogininforService } from './service/SysLogininfor.service';
+import { SysLogininforEntity } from './model/entity/SysLogininfor.entity';
+import { SysLogininforController } from './controller/SysLogininfor.controller';
+import { SysLogininforDao } from './dao/SysLogininfor.dao';
 
 @Module({
   imports: [
@@ -98,21 +99,21 @@ import { SysOnlineService } from './service/SysOnline.service';
     }),
     TypeOrmModule.forFeature([
       SysMenuEntity, SysDeptEntity, SysPostEntity, SysDictDataEntity, SysDictTypeEntity, SysConfigEntity, SysRoleEntity, SysRoleMenuEntity,SysUserEntity,
-      SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity,SysLogininforEntity,GenTableColumnEntity,GenTableEntity,DemoTestOneEntity,SysNoticeEntity,SysOperLogEntity
+      SysUserPostEntity,SysUserRoleEntity,SysRoleDeptEntity,GenTableColumnEntity,GenTableEntity,DemoTestOneEntity,SysNoticeEntity,SysOperLogEntity,SysLogininforEntity
     ])
   ],
   controllers: [SysMenuController, SysDeptController, SysPostController, SysDictTypeController, SysDictDataController, SysConfigController, SysRoleController,SysUserController,
-    SysFileController, GenController, DemoTestOneController,SysNoticeController,SysOperLogController,SysOnlineController
+    SysFileController, GenController, DemoTestOneController,SysNoticeController,SysOperLogController,SysOnlineController,SysLogininforController
   ],
   providers: [
     //service
     ...[
         SysMenuService, SysDeptService, SysPostService, SysDictTypeService, SysDictDataService, SysConfigService, RedisUtil, SysRoleService, SysUserService,
-        SysLogininforService,GenService,DemoTestOneService,SysNoticeService,SysOperLogService,SysOnlineService
+        GenService,DemoTestOneService,SysNoticeService,SysOperLogService,SysOnlineService,SysLogininforService
     ],
     //dao
     ...[
-      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao, SysRoleDao, SysUserDao, SysLogininforDao, SysNoticeDao,DemoTestOneDao,SysOperLogDao
+      SysMenuDao, SysDeptDao, SysPostDao, SysDictTypeDao, SysDictDataDao, SysConfigDao, SysRoleDao, SysUserDao, SysNoticeDao,DemoTestOneDao,SysOperLogDao,SysLogininforDao
     ]
   ],
   exports: [SysUserService, SysLogininforService, SysOperLogService]

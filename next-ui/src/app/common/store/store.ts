@@ -25,8 +25,20 @@ const loadingSlice = createSlice({
   },
 });
 
+const themeColorSlice = createSlice({
+  name: 'themePrimaryColor', 
+  initialState:"#5497FF",
+  reducers: {
+    saveThemePrimaryColor: (state, action) => {
+      state = action.payload; 
+      return state;
+    },
+  },
+});
+
 export const store = configureStore({
   reducer: {
+    themePrimaryColor: themeColorSlice.reducer,
     userinfo: userinfoSlice.reducer,
     loading: loadingSlice.reducer // 将 counter 切片的 reducer 注册到 store
   },
@@ -35,3 +47,4 @@ export const store = configureStore({
 // 导出 action 方法（供组件调用）
 export const { setInitialState } = userinfoSlice.actions;
 export const { setLoading } = loadingSlice.actions;
+export const { saveThemePrimaryColor } = themeColorSlice.actions;

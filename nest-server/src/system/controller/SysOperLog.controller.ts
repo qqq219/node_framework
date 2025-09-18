@@ -1,6 +1,5 @@
-
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res, ValidationPipe } from "@nestjs/common";
 import { SysOperLogService } from "../service/SysOperLog.service";
 import { RequirePermission } from "src/auth/decorator/RequirePremission.decorator";
 import { SysOperLogReq } from "../model/req/SysOperLogReq";
@@ -42,6 +41,13 @@ export class SysOperLogController {
       await this.sysOperLogService.create(createSysOperLogDto);
       return ResultData.ok();
     }
+
+    @ApiOperation({ summary: '导出操作日志记录xlsx文件' })
+    @RequirePermission("system:sysOperLog:export")
+    @Get('/export')
+    async export(@Res() res: Response, @Query() req: SysOperLogReq): Promise<any> {
+      return this.sysOperLogService.export(res, req);
+    }
     
     @ApiOperation({
       summary: '操作日志记录-detail',
@@ -68,6 +74,7 @@ export class SysOperLogController {
       return ResultData.ok();
     }
     
+
     @ApiOperation({
       summary: '操作日志记录-delete',
     })
@@ -79,6 +86,4 @@ export class SysOperLogController {
       await this.sysOperLogService.remove(idList);
       return ResultData.ok();
     }
-
 }
-    

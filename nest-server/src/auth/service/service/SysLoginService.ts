@@ -8,10 +8,10 @@ import { StatusEnum } from "src/common/model/enum/StatusEnum";
 import { ResultData } from "src/common/model/ResultData";
 import { GenerateUUID } from "src/common/utils/normal.tool";
 import { RedisUtil } from "src/common/utils/Redis.tool";
-import { SysLogininforService } from "src/system/service/SysLogininfor.service";
 import { SysUserService } from "src/system/service/SysUser.service";
 import { ConfigService } from '@nestjs/config';
 import { TokenUtil } from "src/common/utils/TokenUtils";
+import { SysLogininforService } from "src/system/service/SysLogininfor.service";
 
 @Injectable()
 export class SysLoginService {

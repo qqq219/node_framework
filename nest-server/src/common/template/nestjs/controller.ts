@@ -10,7 +10,7 @@ export const controllerTem = (options) => {
   const primaryType = primaryFiled?(primaryFiled.javaType || "string"):"string"
   return `
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res, ValidationPipe } from "@nestjs/common";
 import { ${serviceName} } from "../service/${className}.service";
 import { RequirePermission } from "src/auth/decorator/RequirePremission.decorator";
 import { ${className}Req } from "../model/req/${className}Req";
@@ -52,6 +52,13 @@ export class ${className}Controller {
       await this.${lfclassName}Service.create(create${className}Dto);
       return ResultData.ok();
     }
+
+    @ApiOperation({ summary: '导出${functionName}xlsx文件' })
+    @RequirePermission("${moduleName}:${businessName}:export")
+    @Get('/export')
+    async export(@Res() res: Response, @Query() req: ${className}Req): Promise<any> {
+      return this.${lfclassName}Service.export(res, req);
+    }
     
     @ApiOperation({
       summary: '${functionName}-detail',
@@ -78,6 +85,7 @@ export class ${className}Controller {
       return ResultData.ok();
     }
     
+
     @ApiOperation({
       summary: '${functionName}-delete',
     })
@@ -89,7 +97,6 @@ export class ${className}Controller {
       await this.${lfclassName}Service.remove(idList);
       return ResultData.ok();
     }
-
 }
     `;
 };

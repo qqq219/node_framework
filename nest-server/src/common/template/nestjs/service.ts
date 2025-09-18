@@ -1,3 +1,4 @@
+import { GenTableColumnEntity } from "src/system/model/entity/GenTableCloumn.entity";
 import { lowercaseFirstLetter } from "../../utils/gen.tool";
 
 
@@ -13,7 +14,7 @@ import { Injectable } from "@nestjs/common";
 import { ${className}Req } from "../model/req/${className}Req";
 import { ${className}Dao } from "../dao/${className}.dao";
 import { ${className}Dto } from "../model/dto/${className}Dto";
-
+import { ExportTable } from "src/common/utils/export";
 @Injectable()
 export class ${className}Service {
 
@@ -42,6 +43,36 @@ export class ${className}Service {
       return await this.${lfclassName}Dao.delete${className}ByIds(idList);
     }
 
+     /**
+       * 导出${functionName}数据为xlsx文件
+       * @param res
+       * @param req
+       */
+      async export(res: Response, req: ${className}Req) {
+        Reflect.deleteProperty(req, "current")
+        Reflect.deleteProperty(req, "pageSize")
+        const [list] = await this.findList(req);
+        const options = {
+          sheetName: '${functionName}',
+          data: list,
+          header: [
+            ${creatExportHeader(columns)}
+          ],
+        };
+        await ExportTable(options, res as any);
+      }
+
 }
 `
 }
+
+ function creatExportHeader(columns:GenTableColumnEntity[]) {
+    let str = ``;
+
+    columns.forEach(item=>{
+      str+=`
+      { title: '${item.columnComment}', dataIndex: '${item.javaField}' },`
+    })
+
+    return str;
+  }
