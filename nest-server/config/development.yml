@@ -37,5 +37,5 @@ perm:
       { path: '/upload', method: 'POST' },
     ]
 file:
-  uploadPath: 'F:/soft/code/node_framework/nest-server/uploads' # 文件上传路径
+  uploadPath: '/uploads' # 文件上传路径
   serverPath: '/static/uploads' # 文件服务路径

@@ -3,8 +3,8 @@ import { setInitialState, saveThemePrimaryColor } from "@/app/common/store/store
 import { fetchUserInfo } from "@/app/common/utils/access";
 import { getThemeColor, saveThemeColorToLocal } from "@/app/common/utils/localstorageUtils";
 import FrameworkLayout from "@/components/FrameworkLayout";
-import { CheckOutlined, SettingFilled, SettingOutlined } from "@ant-design/icons";
-import { ColorPicker, Drawer, FloatButton, Spin } from "antd";
+import { CheckOutlined, PieChartFilled, SettingFilled, SettingOutlined } from "@ant-design/icons";
+import { ColorPicker, Divider, Drawer, FloatButton, Spin } from "antd";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,7 +52,7 @@ export default function BizPageLayout({ children }: React.PropsWithChildren) {
 
     },[]);
 
-    const defaultColorItems = [
+    const [defaultColorItems, setDefaultColorItems] = useState<string[]>([
         "#5497FF",
         "#f40b0b",
         "#f4700b",
@@ -61,7 +61,7 @@ export default function BizPageLayout({ children }: React.PropsWithChildren) {
         "#0bf4a3",
         "#a30bf4",
         "#ac2ea6",
-    ]
+    ])
     return (
         <>
             <FrameworkLayout>
@@ -75,12 +75,13 @@ export default function BizPageLayout({ children }: React.PropsWithChildren) {
                         <div className="font-bold text-[1rem]">主题色</div>
                         <div className="flex flex-row items-start justify-start gap-4 mt-4">
                             {
-                                defaultColorItems.map((color) => {return <div className={clsx("w-5 h-5 cursor-pointer justify-center flex items-center rounded-[5px]", `!bg-[${color}]`)} onClick={() => {modifyThemeColor(`${color}`)}}><CheckOutlined className={clsx("!text-white text-[0.6rem]", themePrimaryColor==`${color}`?"":"!hidden")}/></div>})
+                                defaultColorItems.map((color) => {return <div style={{background:color}} key={color} className={clsx("w-5 h-5 cursor-pointer justify-center flex items-center rounded-[5px]")} onClick={() => {modifyThemeColor(`${color}`)}}><CheckOutlined className={clsx("!text-white text-[0.6rem]", themePrimaryColor==`${color}`?"":"!hidden")}/></div>})
                             }
                             <ColorPicker defaultValue={themePrimaryColor} onChange={(color:any) => {modifyThemeColor(color.toCssString())}}>
-                                { <SettingFilled className={clsx("text-[1.25rem] cursor-pointer !text-color-primary")}></SettingFilled>}
+                                { <PieChartFilled className={clsx("text-[1.25rem] cursor-pointer !text-color-primary")}></PieChartFilled>}
                             </ColorPicker>
                         </div>
+                        <Divider />
                     </div>
                 </Drawer>
                 <FloatButton
