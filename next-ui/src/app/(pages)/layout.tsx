@@ -5,8 +5,8 @@ import PageLayOutComponent from "@/components/PageLayoutComponent";
 
 export default function PageLayout({ children }: React.PropsWithChildren) {
     return (
-            <Provider store={store}>
-                <PageLayOutComponent>{children}</PageLayOutComponent>
-            </Provider>
+        <Provider store={store}>
+            <PageLayOutComponent>{children}</PageLayOutComponent>
+        </Provider>
     );
 }

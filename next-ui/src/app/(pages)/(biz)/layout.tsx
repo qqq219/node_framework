@@ -63,7 +63,7 @@ export default function BizPageLayout({ children }: React.PropsWithChildren) {
         "#ac2ea6",
     ])
     return (
-        <>
+        <div>
             <FrameworkLayout>
                 <Drawer
                     title="主题设置"
@@ -95,6 +95,6 @@ export default function BizPageLayout({ children }: React.PropsWithChildren) {
                 {children}
                 <Spin spinning={loading} fullscreen></Spin>
             </FrameworkLayout>
-        </>
+        </div>
     );
 }

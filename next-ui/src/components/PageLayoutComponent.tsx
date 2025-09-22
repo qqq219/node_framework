@@ -2,6 +2,7 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry"
 import ConfigProvider from "antd/es/config-provider"
 import { useSelector } from "react-redux"
+import enCN from 'antd/es/locale/zh_CN';
 
 export default function PageLayOutComponent({ children }: React.PropsWithChildren) {
     const themePrimaryColor = useSelector((state:any) => state.themePrimaryColor)
@@ -15,6 +16,7 @@ export default function PageLayOutComponent({ children }: React.PropsWithChildre
                         
                     },
                 }}
+                locale={enCN}
             >
                 {children}
             </ConfigProvider>

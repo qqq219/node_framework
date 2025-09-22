@@ -30,10 +30,14 @@ request.interceptors.response.use(response => {
   }, error => {
     // 对响应错误做些什么
     if(error.response.status === 401){
-      message.error("用户未登录或登录已过期，请重新登录");
-      setTimeout(() => {
-        window.location.href = "/login?redirect=" + window.location.pathname;
-      },1000)
+      if(window.location.pathname != "/login"){
+        console.log(window.location.pathname)
+        let redirect = window.location.pathname;
+        if(redirect == "" || redirect == "/"){
+          redirect = "/dashboard";
+        }
+        window.location.href = "/login?redirect=" + redirect;
+      }
     }
 
     return Promise.reject(error);
