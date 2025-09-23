@@ -15,7 +15,6 @@ export default function FrameworkHeader() {
     const loginOut = async () => {
         dispatch(setLoading(true))
         await logout();
-        message.success("退出登录成功");
         clearSessionToken();
         dispatch(setLoading(false))
         dispatch(setInitialState({}));

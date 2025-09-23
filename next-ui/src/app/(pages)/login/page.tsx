@@ -10,6 +10,7 @@ import { getCaptchaImg, login } from "@/app/services/system/auth";
 import { clearSessionToken, fetchUserInfo, setSessionToken } from "@/app/common/utils/access";
 import { setInitialState } from "@/app/common/store/store";
 import { useDispatch, useSelector } from "react-redux";
+import { getThemeColor } from "@/app/common/utils/localstorageUtils";
 
 
 
@@ -22,6 +23,7 @@ export default function LoginPage(){
     const [spinning, setSpinning] = useState(false);
     const dispatchEvent = useDispatch();
     const userInfo = useSelector((state:API.CurrentUser) => state.userinfo);
+    const dispatch = useDispatch();
     const handleResize = () => {
         const containerWidth = window.innerWidth < 1280?1280:window.innerWidth
         const widthCalcuByHeight = window.innerHeight * 16 / 9;

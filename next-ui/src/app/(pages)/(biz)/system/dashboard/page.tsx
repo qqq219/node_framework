@@ -4,11 +4,13 @@ import HeadItem from "./headitem";
 import type { Dayjs } from 'dayjs';
 import { useEffect, useRef } from "react";
 import * as echarts from 'echarts';
+import { useSelector } from "react-redux";
 
 export default function DashboardPage() {
     const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>['mode']) => {
         console.log(value.format('YYYY-MM-DD'), mode);
     };
+    const themePrimaryColor = useSelector((state:any) => state?.themePrimaryColor);
     const chartDomRefOne = useRef(null);
     const chartDomRefTwo = useRef(null);
     const chartDomRefThree = useRef(null);
@@ -30,31 +32,21 @@ export default function DashboardPage() {
         title: {
             text: '数据统计'
         },
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-            type: 'shadow'
-            }
-        },
-        legend: {},
         xAxis: {
-            type: 'value',
-            boundaryGap: [0, 0.01]
+            type: 'category',
+            data: ['数据一', '数据二', '数据三', '数据四', '数据五', '数据六','数据七']
         },
         yAxis: {
-            type: 'category',
-            data: ['数据一', '数据二', '数据三', '数据四', '数据五', '数据六']
+            type: 'value'
         },
         series: [
             {
-            name: '2024',
-            type: 'bar',
-            data: [18203, 23489, 29034, 104970, 131744, 630230]
-            },
-            {
-            name: '2025',
-            type: 'bar',
-            data: [19325, 23438, 31000, 121594, 134141, 681807]
+                data: [120, 200, 150, 80, 70, 110, 130],
+                type: 'bar',
+                showBackground: true,
+                backgroundStyle: {
+                    color: 'rgba(180, 180, 180, 0.2)'
+                }
             }
         ],
         grid:{ // 让图表占满容器
@@ -418,12 +410,12 @@ export default function DashboardPage() {
 
             </div>
             <div className="flex flex-row flex-1 w-full">
-                <div className="w-1/3  p-2 !pl-0">
+                <div className="w-1/6  p-2 !pl-0">
                     <div className="w-full h-full !rounded-3xl bg-white p-6" style={{border:"var(--border-primary)"}}>
                         <Calendar onPanelChange={onPanelChange}/>
                     </div>
                 </div>
-                <div className="w-1/2  p-2 flex flex-col gap-4">
+                <div className="w-2/3  p-2 flex flex-col gap-4">
                     <div ref={chartDomRefTwo} className="h-1/2 w-full  pb-6 !rounded-3xl bg-white p-6" style={{border:"var(--border-primary)"}}>
                     </div>
                     <div ref={chartDomRefOne} className="h-1/2 w-full pb-6 !rounded-3xl bg-white p-6" style={{border:"var(--border-primary)"}}> 

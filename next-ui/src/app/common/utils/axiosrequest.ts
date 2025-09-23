@@ -34,7 +34,7 @@ request.interceptors.response.use(response => {
         console.log(window.location.pathname)
         let redirect = window.location.pathname;
         if(redirect == "" || redirect == "/"){
-          redirect = "/dashboard";
+          redirect = "/system/dashboard";
         }
         window.location.href = "/login?redirect=" + redirect;
       }

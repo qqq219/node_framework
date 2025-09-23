@@ -18,12 +18,11 @@ export default function BizPageLayout({ children }: React.PropsWithChildren) {
         saveThemeColorToLocal(color);
         dispatch(saveThemePrimaryColor(color));
         document.documentElement.style.setProperty('--color-color-primary', color);
-        setThemePrimaryColor(color)
     }
 
     //初始化主题颜色
 
-    const [themePrimaryColor, setThemePrimaryColor] = useState("")
+    const themePrimaryColor = useSelector((state:any) => state?.themePrimaryColor);
 
 
 
@@ -45,11 +44,6 @@ export default function BizPageLayout({ children }: React.PropsWithChildren) {
         if(userInfo == null || userInfo.userId == undefined){
             refreshUserInfo();
         }
-        const themePrimaryColorStorage = getThemeColor();
-        if(themePrimaryColorStorage != null){
-            modifyThemeColor(themePrimaryColorStorage)
-        }
-
     },[]);
 
     const [defaultColorItems, setDefaultColorItems] = useState<string[]>([
@@ -75,7 +69,7 @@ export default function BizPageLayout({ children }: React.PropsWithChildren) {
                         <div className="font-bold text-[1rem]">主题色</div>
                         <div className="flex flex-row items-start justify-start gap-4 mt-4">
                             {
-                                defaultColorItems.map((color) => {return <div style={{background:color}} key={color} className={clsx("w-5 h-5 cursor-pointer justify-center flex items-center rounded-[5px]")} onClick={() => {modifyThemeColor(`${color}`)}}><CheckOutlined className={clsx("!text-white text-[0.6rem]", themePrimaryColor==`${color}`?"":"!hidden")}/></div>})
+                                defaultColorItems.map((color) => {return <div style={{background:color}} key={color} className={clsx("w-5 h-5 cursor-pointer justify-center flex items-center rounded-[5px]")} onClick={() => {modifyThemeColor(`${color}`)}}><CheckOutlined className={clsx("!text-white text-[0.8rem]", themePrimaryColor==`${color}`?"":"!hidden")}/></div>})
                             }
                             <ColorPicker defaultValue={themePrimaryColor} onChange={(color:any) => {modifyThemeColor(color.toCssString())}}>
                                 { <PieChartFilled className={clsx("text-[1.25rem] cursor-pointer !text-color-primary")}></PieChartFilled>}
